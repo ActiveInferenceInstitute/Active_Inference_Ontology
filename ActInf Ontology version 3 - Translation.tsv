@@ -1,0 +1,373 @@
+List	Term	Russian	Portuguese	Spanish	French	Italian	Hebrew	Czech
+Core	Epistemic value	Эпистемическая ценность	o valor epistêmico	el valor epistémico	la valeur épistémique	valore epistemico	ערך הידע	epistemická hodnota
+Core	Non-Equilibrium Steady State	Неравновесное устойчивое состояние	Estado de Equilíbrio não Estacionário	el estado de equilibrio no estacionario; el estado estacionario no equilibrado	(m) l'état d'équilibre non équilibré	il stato di equilibrio non-stazionario	מצב יציב שלא בשווי משקל	nerovnovážný ustálený stav
+Core	State space	Пространство состояний	o espaço de estados	el espacio de estado	(m) l’espace d'état; l'espace des phases	il condizone dello spazio; il spazio di stato	מרחב מצבים	stavový prostor
+Core	Affordance	Возможность	Affordance	Affordance	affordance	convenienza	אפשרויות זמינות	prostředek
+Core	Learning	Активное обучение	Aprendizagem Ativa	Aprendizaje Activo	apprentissage (m) actif	Apprendimento attivo	למידה פעילה	aktivní učení
+Core	Expectation	Ожидание	Expectativa	Expectativas	attente (m)	Aspettativa		očekávání
+Core	Attention	Внимание	Atenção	Atención	attention/intéret	Attenzione	תשומת לב	pozornost
+Core	Behavior	Поведение	Comportamento	Comportamiento	comportement	Comportamento	התנהגות	chování
+Core	Friston Blanket	Фристоновское ограждение	Cobertor de Friston	La Manta de Friston	couverture (f) Friston		שמיכת פריסון	Fristonův obal
+Core	Data	Данные	Data/Dados	Data (Datos)	Data	Dato	נתנים	data
+Core	Expected Free Energy	Ожидаемая свободная энергия	Energia Livre Esperada	Energía Libre esperada	énergie (f) libre attendue; énergie (f) libre espérée		תוחלת האנרגיה החופשית	očekávaná volná energie
+Core	Generalized Free Energy	Обобщенная свободная энергия	Energia Livre Generalizada	Energía libre generalizada	énergie (f) libre généralisée		אנרגיה כללית מוכללת	obecná volná energie
+Core	Variational Free Energy	Вариационная свободная энергия	Energia livre variacional	Energía libre variacional	énergie (f) libre variationnelle	Energia libera variazionale	אנרגיה חופשית משתנה	variační volná energie
+Core	Free Energy	Свободная энергия	Energia Livre	Energía libre	énergie libre	Energia Libera	אנרגיה חופשית	volná energie
+Core	Ensemble	Ансамбль	Conjunto	Conjunto	ensemble (m)	tutti insieme	אוסף	soubor
+Core	Internal State	Внутренние состояния	Estados Internos	Estados internos	état intérieur (m); état (m) interne	stati interni	מצבים פנימיים	vnitřní stav
+Core	Hidden states	Скрытое состояние	Estados Ocultos	Estados ocultos	états (m) cachés; étés (m) cachés	stati nascosti	מצב חבוי	skryté stavy
+Core	External States	Внешние состояния	Estados Externos	estados externos	états (m) externes; états (m) extérieurs; états (m) externes	stati esterni	מצבים חיצוניים	vnější stavy
+Core	Sense States	Сенсорные состояния	Estados Sensoriais	Estados Sensoriales	états (m) sensoriels; états (m) de sens	saliente	מצבי חישה	smyslové stavy
+Core	Blanket States	Состояния ограждения	Estados encobertos	Estados Encubiertos	états (n) couvertes; états (n) secrets ???		מצבים כסויים	stav obalu
+Core	Active States	Активные состояния	Estados Ativos	Estados activos	etats actifs	stati attivi	מצבים פעילים	aktivní stavy
+Core	Information Geometry	Информационная геометрия	Geometria de Informação	Geometría (f) de la información	géométrie (f) de l'information	geometria dell'informazione	גיאומטריית המידע	informační geometrie
+Core	Active Inference	Активное обновление	Inferência Ativa	Inferencia Activa	inférence (f) active	Inferenza attiva	הסקה פעילה	aktivní inference
+Core	Inference	Вывод	Inferência	Inferencia	inférence (f); déduction (f)	Inferenza	הסקה	inference
+Core	Bayesian Inference	Байесовское обновление	Inferência Bayesiana	Inferencia Bayesiana	Inférence bayésienne	Inferenza Bayesiana	הסקה בייסיאנית	Bayesovská inference
+Core	Information	Информация	Informação	Información	Information	informazione	מידע	informace
+Core	Ambiguity	Неопределённость	Ambiguidade	Ambiguedad	l'ambiguïté	Ambiguità	אי ודאות	nejednoznačnost
+Core	Accuracy	Точность	Acurácia	Precisión	l'éxactitude	Accuratezza	דיוק	přesnost
+Core	Uncertainty	Неопределенность	Incerteza	Incertidumbre	l'incertitude	Incertezza	אי ודאות	nejistota
+Core	Cognition	Познание	Cognição	Cognición	La cognition	cognizione	קוגניציה	poznávání
+Core	Complexity	Сложность	Complexidade	Complejidad	la complexité	Complessità	מורכבות	složitost
+Core	Markov Blanket	Марковское ограждение	o Cobertor de Markov; manta de Markov; o envoltório de Markov	la manta markoviana	la couverture de Markov	la coperta di Markov	שמיכת מרקוב	Markovský obal
+Core	Culture	Культура	Cultura	Cultura	La culture	Cultura	תרבות	kultura
+Core	Perception	Восприятие/Воспринимание	Percepção	Percepción	la perception	Percezione	תפיסה	vjem
+Core	Surprise	Сюрприз	Surpresa	Sorpresa	La surprise	Sorpresa	הפתעה	překvapení
+Core	Generative model	Порождающая модель	o Modelo Generativo	el modelo generativo	le modèle génératif	il modello generativo	מצב גנרטיבי	generativní model
+Core	System	Система	o sistema	el sistema	le système	Sistema	מערכת	systém
+Core	Belief updating	Корректирование предположений	Atualização de Crença	Actualización de creencia	mise à jour des convictions	aggiornamento della credenza	עדכון אמונות	aktualizace přesvědčení
+Core	Recognition Model	Модели распознавания	Modelos de Reconhecimento	Modelo de reconocimiento	modèle (m) de reconnaissance	modelli di ricognizione	מודלי זיהוי	model rozpoznávání
+Core	Hierarchical Model	Многоуровневая модель	Modelo Hierárquico	Modelo jerárquico	modèle (m) hiérarchique	Modello gerarchico	מודל היררכי	hierarchický model
+Core	Niche	Ниша	Nicho	Nicho	niche (f); créneau (m)	Nicchia	כוך/נישה	výklenek
+Core	Novelty	Новизна	Novidade	Novedad	nouveauté (f)	Novità	חידוש	novota
+Core	Action planning	Планирование действий	Planejamento de Ação	Planeamiento de Acción	plannification des mesures/actions	Piano d'azione	תכנון פעולה	plánování akce
+Core	Posterior	Апостериорный	Posterior	Posterior	Postérieur(e/es/s)	Precedente	פוסטריור	zadní/předcházející
+Core	Policy	Правила	Prática Normativa	regla (f); práctica (f) normativa; estrategia (f); política (f)	pratique normative (f); règles; politique (f); stratégie (f)	Strategia	מדיניות	zásada
+Core	Action prediction	Прогнозирование действий	Predição de Ação	Predicción de Acción	prédiction (f) d'action; prédiction (f) d'actions	Predire l'azione	חיזוי פעולה	předpověď akce
+Core	Preference	Предпочтение	Preferência	Preferencias	préférence (f); préféré (m)	Preferenza		přednost
+Core	Evidence	Свидетельство	Evidência	Evidencia	Preuve	prova	ראייה	důkaz
+Core	Free Energy Principle	Принцип свободной энергии	Princípio da Energia Livre	Principio de la Energía libre	Pricipe de l'énergie libre	Principio della Energia Libera	עקרון האנרגיה החופשית	princip volné energie
+Core	Markov Decision Process	Марковский процесс принятия решений	Processo de decisão Markoviano	Proceso de decisión markoviana	processus (m) décisionnel de Markov	Processo decisional di tipo Marcoviano	תהליכי החלטה מרקוביאנים	Markovské rozhodovací procesy
+Core	Generative Process	Порождающий процесс	Processo Generativo	Proceso generativo	processus (m) génératif	processo generativo	תהליך גנרטיבי	generativní proces
+Core	Temporal Depth	Темпоральная глубина	Profundidade Temporal	Profundidad temporal	profondeur (f) temporelle ??	Spessore temporale	עומק טמפורלי	časová hloubka
+Core	Narrative	Нарратив	Narrativa	Narrativa	récit (m); narration (f)	Narrazione	נרטיב	vyprávění
+Core	Regime of Attention	Режим внимания	Regime de Atenção	Régimen de Atención	régime (m) de soins; régime (m) d'attention; régime (m) attentionnel	regime di attenzione	משטר תשומת לב	režim pozornosti
+Core	Cue	Указатель	Pista	Señal	Repère	spunto	רמז	nápověda
+Core	Salience	Значимость	Saliência	Saliencia	saillance (f); saillant (m)	Saliente	בולטות	salience
+Core	Policy selection	Выбор правила	Seleção de prática normativa	selección (f) de la práctica normativa; selección (f) de políticas; selección (f) de política; selección (f) de reglas	sélection (f) de la pratique normative; sélection (f) de règle; sélection (f) de la stratégie; sélection (f) politique	Selezione della strategia	בחירת מדיניות	výběr zásady
+Core	Stationarity	Стационарность	estacionário	Fijo or estatico	stationnarité (f); fixe (m); statique (m)	Fisso o statico		stacionarita
+Core	Multi-scale system	Многомасштабная система	Sistema multiescala	Sistema multiescalar	système multi-échelle	sistema di tipo multi-scala	מודל מרובה קני מידה	vícestupňový systém
+Core	Living system	Живая система/биологическая система	Sistema Vivo	Sistema vivo	Système Vivant	Sistema vivente	מרכת חייה	živý systém
+Core	Process Theory	Теория процессов	Teoria de Processos	Teoría de procesos	théorie (f) des processus	Teoria del processo	תאוריית תהליכים	teorie procesu
+Core	Agent	Агент	Agente	Agente	un agent	Agente	סוכן	agent
+Core	State	Состояние	Estado	Estado	un état	Stato	מצב	stav
+Core	Action	Действие	Ação	Acción	une action / une mesure	Azione	פעולה	akce
+Core	Agency	Агентность	Agência	Agencia	une Agence	rappresentanza	סוכנות	agentura
+Core	Belief	Убеждение	Crença	Creencia	une conviction/croyance	Credenza	אמונה	přesvědčení
+Core	Observation	Наблюдение	Observação	Observación	une observation	Osservazione	תצפית	postřeh
+Core	Particle	Частица	Partícula	Partícula	une particule	Particella	חלקיק	částice
+Core	Prediction	Предсказание	Predição	Predicción	Une prédiction	Predizione	עקרון	předpověď
+Core	Representation	Репрезентация	Representação	Representación	une représentation	Rappresentazione	ייצוג	reprezentace
+Core	Pragmatic value	Прагматическая ценность	Valor Pragmático	el valor pragmático	valeur (f) pragmatique	valore pragmatico	ערך פרגמטי	pragmatická hodnota
+Core	Variational	Вариационный	Variacional	Variacional	variationnel (m); variationnelle (f)	Variazionale	משתנה	variační
+Core	Prior	Приор	Anterior	Antecendete		Precedente		předchozí
+Entailed	active		ativo					
+Entailed	area		área					
+Entailed	backbone							
+Entailed	brain		cérebro					
+Entailed	causality		causalidade					
+Entailed	computer		computador					
+Entailed	concentration		concentração					
+Entailed	concept		conceito					
+Entailed	consensus		consenso					
+Entailed	conversation		conversa					
+Entailed	current		atual					
+Entailed	default-mode		modo padrão					
+Entailed	dynamics		dinâmica					
+Entailed	ego		ego					
+Entailed	energy		energia					
+Entailed	environment		ambiente					
+Entailed	error		erro					
+Entailed	feedback		feedback					
+Entailed	field		campo					
+Entailed	framework		quadro teórico / framework					
+Entailed	free		livre					
+Entailed	genetic		genética					
+Entailed	hierarchical		hierárquico					
+Entailed	idea		ideia					
+Entailed	increase		aumenta					
+Entailed	influence		influência					
+Entailed	interpretation		interpretação					
+Entailed	inverse		inverso					
+Entailed	language		linguagem					
+Entailed	Logic		lógica					
+Entailed	machine		máquina					
+Entailed	matrix		matriz					
+Entailed	neuronal		neuronal					
+Entailed	object		objeto					
+Entailed	objective		objetivo					
+Entailed	observer		observador					
+Entailed	Ontology-to-Model Link							
+Entailed	opportunity		oportunidade					
+Entailed	parameter		parâmetro					
+Entailed	part		parte					
+Entailed	perceptual inference		inferência perceptual					
+Entailed	perspective		perspectiva					
+Entailed	phase		fase					
+Entailed	physics		física					
+Entailed	play		jogar/jogo					
+Entailed	probability		probabilidade					
+Entailed	Probably Approximately Correct							
+Entailed	problem		problema					
+Entailed	propositional		proposicional					
+Entailed	Propositional attitude		atitude proposicional					
+Entailed	Psychological attitude		atitude psicológica					
+Entailed	purpose		propósito					
+Entailed	question		pergunta/questão					
+Entailed	random		aleatório					
+Entailed	recognition		reconhecimento					
+Entailed	relative entropy		entropia relativa					
+Entailed	represents		representa					
+Entailed	resource		recurso					
+Entailed	role		papel					
+Entailed	science		ciência					
+Entailed	selection		seleção					
+Entailed	self-organization		auto-organização					
+Entailed	social		social					
+Entailed	states		estados					
+Entailed	Stimulus		estímulo					
+Entailed	technology		tecnologia					
+Entailed	Thing		coisa					
+Entailed	transition		transição					
+Entailed	tree		árvore					
+Entailed	understanding		entendimento					
+Entailed	situation							
+Entailed	condition							
+Supplement	Autopoiesis	Аутопоэзис	Autopoiese	Autopoiesis	Autopoïèse	autopoiesi	אוטופואזה	
+Supplement	Decision-making	Принятие решений	Tomada de Decisão	Toma de decisiones	La prise de décisions	prendere decisioni	ביצוע החלטות	
+Supplement	Risk	Риск	Risco	Riesgo	le risque	Rischio	סיכון	
+Supplement	Model Inversion	Инверсия модели	Inversão de Modelo	Inersión de modelo	modèle d'inversion		היפוך מודל	
+Supplement	Principle	Принцип	Princípio	Principio	un principe	Principio	עקרון	
+Supplement	Abstract Action		Ação					
+Supplement	Abstract action prediction		Predição de Ação					
+Supplement	Abstract Bayesian Inference		Inferência Bayesiana					
+Supplement	Abstract epistemic value		Valor epistêmico					
+Supplement	Abstract External State		Estado externo					
+Supplement	Abstract Generative Model		Modelo Generativo					
+Supplement	Abstract Hidden State		Estado oculto					
+Supplement	Abstract Internal State		Estado interno					
+Supplement	Abstract Sensory State		Estado sensorial					
+Supplement	Abstract System		Sistema					
+Supplement	AbstractAccuracy		Acurácia					
+Supplement	abstractCounterpart		Contraparte					
+Supplement	Action and Planning as Divergence Minimization		Ação e planejamento como minimização de divergência					
+Supplement	Action at a distance		Ação à distância					
+Supplement	Action Integral		Ação integral					
+Supplement	Active Vision	Активное зрение	Visão Ativa	Visión activa		visione attiva	ראיה פעילה	aktivní vidění
+Supplement	Agency based model		Modelo baseado na agência					
+Supplement	Agency free model		Modelo livre de agência					
+Supplement	Algorithm		Algoritmo					
+Supplement	Alignment		Alinhamento					
+Supplement	analogy		Analogia					
+Supplement	Appraisal theories of emotion							
+Supplement	Attenuation of response							
+Supplement	Augmented reality		Realidade aumentada					
+Supplement	Bayes-optimal control							
+Supplement	Bayesian		Bayesiano (a)					
+Supplement	Bayesian Brain		Cérebro Bayesiano					
+Supplement	Bayesian surprise		Surpresa Bayesiana					
+Supplement	Bethe approximation							
+Supplement	Bottom-up attentional control		Controle atencional ascendente					
+Supplement	chaos		Caos					
+Supplement	Circular causality		Causalidade circular					
+Supplement	Cognitive Science		Ciências Cognitivas					
+Supplement	Cognitive System		Sistemas Cognitivos					
+Supplement	Cognitivism		Cognitivismo					
+Supplement	Collective behavior		Comportamento Coletivo					
+Supplement	Conceptual metaphor		Metáfora Conceitual					
+Supplement	Conditional density		Densidade Condicional					
+Supplement	Conditional Probability		Probabilidade Condicional					
+Supplement	Confidence		Intervalo de Confiança					
+Supplement	Congruence		Congruência					
+Supplement	Connectionism		Conexionismo					
+Supplement	Control (states)		Controle (estados)					
+Supplement	Control theory		Teoria do Controle					
+Supplement	Counterfactual		Contrafatual; Contrafactual					
+Supplement	Cybernetics		Cibernética					
+Supplement	Density		Densidade					
+Supplement	Deontic Action		Ação Deôntica					
+Supplement	Development		Desenvolvimento					
+Supplement	Dissisipation		Dissipação					
+Supplement	Distribution		Distribuição					
+Supplement	divergence		Divergência					
+Supplement	Divergence (Kullback–Leibler)		Divergência de Kullback-Leibler					
+Supplement	Domain		Domínio					
+Supplement	Domain-generality							
+Supplement	Domain-specificity							
+Supplement	Dynamic causal modelling		Modelagem causal dinâmica					
+Supplement	Dynamic expectation maximization		Maximização de expectativa dinâmica					
+Supplement	Dynamicism		Dinamicismo					
+Supplement	Ecology		Ecologia					
+Supplement	Ecology, Evolution, Development		Ecologia, Evolução, Desenvolvimento					
+Supplement	Embedded Embodied Encultured Enactive Inference							
+Supplement	Embodied Cybernetic Complexity		Complexidade Cibernética Corporificada					
+Supplement	EmbodiedBelief		CrençaCorporificada					
+Supplement	Emotion		Emoção					
+Supplement	Empirical prior		Anterior empírico					
+Supplement	Enactivism		Enativismo					
+Supplement	Entropy		Entropia					
+Supplement	Ergodicity	Эргодичность	Ergodicidade	Ergodicidad		ergodicità	ארגודיות	
+Supplement	Estimator		Estimador					
+Supplement	Event-related potential (ERP)							
+Supplement	Evolution		Evolução					
+Supplement	Expectation maximization		Maximização de expectativa					
+Supplement	Expected Utility Theory		Teoria da Utilidade Esperada					
+Supplement	Experience of body ownership (EBO)							
+Supplement	Explaining Away		Dissolver					
+Supplement	Explanation		Explanação					
+Supplement	Extended Cognition		Cognição Estendida					
+Supplement	Factor graph							
+Supplement	Falsification		Falsificação					
+Supplement	Far-from-equilibrium							
+Supplement	Fokker-Planck Equation		Equação Fokker-Planck					
+Supplement	Foraging							
+Supplement	Forney							
+Supplement	Friction		Fricção					
+Supplement	Friston's Law		Lei de Friston					
+Supplement	functional magnetic resonance imaging (fMRI)		Imagem por Ressonância Magnética Funcional					
+Supplement	Gaussian distribution		Distribuição Gaussiana					
+Supplement	Generalized coordinates		Coordenadas generalizadas					
+Supplement	Generalized Synchrony		Sincronia generalizada					
+Supplement	Generative density		Densidade Generativa					
+Supplement	Generative modelling		Modelagem Generativa					
+Supplement	Gestalt		Gestalt					
+Supplement	Goal-driven selection							
+Supplement	Gradient Descent							
+Supplement	Graphical		Gráfico					
+Supplement	Group Renormalization Theory		Teoria de Grupo de Renormalização					
+Supplement	Guidance signal							
+Supplement	Habit learning/formation		Aprendizado/Formação de Hábito					
+Supplement	Hamilton's Principle of Least Action		Princípio Hamiltoniano da Menor Ação; Princípio de Hamilton de Mínima Ação					
+Supplement	Helmholtz machine		Máquina de Helmholtz					
+Supplement	Hierarchically Mechanistic Mind		Mente Hierarquicamente Mecanística					
+Supplement	Homeostasis		Homeostase					
+Supplement	Homeostatic system		Sistema homeostático					
+Supplement	Homeostatic system		Sistema homeostático					
+Supplement	Hyperprior		Hiperanterior					
+Supplement	Hypothesis		Hipótese					
+Supplement	Information bottleneck		Gargalo de informação					
+Supplement	Instrumentalism		Instrumentalismo					
+Supplement	Interface		Interface					
+Supplement	Interoception		Interocepção					
+Supplement	Interoceptive sensitivity		Sensibilidade interoceptiva					
+Supplement	Interpretation		Interpretação					
+Supplement	Inverse problem		Problema inverso					
+Supplement	Latent cause	Неявная причина	Causa Latente	Causa latente		causa latente	סיבות חבויות	
+Supplement	Lateral geniculate nucleus		Núcleo geniculado lateral					
+Supplement	Likelihood		Verossimilhança					
+Supplement	Marginal approximation		Aproximação marginal					
+Supplement	Markovian Monism	Марковский монизм	Monismo Markoviano				מוניזם מרקוביאני	
+Supplement	Marr's Levels of Description		Níveis de Descrição de Marr					
+Supplement	Material science							
+Supplement	Mean		Média					
+Supplement	Mean field approximation							
+Supplement	Memory		Memória					
+Supplement	Message Passing		Troca de Mensagem					
+Supplement	Mismatch negativity							
+Supplement	Mode		Modo					
+Supplement	Model		Modelo					
+Supplement	Model accuracy		Acurácia do modelo					
+Supplement	Morphogenesis		Morfogenesis					
+Supplement	Multisensory integration		Integração Multisensorial					
+Supplement	Network		Network					
+Supplement	Neuronal Ensemble							
+Supplement	Niche construction		Construção de Nicho					
+Supplement	Noisy signal		Sinal de ruído					
+Supplement	Non-linear dynamical systems		Sistemas dinâmicos não-lineares					
+Supplement	Optimal control		Controle óptimo					
+Supplement	overfitting							
+Supplement	Partition		Partição					
+Supplement	Policy posterior							
+Supplement	Policy prior							
+Supplement	Precision		Precisão					
+Supplement	Prediction error		Erro de predição					
+Supplement	Prediction error minimization		Minimização de erro de predição					
+Supplement	Predictive Coding		Codificação Preditiva					
+Supplement	Predictive Processing		Processamento Preditivo					
+Supplement	Probability distribution		Distribuição de Probabilidade					
+Supplement	Random variable		Variável aleatória					
+Supplement	Realism		Realismo					
+Supplement	Receptive field		Campo receptivo					
+Supplement	Recognition density							
+Supplement	Representationalism		Representacionalismo					
+Supplement	Reservoir Computing							
+Supplement	Reward		Recompensa					
+Supplement	Sample space		Espaço de amostra					
+Supplement	Selection bias							
+Supplement	Selection history							
+Supplement	Self-organization		Auto-organização					
+Supplement	Selfhood							
+Supplement	Semi-Markovian		Semi-Markoviano					
+Supplement	Sense of agency		Sensação de agência					
+Supplement	Sensorimotor		Sensoriomotor					
+Supplement	Sensory attenuation		Atenuação sensorial					
+Supplement	Sensory attenuation							
+Supplement	Sensory Data		Dado sensorial					
+Supplement	Sensory input		Entrada sensorial					
+Supplement	Sensory outcome		Saída sensorial					
+Supplement	Sentience							
+Supplement	Shared Generative Model		Modelo generativo compartilhado					
+Supplement	Signal		Sinal					
+Supplement	Simulation		Simulação					
+Supplement	solenoidal		Solenoidal					
+Supplement	Sophisticated Inference		Inferência Sofisticada					
+Supplement	spike-timing dependent plasticity							
+Supplement	Statistical manifold							
+Supplement	Stigmergy							
+Supplement	Stochastic		Escolástico					
+Supplement	Subjective feeling states		Estados de sentimentos subjetivos					
+Supplement	Surprisal		Surprisal/ Alarme					
+Supplement	Swarm		Enxame; Multidão					
+Supplement	Symbol		Símbolo					
+Supplement	Synergetics		Sinergético					
+Supplement	Teams		Times					
+Supplement	Theory		Teoria					
+Supplement	Thermodynamic system		Sistema termodinâmico					
+Supplement	Thermostatistics		Termoestatística					
+Supplement	Thinking Through Other Minds		Pensando através de outras mentes					
+Supplement	Top-down attentional control		Controle atencional descendente					
+Supplement	Umwelt		Umwelt					
+Supplement	Unidirectionality		Unidirecionalidade					
+Supplement	Update		Atualização					
+Supplement	Variance		Variância					
+Supplement	Variational Niche Construction		Construção de Nicho Variacional					
+Supplement	Von Economo neurons							
+Supplement	Weak mixing							
+Supplement	Working memory		Memória de trabalho					
+Supplement	World States		Estados do mundo					
+Supplement	link							
+Supplement	Variational principle							
+Supplement	Variational message passing							
+Supplement	Renormalization							
+Supplement	Partially Observed Markov Decision Process (POMDP)							
+Supplement	Least action							
+Supplement	Hermeneutics							
+Supplement	Epistemic foraging							
+Supplement	Discrete state space							
+Supplement	Continuous state space							
+Supplement	Coarse graining							
+Supplement	Bayesian mechanics							
+Supplement	Bayesian belief updating							
+Supplement	Attracting set							
+Supplement	Active learning							
+Supplement	Sensory observation							
+Supplement	Path integral							
+Supplement	Lagrangian							
+Supplement	normative							
+Supplement	High road							
+Supplement	Low road							
+Supplement	changing mind (cognition)							
+Supplement	changing world (action)							
+Supplement	active processes							
+Supplement	predictive machine							
