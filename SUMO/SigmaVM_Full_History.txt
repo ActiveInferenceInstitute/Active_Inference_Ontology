@@ -1,0 +1,92 @@
+cd programs
+cd Programs
+ls
+/home/theuser/history.text
+wget 'http://wordnetcode.princeton.edu/3.0/WordNet-3.0.tar.gz'
+ls
+cd workspace
+git clone https://github.com/ontologyportal/sumo
+cd
+echo "export SIGMA_HOME=~/.sigmakee" >> .bashrc
+echo "export SIGMA_SRC="/workspace/sigmakee" >> .bashrc
+echo "export ONTOLOGYPORTAL_GIT=~/workspace" >> .bashrc
+echo "export CATALINA_OPTS=\"$CATALINA_OPTS -Xmx10g\" >> .bashrc
+echo "export CATALINA_HOME=~/Programs/apache-tomcat-8.5.23" >> .bashrc
+source .bashrc
+cd /workspace/sigmakee
+sudo add-apt-repository universe
+sudo apt-get update
+sudo apt-get install ant
+ant
+$CATALINA_HOME/bin/startup.sh
+htop
+sudo shutdown now
+cd
+source .bashrc
+mkdir /home/theuser/Programs
+cd Programs
+wget --no-check-certificate -c --header "Cookie: oraclelicense-accept-securebackup-cookie" https://> rm jdk-11.0.17_linux-x64_bin.tar
+ls
+rm jdk-11.0.17_linux-x64_bin.tar.gz
+wget --no-check-certificate -c --header "Cookie: oraclelicense-accept-securebackup-cookie" https://> rm jdk-11.0.17_linux-x64_bin.tar.gz
+ls
+wget --no-check-certificate -c --header "Cookie: oraclelicense=accept-securebackup-cookie" https://> gunzip jdk-11.0.17_linux-x64_bin.tar.gz
+ls
+rename jdk-11.0.17_linux-x64_bin.tar.gz?AuthParam=1676981096_77f63cb3317607d0b6287539611796af jdk-1> mv jdk-11.0.17_linux-x64_bin.tar.gz?AuthParam=1676981096_77f63cb3317607d0b6287539611796af ls
+gunzip jdk-11.0.17_linux-x64_bin.tar.gz ls
+gunzip jdk-11.0.17_linux-x64_bin.tar.gz untar -cvf jdk-11.0.17_linux-x64_bin.tar tar -xvf jdk-11.0.17_linux-x64_bin.tar
+ls
+cd
+echo "alias dir='ls --color-auto --format=vertical -la >> .bashrc
+echo "export HISTSIZE=10000 HISTFILESIZE=100000" >> .bashrc
+echo "export JAVA_HOME=/home/theuser/Programs/jdk-11.0.17" >> .bashrc
+source .bashrc
+echo "export PATH=$PATH: $JAVA_HOME/bin" >> .bashrc
+source .bashrc
+sudo update-alternatives --install "/usr/bin/java" "java" "/home/theuser/Programs/jdk-11.0.17/bin/j
+sudo update-alternatives --set java /home/theuser/Programs/jdk-11.0.17/bin/java
+java -version
+javac -version
+cd Programs
+ls
+rm jdk-11.0.17_linux-x64_bin.tar
+cd
+mkdir workspace
+cd Programs
+wget 'https://archive.apache.org/dist/tomcat/tomcat-8/v8.5.23/bin/apache-tomcat-8.5.23.zip'
+wget 'http://wwwlehre.dhbw-stuttgart.de/~sschulz/WORK/E_DOWNLOAD/V_2.0/E.tgz'
+ls
+ls -a
+dir
+tar -xvzf E.tgz
+unzip apache-tomcat-8.5.23.zip rm apache-tomcat-8.5.23.zip
+cd /Programs/apache-tomcat-8.5.23/bin chmod 777 *
+cd ../webapps
+chmod 777 *
+cd /workspace/
+sudo apt-get install git
+/home/theuser/history.text
+git clone https://github.com/ontologyportal/sigmakee
+git clone https://github.com/ontologyportal/TPTP-ANTLR
+git clone https://github.com/ontologyportal/SigmaUtils
+cd ~
+mkdir .sigmakee
+cd .sigmakee mkdir KBS
+cp -R /workspace/sumo/* KBS
+me="$(whoami)'
+cp/workspace/sigmakee/config.xml ~/.sigmakee/KBS
+sed -i "s/theuser/$me/g" KBs/config.xml
+cd /Programs
+gunzip WordNet-3.0.tar.gz
+tar -xvf WordNet-3.0.tar
+cp WordNet-3.0/dict/* ~/.sigmakee/KBs/WordNetMappings/
+cd /Programs/E
+sudo apt-get install make
+sudo apt-get install gcc ./configure
+make
+make install
+cd ~
+sudo apt-get install graphviz
+ls
+history -w ~/history.text
+
