@@ -1,0 +1,27 @@
+name: Ontology
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Show Python version
+        run: python3 --version
+      - name: Lint ontology source
+        run: python3 scripts/build_json.py --lint --strict
+      - name: Verify generated JSON
+        run: python3 scripts/build_json.py --check
+      - name: Build validation report
+        run: python3 scripts/build_json.py --report > /tmp/ontology-validation-report.json
+      - name: Compare archived v4 to current v5
+        run: >-
+          python3 scripts/diff_releases.py
+          "Archived versions/v4 (12-12-2022 snapshot)/Ontology _ Definitions, Examples, Connections view.csv"
+          Ontology_v5_May_25_2023.csv
+          --json > /tmp/ontology-release-diff.json

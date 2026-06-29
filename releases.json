@@ -1,0 +1,76 @@
+{
+  "description": "Machine-readable release manifest for the Active Inference Ontology repository.",
+  "currentRelease": "v5",
+  "releases": [
+    {
+      "version": "v1",
+      "label": "Terms list candidate",
+      "status": "archived",
+      "date": null,
+      "path": "Archived versions/v1 (terms list)",
+      "files": [
+        "Active Inference Lab ~ Terms List v1.0 candidate.xlsx",
+        "Active Inference Lab ~ Terms List v1.0 candidate - Core Terms.pdf",
+        "Active Inference Lab ~ Terms List v1.0 candidate - Terms_Supplement.pdf"
+      ],
+      "notes": "Early terms-list candidate materials retained as historical source evidence."
+    },
+    {
+      "version": "v2",
+      "label": "T2.D1.L1.E1",
+      "status": "archived",
+      "date": null,
+      "path": "Archived versions/v2 (T2.D1.L1.E1)",
+      "files": [
+        "ActInfLab _ Active Inference Ontology T2.D1.L1.E1.xlsx",
+        "ActInfLab _ Active Inference Ontology T2.D1.L1.E1.ods",
+        "ActInfLab _ Active Inference Ontology T2.D1.L1.E1.zip"
+      ],
+      "notes": "Spreadsheet and packaged release files for the v2 ontology snapshot."
+    },
+    {
+      "version": "v3",
+      "label": "Version 3",
+      "status": "archived",
+      "date": null,
+      "path": "Archived versions/v3",
+      "files": [
+        "ActInf Ontology version 3.xlsx",
+        "ActInf Ontology version 3.ods",
+        "ActInf Ontology version 3.zip",
+        "ActInf Ontology version 3 - Defintions.tsv",
+        "ActInf Ontology version 3 - Translation.tsv"
+      ],
+      "notes": "Version 3 spreadsheet, packaged archive, definitions TSV, and translation TSV."
+    },
+    {
+      "version": "v4",
+      "label": "12-12-2022 snapshot",
+      "status": "archived",
+      "date": "2022-12-12",
+      "path": "Archived versions/v4 (12-12-2022 snapshot)",
+      "files": [
+        "Ontology _ Definitions, Examples, Connections view.csv",
+        "Ontology _ Terms & Translations View.csv"
+      ],
+      "notes": "CSV snapshots exported from definition/example/connection and translation views."
+    },
+    {
+      "version": "v5",
+      "label": "May 25, 2023",
+      "status": "current",
+      "date": "2023-05-25",
+      "path": ".",
+      "sourceFiles": [
+        "Ontology_v5_May_25_2023.csv"
+      ],
+      "generatedFiles": [
+        "ontology.json"
+      ],
+      "termCount": 429,
+      "tagCount": 8,
+      "edgeCount": 238,
+      "notes": "Current root CSV and generated JSON export."
+    }
+  ]
+}

@@ -16,7 +16,11 @@ declares to other terms.
 | --- | --- |
 | [`Ontology_v5_May_25_2023.csv`](Ontology_v5_May_25_2023.csv) | Canonical source — one row per term. |
 | [`ontology.json`](ontology.json) | Machine-readable export (generated from the CSV). |
+| [`releases.json`](releases.json) | Machine-readable manifest for current and archived releases. |
 | [`scripts/build_json.py`](scripts/build_json.py) | Regenerates `ontology.json` from the latest CSV. |
+| [`scripts/diff_releases.py`](scripts/diff_releases.py) | Compares two ontology CSV releases. |
+| [`docs/`](docs/) | Modular documentation for data contracts, curation, validation, archives, SUMO, and downstream use. |
+| [`TODO.md`](TODO.md) | Scoped backlog of minor, medium, and major improvements. |
 | [`Archived versions/`](Archived%20versions/) | Earlier ontology releases. |
 | [`SUMO/`](SUMO/) | Suggested Upper Merged Ontology mapping material. |
 
@@ -49,14 +53,33 @@ declared connections.
 ### Regenerate
 
 ```bash
-python3 scripts/build_json.py          # rebuild ontology.json from the latest CSV
-python3 scripts/build_json.py --check  # verify ontology.json is in sync (CI-friendly)
+python3 scripts/build_json.py                 # rebuild ontology.json from the latest CSV
+python3 scripts/build_json.py --lint --strict # validate CSV source contract
+python3 scripts/build_json.py --check         # verify ontology.json is in sync
+python3 scripts/build_json.py --report        # print a JSON validation report
+python3 scripts/diff_releases.py OLD.csv NEW.csv
 ```
 
 The script reads the newest `Ontology_v*.csv` in the repository root, so adding a
 future `Ontology_v6_*.csv` and re-running keeps `ontology.json` current. Run
 `--check` after editing the CSV to confirm the JSON was regenerated.
 
+## Changelog
+
+### Unreleased
+
+- Added modular documentation under `docs/`.
+- Added `TODO.md` with scoped minor, medium, and major improvements.
+- Added `releases.json` to describe current and archived release artifacts.
+- Added CSV lint and validation-report modes to `scripts/build_json.py`.
+- Added CI validation for lint, generated JSON freshness, and report generation.
+- Added release-diff tooling for CSV snapshots.
+- Added curation-governance and SUMO mapping-contract documentation.
+- Removed skipped duplicate or empty CSV rows without changing the generated
+  ontology export.
+
 ## Citing
 
-Please cite via the Zenodo DOI above.
+Please cite via the Zenodo DOI above. When citing a specific repository state,
+include the release tag or commit hash, the source CSV filename, and the access
+date in addition to the DOI.
