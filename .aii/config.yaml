@@ -1,28 +1,75 @@
 # AII sidecar — InstituteOS metadata for this repository.
-# Schema: instituteos.platform.aii_sidecar.models.AiiSidecar
+# Schema: instituteos.platform.aii_sidecar.models.AiiSidecar (aii-sidecar/v1)
+# This is the reference / exemplar sidecar. Validate:
+#   python -m instituteos.platform.aii_sidecar.validate <repo>
 schema: aii-sidecar/v1
+
+meta:
+  sidecar_version: 1.0.0
+  updated: 2026-06-30
 
 repo:
   name: Active_Inference_Ontology
   slug: active-inference-ontology
   full_name: ActiveInferenceInstitute/Active_Inference_Ontology
+  description: >-
+    A public, controlled vocabulary of Active Inference and Free Energy Principle
+    concepts — each term with a tag, definitions, examples, and declared connections.
+  default_branch: main
+  homepage: https://www.activeinference.org/home
 
 institute:
   affiliation: institute        # institute | ecosystem
   category: ontology            # InstituteOS domain
   status: active                # active | wip | archived | deprecated
+  maturity: released            # experimental | wip | released | stable
+  steward: Active Inference Institute
 
 ecosystem:
-  related:
-    - ActiveInferenceInstitute/ActiveInferenceJournal
+  relations:
+    - repo: ActiveInferenceInstitute/ActiveInferenceJournal
+      relation: referenced-by
+      note: Journal materials cite Active Inference Ontology terms.
   links:
     website: https://www.activeinference.org/home
     coda: https://coda.io/@active-inference-institute/active-inference-ontology-website
+    docs: docs/README.md          # repo-relative path (validated to exist)
 
-tags:
-  - ontology
-  - vocabulary
-  - active-inference
-  - free-energy-principle
+artifacts:
+  - path: Ontology_v5_May_25_2023.csv
+    kind: source
+    description: Canonical source — one row per term.
+  - path: ontology.json
+    kind: export
+    description: Machine-readable export generated from the CSV.
+  - path: releases.json
+    kind: dataset
+    description: Machine-readable release manifest (current + archived).
+  - path: scripts/build_json.py
+    kind: code
+    description: Regenerates ontology.json from the latest CSV.
+  - path: SUMO
+    kind: dataset
+    description: Suggested Upper Merged Ontology mapping material.
 
-docs: []
+provenance:
+  # NOTE: this repo has no LICENSE file — surfaced by the sidecar as a known gap.
+  license: ""
+  citation:
+    zenodo: https://zenodo.org/badge/latestdoi/343477486
+    text: "Active Inference Institute — Active Inference Ontology (Zenodo, concept DOI 343477486)."
+  current_release: v5
+  releases_manifest: releases.json
+
+instituteos:
+  dashboard_mode: repos
+  registries: []
+  tags:
+    - ontology
+    - vocabulary
+    - active-inference
+    - free-energy-principle
+    - controlled-vocabulary
+
+docs:
+  - docs/INTEGRATION.md           # .aii/docs/ — InstituteOS-specific integration notes

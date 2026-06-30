@@ -2,23 +2,35 @@
 
 A standalone, version-controlled sidecar that declares this repository's identity and
 configuration within the [Active Inference Institute](https://www.activeinference.org)
-ecosystem. It is read by **InstituteOS** tooling to federate a unified view across all
-Institute repos — without touching the repo's own content (like `.github/`).
+ecosystem. Read by **InstituteOS** tooling to federate a unified view across all Institute
+repos — without touching the repo's own content (like `.github/`).
+
+**This is the reference / exemplar `.aii` sidecar.** Other repos follow this shape.
 
 ## Contents
 
 | File | Purpose |
 | --- | --- |
-| [`config.yaml`](config.yaml) | Machine-readable identity, affiliation, category, ecosystem links, tags. |
-| [`README.md`](README.md) | This file. |
-| [`AGENTS.md`](AGENTS.md) | Agent guidance for InstituteOS conventions. |
-| `docs/` | (optional) InstituteOS-specific documentation. |
+| [`config.yaml`](config.yaml) | Machine-readable metadata (schema `aii-sidecar/v1`). |
+| [`docs/INTEGRATION.md`](docs/INTEGRATION.md) | InstituteOS-specific integration notes for this repo. |
+| [`README.md`](README.md) · [`AGENTS.md`](AGENTS.md) | Human + agent guidance. |
 
-## Schema
+## `config.yaml` schema (`aii-sidecar/v1`)
 
-`config.yaml` validates against `instituteos.platform.aii_sidecar.models.AiiSidecar`
-(`schema: aii-sidecar/v1`). It is intentionally minimal and human-editable; GitHub-derived
-facts (stars, language, size) are **not** duplicated here — only curated metadata that the
-API cannot provide.
+| Section | Fields |
+| --- | --- |
+| `meta` | `sidecar_version`, `updated` |
+| `repo` | `name`, `slug`, `full_name`, `description`, `default_branch`, `homepage` |
+| `institute` | `affiliation` (institute\|ecosystem), `category`, `status`, `maturity`, `steward` |
+| `ecosystem` | `relations[]` (`repo`, `relation`, `note`), `links{}` (URL or repo-path) |
+| `artifacts[]` | `path`, `kind` (source\|dataset\|export\|code\|doc\|model), `description` |
+| `provenance` | `license`, `citation{doi,zenodo,text}`, `current_release`, `releases_manifest` |
+| `instituteos` | `dashboard_mode`, `registries[]`, `tags[]` |
+| `docs[]` | paths under `.aii/` (validated to exist) |
 
-This sidecar is independent of InstituteOS internals and is safe to keep in the public repo.
+Validate (and score completeness): `python -m instituteos.platform.aii_sidecar.validate <repo>`.
+The validator checks the schema, that artifact/manifest/doc paths exist, that repo-relative
+links resolve, and that relation targets are `owner/repo`.
+
+Canonical schema/source: `instituteos.platform.aii_sidecar` in
+[InstituteOS](https://github.com/ActiveInferenceInstitute/InstituteOS).
