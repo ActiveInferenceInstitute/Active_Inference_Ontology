@@ -1,0 +1,28 @@
+# AII sidecar — InstituteOS metadata for this repository.
+# Schema: instituteos.platform.aii_sidecar.models.AiiSidecar
+schema: aii-sidecar/v1
+
+repo:
+  name: Active_Inference_Ontology
+  slug: active-inference-ontology
+  full_name: ActiveInferenceInstitute/Active_Inference_Ontology
+
+institute:
+  affiliation: institute        # institute | ecosystem
+  category: ontology            # InstituteOS domain
+  status: active                # active | wip | archived | deprecated
+
+ecosystem:
+  related:
+    - ActiveInferenceInstitute/ActiveInferenceJournal
+  links:
+    website: https://www.activeinference.org/home
+    coda: https://coda.io/@active-inference-institute/active-inference-ontology-website
+
+tags:
+  - ontology
+  - vocabulary
+  - active-inference
+  - free-energy-principle
+
+docs: []
