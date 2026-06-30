@@ -1,0 +1,8 @@
+# Modular fragment — key products this repo provides.
+artifacts:
+  - {path: Ontology_v5_May_25_2023.csv, kind: source,  description: Canonical source — one row per term.}
+  - {path: ontology.json,               kind: export,  description: Machine-readable export generated from the CSV.}
+  - {path: releases.json,               kind: dataset, description: Release manifest (current + archived).}
+  - {path: scripts/build_json.py,       kind: code,    description: Regenerates ontology.json from the latest CSV.}
+  - {path: SUMO,                        kind: dataset, description: Suggested Upper Merged Ontology mapping material.}
+  - {path: LICENSE,                     kind: doc,     description: CC-BY-4.0 license.}

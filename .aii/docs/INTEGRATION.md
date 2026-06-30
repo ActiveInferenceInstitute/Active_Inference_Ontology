@@ -17,10 +17,12 @@ tag. The sidecar declares this with `ecosystem.relations` (`referenced-by` the J
 
 These are declared as `artifacts` in `config.yaml`; the validator confirms each path exists.
 
-## Known gaps (surfaced by the sidecar)
+## Completeness
 
-- **No `LICENSE` file.** `provenance.license` is intentionally empty so the completeness
-  report flags it. Add an SPDX license (e.g. `CC-BY-4.0`) and set it here.
+This sidecar meets the **100% completeness standard** (`doctor` → `standard met: True`).
+It is **fully modular**: the core `config.yaml` deep-merges `config.d/ecosystem.yaml`,
+`config.d/artifacts.yaml`, and `config.d/tasks.yaml`. Licensed `CC-BY-4.0` (auto-detected
+from `LICENSE`).
 
 ## Maintaining this sidecar
 

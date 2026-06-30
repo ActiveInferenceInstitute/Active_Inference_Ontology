@@ -1,0 +1,10 @@
+# Modular fragment — ecosystem relations & links (deep-merged over config.yaml).
+ecosystem:
+  relations:
+    - repo: ActiveInferenceInstitute/ActiveInferenceJournal
+      relation: referenced-by
+      note: Journal materials cite Active Inference Ontology terms.
+  links:
+    website: https://www.activeinference.org/home
+    coda: https://coda.io/@active-inference-institute/active-inference-ontology-website
+    docs: docs/README.md

@@ -17,5 +17,4 @@ InstituteOS sidecar for this repository (the reference exemplar). Read [`README.
 python -m instituteos.platform.aii_sidecar.validate <repo>          # OK / problems
 python -m instituteos.platform.aii_sidecar.validate <repo> --completeness   # + score & gaps
 ```
-Aim for a high completeness score; the only intended gap here is `provenance.license`
-(this repo has no LICENSE file yet — see docs/INTEGRATION.md).
+This sidecar meets the 100% completeness standard (`python -m instituteos.platform.aii_sidecar doctor <repo>`).
