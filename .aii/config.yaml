@@ -71,5 +71,18 @@ instituteos:
     - free-energy-principle
     - controlled-vocabulary
 
+capabilities:
+  - csv-source            # human-curated source of truth
+  - json-export           # machine-readable export (ontology.json)
+  - release-manifest      # releases.json
+  - sumo-mapping          # SUMO upper-ontology mapping
+
+integration:
+  analytics: true         # include in repo analytics sweeps
+  dashboard: true         # surface in dashboard Repos mode
+  sync: pull              # submodule sync policy
+
+# `tasks:` are declared modularly in config.d/tasks.yaml (deep-merged at load time).
+
 docs:
   - docs/INTEGRATION.md           # .aii/docs/ — InstituteOS-specific integration notes

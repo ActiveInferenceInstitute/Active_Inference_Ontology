@@ -1,0 +1,15 @@
+# Modular fragment — portable runnable tasks for InstituteOS.
+# Deep-merged over config.yaml at load time (instituteos.platform.aii_sidecar).
+tasks:
+  validate:
+    cmd: python3 scripts/build_json.py --check --lint
+    description: Verify ontology.json is current and the CSV is well-formed.
+  build:
+    cmd: python3 scripts/build_json.py
+    description: Regenerate ontology.json from the latest CSV.
+  lint:
+    cmd: python3 scripts/build_json.py --lint
+    description: Validate CSV headers and term identities.
+  report:
+    cmd: python3 scripts/build_json.py --report
+    description: Print a JSON validation report.

@@ -26,11 +26,29 @@ repos — without touching the repo's own content (like `.github/`).
 | `artifacts[]` | `path`, `kind` (source\|dataset\|export\|code\|doc\|model), `description` |
 | `provenance` | `license`, `citation{doi,zenodo,text}`, `current_release`, `releases_manifest` |
 | `instituteos` | `dashboard_mode`, `registries[]`, `tags[]` |
+| `capabilities[]` | declared repo capabilities |
+| `tasks{}` | portable runnable ops (`cmd`, `description`, `cwd`) — see `config.d/tasks.yaml` |
+| `integration` | toggles: `analytics`, `dashboard`, `sync` |
 | `docs[]` | paths under `.aii/` (validated to exist) |
 
 Validate (and score completeness): `python -m instituteos.platform.aii_sidecar.validate <repo>`.
 The validator checks the schema, that artifact/manifest/doc paths exist, that repo-relative
 links resolve, and that relation targets are `owner/repo`.
+
+
+## Modular config
+
+`config.yaml` is the base; any `config.d/*.yaml` fragments are **deep-merged** over it at
+load time. Here, `config.d/tasks.yaml` holds the task definitions, keeping concerns split.
+
+## Tasks (portable, runnable)
+
+```
+python -m instituteos.platform.aii_sidecar.run <repo> --list
+python -m instituteos.platform.aii_sidecar.run <repo> validate
+```
+`validate` · `build` · `lint` · `report` map to this repo's `scripts/build_json.py`. Tasks
+execute repo-declared commands — run them only for trusted repos.
 
 Canonical schema/source: `instituteos.platform.aii_sidecar` in
 [InstituteOS](https://github.com/ActiveInferenceInstitute/InstituteOS).
