@@ -16,8 +16,8 @@ import tempfile
 import zipfile
 from collections import Counter
 from collections.abc import Iterable
-from datetime import UTC, datetime
-from pathlib import Path
+from datetime import UTC, date, datetime
+from pathlib import Path, PurePosixPath
 from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -64,6 +64,8 @@ FORBIDDEN_TERMS = (
     tuple((109, 111, 99, 107)),
     tuple((119, 111, 114, 107, 32, 105, 110, 32, 112, 114, 111, 103, 114, 101, 115, 115)),
 )
+HASH_PATTERN = re.compile(r"^[0-9a-f]{64}$")
+MANIFEST_SCHEMA = "active-inference-ontology/manuscript/v1"
 
 
 class ManuscriptError(Exception):
@@ -95,11 +97,25 @@ def write_text(path: Path, content: str, *, check: bool = False) -> list[str]:
     if check:
         if not path.is_file():
             return [f"missing generated manuscript artifact: {path.relative_to(ROOT)}"]
-        if path.read_text(encoding="utf-8") != content:
+        try:
+            current = path.read_text(encoding="utf-8")
+        except UnicodeDecodeError:
+            return [f"generated manuscript artifact is not valid UTF-8: {path.relative_to(ROOT)}"]
+        if current != content:
             return [f"generated manuscript artifact is stale: {path.relative_to(ROOT)}"]
         return []
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(content, encoding="utf-8")
+    temporary: Path | None = None
+    try:
+        with tempfile.NamedTemporaryFile(
+            "w", encoding="utf-8", dir=path.parent, prefix=f".{path.name}.", delete=False
+        ) as handle:
+            handle.write(content)
+            temporary = Path(handle.name)
+        temporary.replace(path)
+    finally:
+        if temporary and temporary.exists():
+            temporary.unlink()
     return []
 
 
@@ -111,7 +127,15 @@ def write_bytes(path: Path, content: bytes, *, check: bool = False) -> list[str]
             return [f"generated manuscript artifact is stale: {path.relative_to(ROOT)}"]
         return []
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_bytes(content)
+    temporary: Path | None = None
+    try:
+        with tempfile.NamedTemporaryFile("wb", dir=path.parent, prefix=f".{path.name}.", delete=False) as handle:
+            handle.write(content)
+            temporary = Path(handle.name)
+        temporary.replace(path)
+    finally:
+        if temporary and temporary.exists():
+            temporary.unlink()
     return []
 
 
@@ -336,7 +360,12 @@ FIGURE_SPECS: tuple[tuple[str, str, str, str], ...] = (
 )
 
 
-def figure_registry() -> list[dict[str, Any]]:
+def figure_input_sha256(name: str, values: dict[str, Any]) -> str:
+    payload = canonical_json({"figure": name, "values": values}).encode("utf-8")
+    return hashlib.sha256(payload).hexdigest()
+
+
+def figure_registry(values: dict[str, Any]) -> list[dict[str, Any]]:
     return [
         {
             "figure_id": name,
@@ -347,6 +376,7 @@ def figure_registry() -> list[dict[str, Any]]:
             "width": "0.92",
             "placement": "H",
             "generated_by": "scripts/manuscript.py:figure_bytes",
+            "input_sha256": figure_input_sha256(name, values),
         }
         for name, caption, label, section in FIGURE_SPECS
     ]
@@ -409,7 +439,7 @@ def generate(*, check: bool = False) -> list[str]:
         temporary = None
     try:
         errors.extend(write_text(VARIABLES_PATH, canonical_json(variables), check=check))
-        errors.extend(write_text(REGISTRY_PATH, canonical_json(figure_registry()), check=check))
+        errors.extend(write_text(REGISTRY_PATH, canonical_json(figure_registry(values)), check=check))
         combined: list[str] = []
         for name in SECTION_FILES:
             source_path = MANUSCRIPT / name
@@ -425,7 +455,10 @@ def generate(*, check: bool = False) -> list[str]:
             target = figure_dir / f"{name}.png"
             if check:
                 actual = FIGURES / f"{name}.png"
-                if not actual.is_file() or actual.read_bytes() != content:
+                portable = os.environ.get("MANUSCRIPT_PORTABLE_CHECK") == "1"
+                if not actual.is_file():
+                    errors.append(f"generated figure is missing: {actual.relative_to(ROOT)}")
+                elif not portable and actual.read_bytes() != content:
                     errors.append(f"generated figure is stale: {actual.relative_to(ROOT)}")
             else:
                 errors.extend(write_bytes(target, content))
@@ -521,16 +554,56 @@ def validate_document_structure() -> list[str]:
 
 def validate_references_and_labels() -> list[str]:
     errors = validate_bibliography()
-    text = (RESOLVED / "combined.md").read_text(encoding="utf-8")
+    try:
+        text = (RESOLVED / "combined.md").read_text(encoding="utf-8")
+    except (OSError, UnicodeDecodeError) as exc:
+        return errors + [f"cannot read resolved manuscript: {exc}"]
     labels = {f"{kind}:{label}" for kind, label in re.findall(r"\{#(fig|eq|tbl|sec):([A-Za-z0-9_-]+)(?:\s+[^}]*)?\}", text)}
     refs = {f"{kind}:{label}" for kind, label in re.findall(r"\[@(fig|eq|tbl|sec):([A-Za-z0-9_-]+)\]", text)}
     for reference in sorted(refs - labels):
         errors.append(f"unresolved formalism reference: {reference}")
-    registry = json.loads(REGISTRY_PATH.read_text(encoding="utf-8"))
-    registry_labels = {entry["label"] for entry in registry}
+    try:
+        registry = json.loads(REGISTRY_PATH.read_text(encoding="utf-8"))
+    except (OSError, UnicodeDecodeError, json.JSONDecodeError) as exc:
+        return errors + [f"invalid figure registry: {exc}"]
+    if not isinstance(registry, list):
+        return errors + ["figure registry root must be an array"]
+    expected_ids = {name for name, *_ in FIGURE_SPECS}
+    registry_ids: set[str] = set()
+    registry_filenames: set[str] = set()
+    registry_labels: set[str] = set()
+    for index, entry in enumerate(registry, start=1):
+        if not isinstance(entry, dict):
+            errors.append(f"figure registry entry {index} must be an object")
+            continue
+        for field in ("figure_id", "filename", "caption", "label", "section", "input_sha256"):
+            if not isinstance(entry.get(field), str) or not entry[field].strip():
+                errors.append(f"figure registry entry {index} is missing {field}")
+        figure_id = entry.get("figure_id")
+        filename = entry.get("filename")
+        label = entry.get("label")
+        input_hash = entry.get("input_sha256")
+        if isinstance(figure_id, str):
+            if figure_id in registry_ids:
+                errors.append(f"duplicate figure registry id: {figure_id}")
+            registry_ids.add(figure_id)
+        if isinstance(filename, str):
+            if "/" in filename or "\\" in filename or ".." in PurePosixPath(filename).parts:
+                errors.append(f"unsafe figure registry filename: {filename}")
+            if filename in registry_filenames:
+                errors.append(f"duplicate figure registry filename: {filename}")
+            registry_filenames.add(filename)
+        if isinstance(label, str):
+            registry_labels.add(label)
+        if isinstance(input_hash, str) and not HASH_PATTERN.fullmatch(input_hash):
+            errors.append(f"invalid figure registry input hash: {figure_id}")
+    if registry_ids != expected_ids:
+        errors.append("figure registry does not enumerate the configured figures exactly")
     for label in sorted(label for label in registry_labels if label not in labels):
         errors.append(f"figure registry label is absent from manuscript: {label}")
     for entry in registry:
+        if not isinstance(entry, dict) or not isinstance(entry.get("filename"), str):
+            continue
         path = FIGURES / entry["filename"]
         if not path.is_file():
             errors.append(f"missing registered figure: {path.relative_to(ROOT)}")
@@ -568,10 +641,21 @@ def validate_claim_ledger() -> list[str]:
 
 
 def validate_images() -> list[str]:
-    text = (RESOLVED / "combined.md").read_text(encoding="utf-8")
+    try:
+        text = (RESOLVED / "combined.md").read_text(encoding="utf-8")
+    except (OSError, UnicodeDecodeError) as exc:
+        return [f"cannot read resolved manuscript images: {exc}"]
     errors = []
+    registered = {f"{name}.png" for name, *_ in FIGURE_SPECS}
     for path in re.findall(r"!\[[^\]]*\]\(([^)]+)\)", text):
         target = (RESOLVED / path).resolve()
+        try:
+            relative = target.relative_to(FIGURES.resolve()).as_posix()
+        except ValueError:
+            errors.append(f"manuscript image escapes figure directory: {path}")
+            continue
+        if relative not in registered:
+            errors.append(f"manuscript image is not registered: {path}")
         if not target.is_file():
             errors.append(f"missing manuscript image: {path}")
         elif target.stat().st_size < 100:
@@ -615,7 +699,7 @@ def manifest_content(*, require_rendered: bool) -> dict[str, Any]:
         elif require_rendered:
             raise ManuscriptError(f"missing manuscript artifact: {path.relative_to(ROOT)}")
     return {
-        "schema": "active-inference-ontology/manuscript/v1",
+        "schema": MANIFEST_SCHEMA,
         "release": source["release"],
         "source": {"path": "ontology.source.json", "sha256": sha256(ROOT / "ontology.source.json")},
         "inputs": [
@@ -635,20 +719,169 @@ def write_manifest(*, require_rendered: bool) -> None:
     write_text(MANIFEST_PATH, canonical_json(manifest_content(require_rendered=require_rendered)))
 
 
+def _manifest_path(value: Any, label: str) -> tuple[Path | None, str | None]:
+    if not isinstance(value, str) or not value.strip():
+        return None, f"{label} must be a non-empty relative path"
+    normalized = value.replace("\\", "/")
+    pure = PurePosixPath(normalized)
+    if pure.is_absolute() or ":" in pure.parts[0] or ".." in pure.parts:
+        return None, f"{label} must stay within the repository: {value!r}"
+    path = ROOT.joinpath(*pure.parts)
+    try:
+        path.resolve().relative_to(ROOT.resolve())
+    except ValueError:
+        return None, f"{label} must stay within the repository: {value!r}"
+    return path, None
+
+
+def _manifest_record_errors(
+    records: Any,
+    *,
+    label: str,
+    expected_paths: set[str],
+    require_bytes: bool,
+) -> list[str]:
+    if not isinstance(records, list):
+        return [f"manuscript manifest {label} must be an array"]
+    errors: list[str] = []
+    observed: set[str] = set()
+    for index, item in enumerate(records, start=1):
+        prefix = f"{label}[{index}]"
+        if not isinstance(item, dict):
+            errors.append(f"{prefix} must be an object")
+            continue
+        allowed_fields = {"path", "sha256", "bytes"} if require_bytes else {"path", "sha256"}
+        unexpected = sorted(set(item) - allowed_fields)
+        if unexpected:
+            errors.append(f"{prefix} contains unexpected fields: {', '.join(unexpected)}")
+        path_value = item.get("path")
+        path, path_error = _manifest_path(path_value, f"{prefix}.path")
+        if path_error:
+            errors.append(path_error)
+            continue
+        assert path is not None and isinstance(path_value, str)
+        if path_value in observed:
+            errors.append(f"duplicate manuscript manifest path: {path_value}")
+        observed.add(path_value)
+        if not isinstance(item.get("sha256"), str) or not HASH_PATTERN.fullmatch(item["sha256"]):
+            errors.append(f"{prefix}.sha256 must be a lowercase SHA-256 hash")
+        if not path.is_file():
+            errors.append(f"missing manifest path: {path_value}")
+            continue
+        if isinstance(item.get("sha256"), str) and HASH_PATTERN.fullmatch(item["sha256"]) and sha256(path) != item["sha256"]:
+            errors.append(f"manifest hash mismatch: {path_value}")
+        if require_bytes:
+            if not isinstance(item.get("bytes"), int) or item["bytes"] < 0:
+                errors.append(f"{prefix}.bytes must be a non-negative integer")
+            elif item["bytes"] != path.stat().st_size:
+                errors.append(f"manifest byte count mismatch: {path_value}")
+    missing = sorted(expected_paths - observed)
+    extra = sorted(observed - expected_paths)
+    if missing:
+        errors.append("manuscript manifest is missing paths: " + ", ".join(missing))
+    if extra:
+        errors.append("manuscript manifest contains unexpected paths: " + ", ".join(extra))
+    return errors
+
+
 def validate_manifest_document(manifest: Any, *, require_rendered: bool) -> list[str]:
     errors: list[str] = []
     if not isinstance(manifest, dict):
         return ["manuscript manifest root must be an object"]
-    if manifest.get("schema") != "active-inference-ontology/manuscript/v1":
+    required = {"schema", "release", "source", "inputs", "counts", "sections", "figures", "formats", "artifacts"}
+    unexpected = sorted(set(manifest) - required)
+    if unexpected:
+        errors.append("manuscript manifest contains unexpected fields: " + ", ".join(unexpected))
+    missing = sorted(required - set(manifest))
+    if missing:
+        errors.append("manuscript manifest is missing fields: " + ", ".join(missing))
+    if manifest.get("schema") != MANIFEST_SCHEMA:
         errors.append("invalid manuscript manifest schema")
-    for item in manifest.get("inputs", []) + manifest.get("artifacts", []):
-        path = ROOT / item["path"]
-        if not path.is_file():
-            errors.append(f"missing manifest path: {item['path']}")
-        elif sha256(path) != item.get("sha256"):
-            errors.append(f"manifest hash mismatch: {item['path']}")
-    if require_rendered and manifest.get("formats") != ["pdf", "html", "docx", "epub"]:
-        errors.append("manuscript manifest does not include all rendered formats")
+    release = manifest.get("release")
+    if isinstance(release, dict):
+        unexpected_release = sorted(set(release) - {"version", "label", "date"})
+        if unexpected_release:
+            errors.append("manuscript manifest release contains unexpected fields: " + ", ".join(unexpected_release))
+    if not isinstance(release, dict) or not all(isinstance(release.get(field), str) and release[field].strip() for field in ("version", "label", "date")):
+        errors.append("manuscript manifest release metadata is incomplete")
+    elif not re.fullmatch(r"v(?:0|[1-9][0-9]*)", release["version"]):
+        errors.append("manuscript manifest release.version is invalid")
+    elif not re.fullmatch(r"[12][0-9]{3}-[0-9]{2}-[0-9]{2}", release["date"]):
+        errors.append("manuscript manifest release.date is invalid")
+    else:
+        try:
+            date.fromisoformat(release["date"])
+        except ValueError:
+            errors.append("manuscript manifest release.date is invalid")
+    source_path, source_path_error = _manifest_path((manifest.get("source") or {}).get("path") if isinstance(manifest.get("source"), dict) else None, "manuscript manifest source.path")
+    if source_path_error:
+        errors.append(source_path_error)
+    source_record = manifest.get("source")
+    if isinstance(source_record, dict):
+        unexpected_source = sorted(set(source_record) - {"path", "sha256"})
+        if unexpected_source:
+            errors.append("manuscript manifest source contains unexpected fields: " + ", ".join(unexpected_source))
+        if source_record.get("path") != "ontology.source.json":
+            errors.append("manuscript manifest source.path must be ontology.source.json")
+    if not isinstance(source_record, dict) or not isinstance(source_record.get("sha256"), str) or not HASH_PATTERN.fullmatch(source_record["sha256"]):
+        errors.append("manuscript manifest source.sha256 is invalid")
+    elif source_path is not None and source_path.is_file() and sha256(source_path) != source_record["sha256"]:
+        errors.append("manuscript manifest source hash mismatch")
+
+    expected_inputs = {"ontology.json", "releases.json", "docs/manuscript/references.bib"}
+    errors.extend(_manifest_record_errors(manifest.get("inputs"), label="inputs", expected_paths=expected_inputs, require_bytes=False))
+    expected_artifacts = {
+        str(path.relative_to(ROOT))
+        for path in (
+            VARIABLES_PATH,
+            REGISTRY_PATH,
+            *(FIGURES / f"{name}.png" for name, *_ in FIGURE_SPECS),
+            RESOLVED / "combined.md",
+            *(RESOLVED / name for name in SECTION_FILES),
+        )
+    }
+    if require_rendered:
+        expected_artifacts.update(
+            str(path.relative_to(ROOT))
+            for path in (
+                OUTPUT / "pdf" / "active_inference_ontology.pdf",
+                OUTPUT / "html" / "active_inference_ontology.html",
+                OUTPUT / "docx" / "active_inference_ontology.docx",
+                OUTPUT / "epub" / "active_inference_ontology.epub",
+            )
+        )
+    errors.extend(_manifest_record_errors(manifest.get("artifacts"), label="artifacts", expected_paths=expected_artifacts, require_bytes=True))
+
+    counts = manifest.get("counts")
+    if isinstance(counts, dict):
+        unexpected_counts = sorted(set(counts) - {"terms", "tags", "relations", "edges"})
+        if unexpected_counts:
+            errors.append("manuscript manifest counts contain unexpected fields: " + ", ".join(unexpected_counts))
+    if not isinstance(counts, dict) or not all(isinstance(counts.get(field), int) for field in ("terms", "tags", "relations", "edges")):
+        errors.append("manuscript manifest counts are incomplete")
+    else:
+        try:
+            source_data = json.loads((ROOT / "ontology.source.json").read_text(encoding="utf-8"))
+            export_data = json.loads((ROOT / "ontology.json").read_text(encoding="utf-8"))
+            expected_counts = {
+                "terms": len(source_data["terms"]),
+                "tags": len({term["tag"] for term in source_data["terms"] if term.get("tag")}),
+                "relations": sum(len(term["relations"]) for term in source_data["terms"]),
+                "edges": export_data["counts"]["edges"],
+            }
+            if counts != expected_counts:
+                errors.append(f"manuscript manifest counts do not match ontology: {counts!r} != {expected_counts!r}")
+            if isinstance(release, dict) and release != source_data["release"]:
+                errors.append("manuscript manifest release does not match ontology source")
+        except (OSError, UnicodeDecodeError, KeyError, TypeError, json.JSONDecodeError) as exc:
+            errors.append(f"cannot verify manuscript manifest counts: {exc}")
+    if manifest.get("sections") != len(SECTION_FILES):
+        errors.append("manuscript manifest section count is incorrect")
+    if manifest.get("figures") != len(FIGURE_SPECS):
+        errors.append("manuscript manifest figure count is incorrect")
+    expected_formats = ["pdf", "html", "docx", "epub"] if require_rendered else []
+    if manifest.get("formats") != expected_formats:
+        errors.append("manuscript manifest formats are incorrect")
     return errors
 
 
@@ -657,7 +890,7 @@ def validate_manifest(*, require_rendered: bool) -> list[str]:
         return [f"missing manuscript manifest: {MANIFEST_PATH.relative_to(ROOT)}"]
     try:
         manifest = json.loads(MANIFEST_PATH.read_text(encoding="utf-8"))
-    except json.JSONDecodeError as exc:
+    except (OSError, UnicodeDecodeError, json.JSONDecodeError) as exc:
         return [f"invalid manuscript manifest: {exc}"]
     return validate_manifest_document(manifest, require_rendered=require_rendered)
 

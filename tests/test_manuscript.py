@@ -44,6 +44,40 @@ class ManuscriptPipelineTests(unittest.TestCase):
         errors = manuscript.validate_manifest_document(manifest, require_rendered=True)
         self.assertTrue(any("manifest hash mismatch" in error for error in errors))
 
+    def test_manifest_shape_and_closure_are_fail_closed(self) -> None:
+        manifest = json.loads(manuscript.MANIFEST_PATH.read_text(encoding="utf-8"))
+        empty = {
+            "schema": manifest["schema"],
+            "release": manifest["release"],
+            "source": manifest["source"],
+            "inputs": [],
+            "counts": manifest["counts"],
+            "sections": manifest["sections"],
+            "figures": manifest["figures"],
+            "formats": manifest["formats"],
+            "artifacts": [],
+        }
+        errors = manuscript.validate_manifest_document(empty, require_rendered=True)
+        self.assertTrue(any("missing paths" in error for error in errors))
+
+        malformed = json.loads(json.dumps(manifest))
+        malformed["inputs"] = [{}]
+        errors = manuscript.validate_manifest_document(malformed, require_rendered=True)
+        self.assertTrue(any("inputs[1].path" in error for error in errors))
+
+        unsafe = json.loads(json.dumps(manifest))
+        unsafe["inputs"][0]["path"] = "../outside"
+        errors = manuscript.validate_manifest_document(unsafe, require_rendered=True)
+        self.assertTrue(any("must stay within the repository" in error for error in errors))
+
+    def test_manifest_counts_and_figure_input_provenance_are_checked(self) -> None:
+        manifest = json.loads(manuscript.MANIFEST_PATH.read_text(encoding="utf-8"))
+        manifest["counts"]["terms"] += 1
+        errors = manuscript.validate_manifest_document(manifest, require_rendered=True)
+        self.assertTrue(any("counts do not match ontology" in error for error in errors))
+        registry = json.loads(manuscript.REGISTRY_PATH.read_text(encoding="utf-8"))
+        self.assertTrue(all(manuscript.HASH_PATTERN.fullmatch(entry["input_sha256"]) for entry in registry))
+
     def test_rendered_formats_are_nonempty_and_well_formed(self) -> None:
         pdf = manuscript.OUTPUT / "pdf" / "active_inference_ontology.pdf"
         html = manuscript.OUTPUT / "html" / "active_inference_ontology.html"

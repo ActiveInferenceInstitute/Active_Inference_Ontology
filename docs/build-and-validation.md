@@ -62,6 +62,8 @@ ordered sections, generated variables, labeled equations, a figure registry, a c
 ledger, and a validated bibliography. `scripts/manuscript.py` derives all reported
 metrics from the ontology release, renders four formats with Pandoc and
 `pandoc-crossref`, normalizes publication identifiers for reproducible bytes, and
-records output hashes in `docs/manuscript/artifact-manifest.json`. Install
+records output hashes in `docs/manuscript/artifact-manifest.json`. The manuscript
+manifest validates its complete input/output closure, paths, hashes, byte counts,
+derived counts, and figure-input digests. Install
 `requirements-manuscript.txt` plus Pandoc, `pandoc-crossref`, XeLaTeX, and qpdf for
 the complete local rendering gate.

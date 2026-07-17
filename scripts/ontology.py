@@ -96,7 +96,12 @@ def safe_relative_path(value: Any, label: str) -> Path:
     path = Path(value)
     if path.is_absolute() or ".." in path.parts:
         raise OntologyError(f"{label} must stay within the repository: {value!r}")
-    return ROOT / path
+    resolved = (ROOT / path).resolve()
+    try:
+        resolved.relative_to(ROOT.resolve())
+    except ValueError as exc:
+        raise OntologyError(f"{label} must stay within the repository: {value!r}") from exc
+    return resolved
 
 
 def load_config(path: Path = DEFAULT_CONFIG) -> dict[str, Any]:
@@ -788,7 +793,13 @@ def validate_manifest(
             if relative in artifact_paths:
                 errors.append(f"{prefix}: duplicate artifact path {relative}")
             artifact_paths.add(relative)
-            artifact_path = base / relative if base is not None else None
+            artifact_path = (base / relative).resolve() if base is not None else None
+            if artifact_path is not None and base is not None:
+                try:
+                    artifact_path.relative_to(base.resolve())
+                except ValueError:
+                    errors.append(f"{prefix}: artifact path escapes release directory: {relative}")
+                    continue
             if artifact_path is None or not artifact_path.is_file():
                 errors.append(f"{prefix}: missing artifact {relative}")
                 continue

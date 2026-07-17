@@ -227,6 +227,21 @@ class OntologyPipelineTests(unittest.TestCase):
             errors = ontology.validate_manifest(path, self.config)
         self.assertTrue(any("must stay within the repository" in error for error in errors))
 
+    def test_manifest_symlink_escape_is_rejected(self) -> None:
+        original_root = ontology.ROOT
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory) / "repo"
+            outside = Path(directory) / "outside"
+            root.mkdir()
+            outside.mkdir()
+            (root / "link").symlink_to(outside, target_is_directory=True)
+            ontology.ROOT = root
+            try:
+                with self.assertRaises(ontology.OntologyError):
+                    ontology.safe_relative_path("link", "manifest.path")
+            finally:
+                ontology.ROOT = original_root
+
     def test_audit_csv_reports_duplicates_without_importing(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             csv_path = Path(directory) / "audit.csv"
