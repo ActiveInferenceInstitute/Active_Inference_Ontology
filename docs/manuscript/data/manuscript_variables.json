@@ -1,0 +1,145 @@
+{
+  "FIGURE_ROOT": "../figures",
+  "LIST_COUNTS": "Core=64, Entailed=73, Supplement=292",
+  "MISSING_CONNECTIONS": 389,
+  "MISSING_CORRECT_EXAMPLE": 359,
+  "MISSING_INCORRECT_EXAMPLE": 359,
+  "MISSING_PRIMARY_DEFINITION": 339,
+  "MISSING_TAG": 355,
+  "RELATION_COUNT": 238,
+  "RELATION_COUNTS": "mentions=238",
+  "RELEASE_DATE": "2023-05-25",
+  "RELEASE_LABEL": "May 25, 2023",
+  "RELEASE_VERSION": "v5",
+  "SOURCE_SHA256": "82fc5b03b3110e9dd9f74049d7ea0e578e05541a3cdeb0c6c24eaa0f99a9be0f",
+  "STATUS_COUNTS": "published=429",
+  "TABLE_ARTIFACTS": "| Kind | Path | SHA-256 prefix |\n|---|---|---|\n| source | `ontology.source.json` | `82fc5b03b311…` |\n| spreadsheet-export | `Ontology_v5_May_25_2023.csv` | `f6d3648f7961…` |\n| export | `ontology.json` | `a2c8371264e9…` |\n| site | `site/index.html` | `0256e585a904…` |\n| schema | `schemas/source-v2.json` | `6c6bf6235c49…` |\n| schema | `schemas/export-v2.json` | `f6591a1a5c9c…` |\n| schema | `schemas/manifest-v2.json` | `5797225849a5…` |\n\n: Current-release artifact closure. {#tbl:artifacts}\n",
+  "TABLE_COMPLETENESS": "| Field | Present | Missing | Coverage |\n|---|---:|---:|---:|\n| Tag | 74 | 355 | 17.2% |\n| Primary definition | 90 | 339 | 21.0% |\n| Correct example | 70 | 359 | 16.3% |\n| Incorrect example | 70 | 359 | 16.3% |\n| Connection text | 40 | 389 | 9.3% |\n\n: Field coverage in the source record model. {#tbl:completeness}\n",
+  "TABLE_PROFILE": "| Measure | Value |\n|---|---:|\n| Terms | 429 |\n| Explicit relations | 238 |\n| Distinct tags | 8 |\n| Core terms | 64 |\n| Entailed terms | 73 |\n| Supplement terms | 292 |\n| Published terms | 429 |\n\n: Profile of the current ontology release. {#tbl:profile}\n",
+  "TABLE_RELATIONS": "| Relation type | Edges |\n|---|---:|\n| mentions | 238 |\n\n: Explicit relation types in the current graph. {#tbl:relations}\n",
+  "TABLE_RELEASES": "| Release | Label | Date | State |\n|---|---|---|---|\n| v1 | Terms list candidate | not recorded | archived |\n| v2 | T2.D1.L1.E1 | not recorded | archived |\n| v3 | Version 3 | not recorded | archived |\n| v4 | 12-12-2022 snapshot | 2022-12-12 | archived |\n| v5 | May 25, 2023 | 2023-05-25 | current |\n\n: Release lineage recorded by the manifest. {#tbl:releases}\n",
+  "TAG_COUNT": 8,
+  "TERM_COUNT": 429,
+  "counts": {
+    "edges": 238,
+    "relations": 238,
+    "tags": 8,
+    "terms": 429
+  },
+  "currentRelease": {
+    "artifacts": [
+      {
+        "kind": "source",
+        "path": "ontology.source.json",
+        "sha256": "82fc5b03b3110e9dd9f74049d7ea0e578e05541a3cdeb0c6c24eaa0f99a9be0f"
+      },
+      {
+        "kind": "spreadsheet-export",
+        "path": "Ontology_v5_May_25_2023.csv",
+        "sha256": "f6d3648f796113059b9e81352d5005e45fd581162468300e86a0401fcb60b6b1"
+      },
+      {
+        "kind": "export",
+        "path": "ontology.json",
+        "sha256": "a2c8371264e9e3d83319268e93b2a8047a8ba5576b1a22ea26716b87828cb706"
+      },
+      {
+        "kind": "site",
+        "path": "site/index.html",
+        "sha256": "0256e585a90402924ef7683b3dd29745f6058dcab93ec06cd8a8c66916a6844a"
+      },
+      {
+        "kind": "schema",
+        "path": "schemas/source-v2.json",
+        "sha256": "6c6bf6235c491f9da4587056dd05540f04e2667142f8615c8131fa6f8ca3d0b1"
+      },
+      {
+        "kind": "schema",
+        "path": "schemas/export-v2.json",
+        "sha256": "f6591a1a5c9c41181a5c6aa65cc50e15040cc79421d744d7516506afda5407ba"
+      },
+      {
+        "kind": "schema",
+        "path": "schemas/manifest-v2.json",
+        "sha256": "5797225849a5defc8baa9274004789c204789b2690bb7f04e9a4dc930488762d"
+      }
+    ],
+    "date": "2023-05-25",
+    "label": "May 25, 2023",
+    "version": "v5"
+  },
+  "historicalReleases": [
+    {
+      "date": null,
+      "label": "Terms list candidate",
+      "status": "archived",
+      "version": "v1"
+    },
+    {
+      "date": null,
+      "label": "T2.D1.L1.E1",
+      "status": "archived",
+      "version": "v2"
+    },
+    {
+      "date": null,
+      "label": "Version 3",
+      "status": "archived",
+      "version": "v3"
+    },
+    {
+      "date": "2022-12-12",
+      "label": "12-12-2022 snapshot",
+      "status": "archived",
+      "version": "v4"
+    },
+    {
+      "date": "2023-05-25",
+      "label": "May 25, 2023",
+      "status": "current",
+      "version": "v5"
+    }
+  ],
+  "lists": {
+    "Core": 64,
+    "Entailed": 73,
+    "Supplement": 292
+  },
+  "missing": {
+    "connectionsText": 389,
+    "correctExample": 359,
+    "incorrectExample": 359,
+    "primaryDefinition": 339,
+    "tag": 355
+  },
+  "relations": {
+    "mentions": 238
+  },
+  "release": {
+    "date": "2023-05-25",
+    "label": "May 25, 2023",
+    "version": "v5"
+  },
+  "source": {
+    "path": "ontology.source.json",
+    "schema": "active-inference-ontology/source/v2",
+    "sha256": "82fc5b03b3110e9dd9f74049d7ea0e578e05541a3cdeb0c6c24eaa0f99a9be0f"
+  },
+  "statuses": {
+    "deprecated": 0,
+    "draft": 0,
+    "merged": 0,
+    "published": 429,
+    "retired": 0
+  },
+  "tags": {
+    "Action": 8,
+    "Agents in the Niche": 13,
+    "Bayesian Statistics": 21,
+    "Free Energy": 10,
+    "Information": 2,
+    "Markov Partitioning": 9,
+    "Perception": 7,
+    "Systems": 4
+  }
+}

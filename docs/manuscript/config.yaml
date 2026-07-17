@@ -1,0 +1,11 @@
+title: "The Active Inference Ontology: A Reproducible Publication Pipeline and Schema v2"
+subtitle: "Ontology data descriptor, release contract, and executable provenance"
+author:
+  - "Active Inference Institute"
+date: "2026-07-17"
+lang: "en-US"
+abstract: "A reproducible data and software pipeline for publishing the Active Inference Ontology."
+link-citations: true
+toc: true
+number-sections: true
+colorlinks: true

@@ -1,69 +1,49 @@
 # Source Data Contract
 
-The canonical ontology source is the latest `Ontology_v*.csv` file in the
-repository root. As of this repository state, that file is
-`Ontology_v5_May_25_2023.csv`.
+The canonical source is `ontology.source.json`, schema
+`active-inference-ontology/source/v2`. Paths and policy are configured in
+[`../ontology.toml`](../ontology.toml).
 
-## Required Columns
+## Release
 
-| Column | Required | Meaning |
-| --- | --- | --- |
-| `List` | Yes | Release or working-list grouping, such as `Core`. |
-| `Tag` | Yes | High-level conceptual area for the term. |
-| `Term` | Yes | Human-readable concept label and primary identity key. |
-| `Proposed Definition 1` | Recommended | Broad or primary definition. |
-| `Proposed Definition 2` | Optional | Narrow, technical, or alternate definition. |
-| `Correct Examples` | Recommended | Examples that illustrate valid use of the term. |
-| `Incorrect Examples` | Recommended | Counter-examples or misuse cases. |
-| `Connections` | Recommended | Free-text references to related ontology terms. |
+`release.version`, `release.label`, and ISO `release.date` identify the content
+release. The release version must match `ontology.toml` and `releases.json`.
 
-## Tag Set
+## Term fields
 
-The current export contains eight tags:
+Each `terms[]` record contains:
 
-- `Action`
-- `Agents in the Niche`
-- `Bayesian Statistics`
-- `Free Energy`
-- `Information`
-- `Markov Partitioning`
-- `Perception`
-- `Systems`
+| Field | Meaning |
+| --- | --- |
+| `id` | Explicit stable opaque identifier matching the `term-...` syntax. It is assigned during initial migration and does not change when a display label is renamed. |
+| `term` | Canonical display label. |
+| `aliases` | Alternate labels, unique across all labels and aliases. |
+| `status` | `published`, `draft`, `deprecated`, `merged`, or `retired`. |
+| `list` | `Core`, `Entailed`, or `Supplement`. |
+| `tag` | One of the configured tags, or `null` where historical material is untagged. |
+| `definitions` | `primary` and `secondary` text values. |
+| `examples` | `correct` and `incorrect` text values. |
+| `connectionsText` | Preserved free-text connection notes, or `null`. |
+| `relations` | Explicit target IDs and relation types. |
+| `provenance` | Original source filename and row for the v5 migration. |
 
-New tags should be introduced deliberately because each tag becomes a graph node
-type in the JSON export and may be used by downstream filters.
+Core terms require a tag, primary definition, and correct example. Entailed and
+Supplement terms may retain missing historical fields; the report counts those
+gaps rather than silently presenting the source as complete.
 
-## Row Rules
+## Identity and relation policy
 
-- Every row must have a non-empty `Term`.
-- Terms are treated as unique case-insensitively by the JSON builder.
-- Duplicate terms after case normalization are skipped after the first
-  occurrence.
-- Multi-line CSV fields are allowed, but downstream export normalizes repeated
-  whitespace to single spaces.
-- Keep examples and counter-examples in plain prose unless a downstream parser
-  contract is added.
+Display labels and IDs are separate fields. A label rename is valid when the ID is
+retained; aliases can preserve a previous label when that is useful for discovery.
+The diff command reports both ordinary and case-only label changes by ID.
 
-## Term Identity
+The migration creates only `mentions` relations when a canonical label appears in
+`connectionsText`. Stronger types—`related`, `inverse`, `prerequisite`, `part_of`,
+`broader`, `narrower`, `contrasts`, and `causes`—require explicit curation.
+Every target must resolve to an existing stable ID and self-relations are rejected.
 
-`scripts/build_json.py` derives each term id from the normalized term label:
+## Spreadsheet export
 
-```text
-term-<lowercase-term-with-non-alphanumeric-runs-replaced-by-hyphens>
-```
-
-For example, `Bayesian Inference` becomes `term-bayesian-inference`.
-
-Renaming a term changes its derived id and can break downstream links. Prefer
-adding an alias or migration note before renaming terms that external tools may
-already consume.
-
-## Connections Field
-
-The `Connections` field is free text. During JSON export, the builder searches
-that field for exact case-insensitive term-name mentions and creates graph edges
-between the source term and each referenced term.
-
-This means connection text should use the canonical term spelling whenever
-possible. Abbreviations, aliases, or partial names are not guaranteed to become
-edges.
+`Ontology_v5_May_25_2023.csv` retains the original eight columns for spreadsheet
+users. It is generated from the structured source with normalized whitespace and
+must be refreshed with `python3 scripts/ontology.py export-csv`.

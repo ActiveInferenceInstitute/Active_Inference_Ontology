@@ -17,4 +17,5 @@ InstituteOS sidecar for this repository (the reference exemplar). Read [`README.
 python -m instituteos.platform.aii_sidecar.validate <repo>          # OK / problems
 python -m instituteos.platform.aii_sidecar.validate <repo> --completeness   # + score & gaps
 ```
-This sidecar meets the 100% completeness standard (`python -m instituteos.platform.aii_sidecar doctor <repo>`).
+The InstituteOS doctor checks sidecar structure; the repository's ontology content and
+generated artifacts are checked independently with `python3 scripts/ontology.py validate --strict`.

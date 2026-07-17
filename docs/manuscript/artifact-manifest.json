@@ -1,0 +1,152 @@
+{
+  "artifacts": [
+    {
+      "bytes": 5202,
+      "path": "docs/manuscript/data/manuscript_variables.json",
+      "sha256": "44844944f36e9dcd272ff164fbdb51761f0e20b1b6e2c7bb851d9dfc4b6e16fc"
+    },
+    {
+      "bytes": 1941,
+      "path": "docs/manuscript/output/figures/figure_registry.json",
+      "sha256": "79aa22fa4c32b34f3958548652c24bf7aad1f0cde7156fc416fb87c459ed2bcb"
+    },
+    {
+      "bytes": 36793,
+      "path": "docs/manuscript/output/figures/pipeline_provenance.png",
+      "sha256": "7ca6916da5031a3974c503f0d68c20c302d22a321e3dc1f0a8de8f5297732f42"
+    },
+    {
+      "bytes": 23376,
+      "path": "docs/manuscript/output/figures/term_composition.png",
+      "sha256": "c0bf987688c657239af25c54572b8f76340e0ff484af1f1bb4513bfd5618659f"
+    },
+    {
+      "bytes": 22074,
+      "path": "docs/manuscript/output/figures/relation_structure.png",
+      "sha256": "d0252dbfcc6a0835cfb74dd36beb5cd9c029b55b315614d0208814687a634cae"
+    },
+    {
+      "bytes": 38203,
+      "path": "docs/manuscript/output/figures/metadata_completeness.png",
+      "sha256": "937f7e2a9c23c41cddb2776963e1ff526890849e6e6c1fdfb55bd5411eaf15fc"
+    },
+    {
+      "bytes": 35165,
+      "path": "docs/manuscript/output/figures/release_history.png",
+      "sha256": "e4ea33d8f1cfd473be11745373fe190121c7b00a503ac20157aa85592ec9e5fe"
+    },
+    {
+      "bytes": 22497,
+      "path": "docs/manuscript/output/figures/validation_integrity.png",
+      "sha256": "a9ec21122135372ecc30b492169d1c34ea2048375827e84549f10304efb43812"
+    },
+    {
+      "bytes": 20550,
+      "path": "docs/manuscript/output/manuscript/combined.md",
+      "sha256": "805ae26f8f8808bb015dde6fb382109326100a418ae17ab29070c6a4e402566d"
+    },
+    {
+      "bytes": 1429,
+      "path": "docs/manuscript/output/manuscript/00_abstract.md",
+      "sha256": "d1256824ef3a9f9b77eca7aaf2a6f9b891b3a880bd51a800fa6b9c164dd22b03"
+    },
+    {
+      "bytes": 2494,
+      "path": "docs/manuscript/output/manuscript/01_introduction.md",
+      "sha256": "44fc03050ff1699fc3ab3cb776c5f3ba9a403810ccde9eb1d1090eca15d85def"
+    },
+    {
+      "bytes": 2797,
+      "path": "docs/manuscript/output/manuscript/02_related_work.md",
+      "sha256": "822974f4e40da955444040a1d644d3129db8c18a1dbbc9c0c1da89e7e0dea501"
+    },
+    {
+      "bytes": 3830,
+      "path": "docs/manuscript/output/manuscript/03_methods.md",
+      "sha256": "803d40f77646a7fb5986611dac1ca1fda978cc5ceea7549e90600763c149fb20"
+    },
+    {
+      "bytes": 3844,
+      "path": "docs/manuscript/output/manuscript/04_results.md",
+      "sha256": "b6cbbf0b91fdbbd461e4cdf0f5ec47ef8cd3c312b3b5084eee86ba19283cef3a"
+    },
+    {
+      "bytes": 2251,
+      "path": "docs/manuscript/output/manuscript/05_discussion.md",
+      "sha256": "7edcab701034a61f1254ce5aa98b3c1657dd8a47f98d0b21a3c2c4e7a15c9688"
+    },
+    {
+      "bytes": 1239,
+      "path": "docs/manuscript/output/manuscript/06_conclusion.md",
+      "sha256": "a17eb32e88a547522f55485249eac5d2433bcf99e7d222fe467bfd89313254cd"
+    },
+    {
+      "bytes": 2283,
+      "path": "docs/manuscript/output/manuscript/07_reproducibility.md",
+      "sha256": "86d0f55d900cfb084065320b45dc39c5b97eedf0cb0b4bfb3e06ad578ff0ffc0"
+    },
+    {
+      "bytes": 367,
+      "path": "docs/manuscript/output/manuscript/99_references.md",
+      "sha256": "bf4b90a37ba5ada468ff9d52e08f3fe910baf23f71cc30c11eb984e0e981d507"
+    },
+    {
+      "bytes": 292875,
+      "path": "docs/manuscript/output/pdf/active_inference_ontology.pdf",
+      "sha256": "bd52b295398a73ea83816d4ccc516373c19f690182b19cff99cf5c5d2fcc59c5"
+    },
+    {
+      "bytes": 272470,
+      "path": "docs/manuscript/output/html/active_inference_ontology.html",
+      "sha256": "8cd2d04b9c3d5289c5be481b5c07c2bd9d48bbd472e4dee4e0abbb3682d07cba"
+    },
+    {
+      "bytes": 170631,
+      "path": "docs/manuscript/output/docx/active_inference_ontology.docx",
+      "sha256": "dbca57d8b03ca1b4c997f01bf0bcd8477039235e64fd0af2a54e96a86fafb932"
+    },
+    {
+      "bytes": 167379,
+      "path": "docs/manuscript/output/epub/active_inference_ontology.epub",
+      "sha256": "00741504ee9b59da81eb9fd7c3651550325721b3de5d7ac469f5cf23491a1ce4"
+    }
+  ],
+  "counts": {
+    "edges": 238,
+    "relations": 238,
+    "tags": 8,
+    "terms": 429
+  },
+  "figures": 6,
+  "formats": [
+    "pdf",
+    "html",
+    "docx",
+    "epub"
+  ],
+  "inputs": [
+    {
+      "path": "ontology.json",
+      "sha256": "a2c8371264e9e3d83319268e93b2a8047a8ba5576b1a22ea26716b87828cb706"
+    },
+    {
+      "path": "releases.json",
+      "sha256": "93db938cff15ddec4a35533e27e6ca541e73cf5816a06788207b88b8481be489"
+    },
+    {
+      "path": "docs/manuscript/references.bib",
+      "sha256": "77952862c68aaeb88486334fbe88fd54fc1bf63b1169abe927146c92c7b1f21a"
+    }
+  ],
+  "release": {
+    "date": "2023-05-25",
+    "label": "May 25, 2023",
+    "version": "v5"
+  },
+  "schema": "active-inference-ontology/manuscript/v1",
+  "sections": 9,
+  "source": {
+    "path": "ontology.source.json",
+    "sha256": "82fc5b03b3110e9dd9f74049d7ea0e578e05541a3cdeb0c6c24eaa0f99a9be0f"
+  }
+}

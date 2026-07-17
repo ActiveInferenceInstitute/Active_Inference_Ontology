@@ -1,8 +1,18 @@
 # Modular fragment — key products this repo provides.
 artifacts:
-  - {path: Ontology_v5_May_25_2023.csv, kind: source,  description: Canonical source — one row per term.}
-  - {path: ontology.json,               kind: export,  description: Machine-readable export generated from the CSV.}
-  - {path: releases.json,               kind: dataset, description: Release manifest (current + archived).}
-  - {path: scripts/build_json.py,       kind: code,    description: Regenerates ontology.json from the latest CSV.}
-  - {path: SUMO,                        kind: dataset, description: Suggested Upper Merged Ontology mapping material.}
-  - {path: LICENSE,                     kind: doc,     description: CC-BY-4.0 license.}
+  - {path: ontology.source.json,         kind: source,  description: Canonical structured ontology source.}
+  - {path: ontology.toml,                kind: doc,     description: Explicit source, release, and validation configuration.}
+  - {path: Ontology_v5_May_25_2023.csv, kind: export,  description: Deterministic spreadsheet export of the structured source.}
+  - {path: ontology.json,                kind: export,  description: Version 2 machine-readable ontology export.}
+  - {path: schemas,                      kind: doc,     description: Machine-readable source, export, and release-manifest schemas.}
+  - {path: requirements-ci.txt,          kind: doc,     description: Pinned validation dependencies for strict CI checks.}
+  - {path: requirements-manuscript.txt,  kind: doc,     description: Pinned manuscript-generation dependencies.}
+  - {path: scripts/ontology.py,         kind: code,    description: Build, validation, diff, export, and site CLI.}
+  - {path: scripts/manuscript.py,        kind: code,    description: Deterministic manuscript generation, validation, and rendering CLI.}
+  - {path: tests,                        kind: code,    description: Ontology and manuscript regression test suite.}
+  - {path: site,                         kind: export,  description: Dependency-free browsable ontology site.}
+  - {path: docs/manuscript,              kind: doc,     description: Template-compatible manuscript source, figures, and publication outputs.}
+  - {path: docs/manuscript/artifact-manifest.json, kind: dataset, description: Hashed manuscript artifact manifest.}
+  - {path: releases.json,                kind: dataset, description: Hashed release and archive manifest.}
+  - {path: SUMO,                         kind: dataset, description: Suggested Upper Merged Ontology mapping material.}
+  - {path: LICENSE,                      kind: doc,     description: CC-BY-4.0 license.}

@@ -1,0 +1,18 @@
+schema_version: 1
+project: active_inference_ontology
+source_directory: docs/manuscript
+generated_directory: docs/manuscript/output
+required_inputs:
+  - ontology.source.json
+  - ontology.json
+  - releases.json
+required_outputs:
+  - docs/manuscript/output/manuscript/combined.md
+  - docs/manuscript/output/pdf/active_inference_ontology.pdf
+  - docs/manuscript/output/html/active_inference_ontology.html
+  - docs/manuscript/output/docx/active_inference_ontology.docx
+  - docs/manuscript/output/epub/active_inference_ontology.epub
+validation:
+  source_is_canonical: true
+  generated_outputs_are_hashed: true
+  rendered_outputs_are_checked: true

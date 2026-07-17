@@ -11,18 +11,24 @@ tag. The sidecar declares this with `ecosystem.relations` (`referenced-by` the J
 
 ## Products InstituteOS consumes
 
-- `ontology.json` — the machine-readable export (term → tag, definitions, connections).
-- `releases.json` — release manifest (current `v5`; archived versions under `Archived versions/`).
-- `Ontology_v5_May_25_2023.csv` — the human-curated source of truth.
+- `ontology.source.json` — the structured source with stable ids and explicit metadata.
+- `ontology.json` — the version 2 machine-readable export.
+- `releases.json` — the hashed release manifest, including archived versions.
+- `site/index.html` — the generated dependency-free browser surface.
+- `docs/manuscript/` — the template-compatible manuscript source and generated publication artifacts.
 
-These are declared as `artifacts` in `config.yaml`; the validator confirms each path exists.
+These are declared as artifacts in the modular sidecar; the sidecar validator confirms
+the integration paths exist. The ontology CLI separately validates content and generated
+artifact freshness.
 
 ## Completeness
 
-This sidecar meets the **100% completeness standard** (`doctor` → `standard met: True`).
-It is **fully modular**: the core `config.yaml` deep-merges `config.d/ecosystem.yaml`,
-`config.d/artifacts.yaml`, and `config.d/tasks.yaml`. Licensed `CC-BY-4.0` (auto-detected
-from `LICENSE`).
+The sidecar is modular: the core `config.yaml` deep-merges `config.d/ecosystem.yaml`,
+`config.d/artifacts.yaml`, and `config.d/tasks.yaml`. Its structural completeness is
+checked by InstituteOS; ontology content and generated-artifact freshness are checked by
+`python3 scripts/ontology.py validate --strict`; manuscript structure and rendered-output
+integrity are checked by `python3 scripts/manuscript.py validate --strict`. Licensed
+`CC-BY-4.0`.
 
 ## Maintaining this sidecar
 

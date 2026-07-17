@@ -1,0 +1,13 @@
+domain: active inference ontology engineering
+audiences:
+  - active inference researchers
+  - ontology and knowledge representation researchers
+  - scientific software and data reviewers
+scope:
+  - vocabulary publication
+  - source and export integrity
+  - reproducible release generation
+excluded_claims:
+  - universal conceptual completeness
+  - automatic semantic interpretation of connection prose
+  - formal axiomatization of every term

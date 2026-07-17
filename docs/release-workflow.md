@@ -1,95 +1,57 @@
 # Release Workflow
 
-Use this workflow when publishing a new ontology source snapshot.
+The content release remains v5 until domain curators approve new ontology content.
+Schema and artifact changes are released through the versioned v2 contracts.
 
-## 1. Prepare the Source
+## Prepare and validate
 
-1. Add the new root-level CSV using the naming pattern
-   `Ontology_v<version>_<date-or-label>.csv`.
-2. Keep the previous release files in place.
-3. Update rows with canonical term names in `Connections` where possible.
-4. Run lint before generating:
+1. Edit `ontology.source.json` using stable IDs and explicit metadata.
+2. Run the strict source validator:
 
 ```bash
-python3 scripts/build_json.py --lint --strict
+python3 -m pip install -r requirements-ci.txt
+python3 scripts/ontology.py validate --strict
+python3 scripts/ontology.py schema-check
 ```
 
-## 2. Rebuild the Export
+3. Regenerate all checked-in artifacts:
 
 ```bash
-python3 scripts/build_json.py
-python3 scripts/build_json.py --check
+python3 scripts/ontology.py build
+python3 scripts/ontology.py export-csv
+python3 scripts/ontology.py site
 ```
 
-The script reads the newest `Ontology_v*.csv`, so confirm the intended file is
-selected in the `source` field of `ontology.json`.
-
-## 3. Review the Validation Report
+4. Review the quality report and source diff:
 
 ```bash
-python3 scripts/build_json.py --report > ontology-validation-report.json
+python3 scripts/ontology.py report > /tmp/ontology-validation-report.json
+python3 scripts/ontology.py diff OLD_SOURCE.json ontology.source.json > /tmp/ontology-release-diff.json
 ```
 
-Review:
+## Update release metadata
 
-- CSV lint errors and warnings;
-- term, tag, and edge counts;
-- connection rows that did not resolve to ontology term ids;
-- suggested canonical-term matches for unresolved connection text.
-
-The validation report is a review artifact. It does not need to be committed
-unless a release process explicitly chooses to retain it.
-
-## 4. Update Release Metadata
-
-Update `releases.json` with:
-
-- version;
-- label;
-- date when known;
-- status;
-- source files;
-- generated files;
-- counts for the current release;
-- notes about source provenance and known limitations.
-
-## 5. Compare Release Changes
-
-Run a release diff against the prior CSV snapshot:
+Update `ontology.toml` when the content release changes. Then run:
 
 ```bash
-python3 scripts/diff_releases.py OLD_RELEASE.csv NEW_RELEASE.csv
-python3 scripts/diff_releases.py OLD_RELEASE.csv NEW_RELEASE.csv --json > /tmp/ontology-release-diff.json
+python3 scripts/ontology.py sync-manifest
+python3 scripts/ontology.py validate --strict
 ```
 
-Review added, removed, changed, and likely renamed terms before publishing.
+`sync-manifest` records SHA-256 hashes for every current and historical artifact,
+including the published source, export, and manifest schemas. The manifest also
+records schema identifiers and a validation summary for each release.
+Do not edit historical files; add a new release entry and archive folder instead.
 
-## 6. Archive the Prior Snapshot
-
-Create a folder under `Archived versions/` using this pattern:
-
-```text
-Archived versions/v<version> (YYYY-MM-DD snapshot)/
-```
-
-Add a `README.md` in the archive folder that records source date, source files,
-and notable differences from the prior version.
-
-## 7. Final Checks
-
-Run:
+## Final sign-off
 
 ```bash
-python3 scripts/build_json.py --lint --strict
-python3 scripts/build_json.py --check
-python3 scripts/build_json.py --report > /tmp/ontology-validation-report.json
-python3 scripts/diff_releases.py OLD_RELEASE.csv NEW_RELEASE.csv --json > /tmp/ontology-release-diff.json
+python3 -m unittest discover -s tests -v
+python3 scripts/ontology.py build --check
+python3 scripts/ontology.py export-csv --check
+python3 scripts/ontology.py site --check
+python3 scripts/ontology.py validate --strict
 ```
 
-Then review diffs for:
-
-- root CSV changes;
-- regenerated `ontology.json`;
-- `releases.json`;
-- archive folder additions;
-- documentation changes.
+Review the source, generated artifacts, manifest, archive additions, report, and
+release diff before tagging the content release.

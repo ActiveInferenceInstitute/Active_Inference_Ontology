@@ -47,8 +47,9 @@ load time. Here, `config.d/tasks.yaml` holds the task definitions, keeping conce
 python -m instituteos.platform.aii_sidecar.run <repo> --list
 python -m instituteos.platform.aii_sidecar.run <repo> validate
 ```
-`validate` · `build` · `lint` · `report` map to this repo's `scripts/build_json.py`. Tasks
-execute repo-declared commands — run them only for trusted repos.
+`validate` · `build` · `lint` · `report` · `site` map to `scripts/ontology.py`; the
+`manuscript-*` tasks map to `scripts/manuscript.py`. Tasks execute repo-declared
+commands — run them only for trusted repos.
 
-Canonical schema/source: `instituteos.platform.aii_sidecar` in
+Canonical sidecar schema/source: `instituteos.platform.aii_sidecar` in
 [InstituteOS](https://github.com/ActiveInferenceInstitute/InstituteOS).

@@ -7,7 +7,7 @@ schema: aii-sidecar/v1
 
 meta:
   sidecar_version: 1.1.0
-  updated: 2026-06-30
+  updated: 2026-07-17
 
 repo:
   name: Active_Inference_Ontology
@@ -39,7 +39,7 @@ instituteos:
   registries: []
   tags: [ontology, vocabulary, active-inference, free-energy-principle, controlled-vocabulary]
 
-capabilities: [csv-source, json-export, release-manifest, sumo-mapping]
+capabilities: [structured-source, csv-export, json-export, typed-relations, release-integrity, static-site, manuscript-publication, sumo-mapping]
 
 integration:
   analytics: true

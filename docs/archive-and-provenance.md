@@ -4,7 +4,8 @@ The repository keeps previous ontology releases under `Archived versions/`.
 Those files are source evidence and should not be rewritten casually.
 
 The root `releases.json` file provides machine-readable release metadata across
-the current release and archived snapshots.
+the current release and archived snapshots, including SHA-256 hashes for every
+listed artifact.
 
 ## Current Archive Layout
 
@@ -27,7 +28,8 @@ folder.
 - Document any format conversion used to create a new archive snapshot.
 - Do not manually change `ontology.json` to represent archived data; create a
   separate export if archived JSON is needed.
-- Keep `releases.json` synchronized when adding a new release snapshot.
+- Keep `releases.json` synchronized with `python3 scripts/ontology.py sync-manifest`
+  when adding a new release snapshot.
 
 ## Recommended New Release Snapshot
 
@@ -54,8 +56,9 @@ Include:
 - status;
 - date when known;
 - path;
-- source or generated files;
-- counts for the current JSON-backed release;
+- source, generated, and site artifacts with SHA-256 hashes;
+- source/export schema identifiers and validation summaries for each release;
+- source, export, and release-manifest schema artifacts for the current release;
 - provenance notes.
 
 Archive folders also carry local `README.md` files for human review.

@@ -12,8 +12,8 @@ Upper Merged Ontology environment.
 
 ## Scope
 
-The SUMO material is supporting infrastructure. It is not currently consumed by
-`scripts/build_json.py`, and it does not define the canonical term list used for
+The SUMO material is supporting infrastructure. It is not consumed by
+`scripts/ontology.py`, and it does not define the canonical term list used for
 `ontology.json`.
 
 Use the SUMO folder for:

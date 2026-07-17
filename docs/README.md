@@ -1,37 +1,29 @@
 # Active Inference Ontology Documentation
 
-This folder documents the source data, generated export, archive material, and
-operational workflows for the Active Inference Ontology repository.
-
-## Documentation Map
+This documentation describes the v2 source contract, generated exports, release
+integrity checks, curation process, historical archives, and integration surfaces.
 
 | Document | Use it for |
 | --- | --- |
-| [Source Data Contract](source-data-contract.md) | CSV column meanings, row requirements, and term identity rules. |
-| [JSON Export Contract](json-export-contract.md) | Shape of `ontology.json`, term records, graph nodes, and graph edges. |
-| [Build and Validation](build-and-validation.md) | How to regenerate and check the machine-readable export. |
-| [Curation Workflow](curation-workflow.md) | Review steps for adding, editing, or retiring ontology terms. |
-| [Curation Governance](curation-governance.md) | Roles, approval criteria, and release sign-off expectations. |
-| [Archive and Provenance](archive-and-provenance.md) | How historical releases are stored and how to preserve lineage. |
-| [SUMO Integration](sumo-integration.md) | Scope and handling notes for the Sigma/SUMO mapping material. |
-| [SUMO Mapping Contract](sumo-mapping-contract.md) | Durable mapping fields and review statuses for SUMO alignment. |
-| [Downstream Integration](downstream-integration.md) | Guidance for tools consuming the CSV, JSON, and derived graph. |
-| [Release Workflow](release-workflow.md) | Steps for publishing a new ontology CSV, JSON export, archive snapshot, and release manifest entry. |
-| [Version Diff](version-diff.md) | How to compare ontology CSV snapshots across releases. |
+| [Source Data Contract](source-data-contract.md) | Structured source fields and validation policy. |
+| [JSON Export Contract](json-export-contract.md) | Version 2 export and graph shape. |
+| [Migration v2](migration-v2.md) | Breaking changes and consumer migration. |
+| [Build and Validation](build-and-validation.md) | CLI commands and acceptance gates. |
+| [Curation Workflow](curation-workflow.md) | Editing source terms and relations. |
+| [Curation Governance](curation-governance.md) | Review roles and release sign-off. |
+| [Archive and Provenance](archive-and-provenance.md) | Immutable historical material and hashes. |
+| [SUMO Integration](sumo-integration.md) | SUMO support scope. |
+| [SUMO Mapping Contract](sumo-mapping-contract.md) | Mapping fields and review states. |
+| [Downstream Integration](downstream-integration.md) | Importing JSON, CSV, and schemas. |
+| [Release Workflow](release-workflow.md) | Publishing a content release. |
+| [Version Diff](version-diff.md) | Comparing structured source releases by stable ID. |
+| [Manuscript](manuscript/README.md) | Template-compatible manuscript source, generation, rendering, and integrity checks. |
 
-## Repository Surfaces
+The canonical source is [`../ontology.source.json`](../ontology.source.json). The
+CSV, JSON, and site are generated artifacts and are checked for freshness by
+`python3 ../scripts/ontology.py validate --strict`; the same gate validates the
+published source, export, and release-manifest schemas.
 
-| Path | Role |
-| --- | --- |
-| [`../Ontology_v5_May_25_2023.csv`](../Ontology_v5_May_25_2023.csv) | Canonical repository source for the current ontology release. |
-| [`../ontology.json`](../ontology.json) | Generated JSON export for tools and dashboards. |
-| [`../releases.json`](../releases.json) | Machine-readable release manifest for current and archived versions. |
-| [`../scripts/build_json.py`](../scripts/build_json.py) | Regenerates and checks `ontology.json`. |
-| [`../scripts/diff_releases.py`](../scripts/diff_releases.py) | Compares two ontology CSV releases. |
-| [`../Archived versions/`](../Archived%20versions/) | Versioned historical snapshots retained for auditability. |
-| [`../SUMO/`](../SUMO/) | Sigma/SUMO setup notes and mapping-support material. |
-| [`../SUMO/mapping-template.csv`](../SUMO/mapping-template.csv) | CSV template for reviewed SUMO mappings. |
-| [`../TODO.md`](../TODO.md) | Scoped backlog grouped into minor, medium, and major improvements. |
-
-The CSV remains the source of truth. The JSON export is derived and should be
-rebuilt with `python3 scripts/build_json.py` whenever the CSV changes.
+The publication manuscript is generated from the same source and manifest. Run
+`python3 ../scripts/manuscript.py render --format all` to create PDF, HTML, DOCX,
+and EPUB outputs, then run `python3 ../scripts/manuscript.py validate --strict`.

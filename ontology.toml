@@ -1,0 +1,24 @@
+schema_version = 2
+
+[paths]
+source = "ontology.source.json"
+export = "ontology.json"
+csv_export = "Ontology_v5_May_25_2023.csv"
+manifest = "releases.json"
+site = "site/index.html"
+source_schema = "schemas/source-v2.json"
+export_schema = "schemas/export-v2.json"
+manifest_schema = "schemas/manifest-v2.json"
+
+[release]
+version = "v5"
+label = "May 25, 2023"
+date = "2023-05-25"
+
+[validation]
+allowed_lists = ["Core", "Entailed", "Supplement"]
+allowed_tags = ["Action", "Agents in the Niche", "Bayesian Statistics", "Free Energy", "Information", "Markov Partitioning", "Perception", "Systems"]
+required_tag_lists = ["Core"]
+required_definition_lists = ["Core"]
+statuses = ["published", "draft", "deprecated", "merged", "retired"]
+relation_types = ["mentions", "related", "inverse", "prerequisite", "part_of", "broader", "narrower", "contrasts", "causes"]

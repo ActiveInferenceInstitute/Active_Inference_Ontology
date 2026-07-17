@@ -1,0 +1,76 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://activeinference.org/schemas/ontology-manifest-v2.json",
+  "title": "Active Inference Ontology release manifest v2",
+  "type": "object",
+  "required": ["schema", "description", "currentRelease", "releases"],
+  "additionalProperties": false,
+  "properties": {
+    "schema": {"const": "active-inference-ontology/releases/v2"},
+    "description": {"type": "string", "minLength": 1},
+    "currentRelease": {"type": "string", "pattern": "^v(0|[1-9][0-9]*)$"},
+    "releases": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/release"}
+    }
+  },
+  "$defs": {
+    "release": {
+      "type": "object",
+      "required": [
+        "version",
+        "label",
+        "date",
+        "notes",
+        "path",
+        "status",
+        "sourceSchema",
+        "exportSchema",
+        "validationSummary",
+        "artifacts"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "version": {"type": "string", "pattern": "^v(0|[1-9][0-9]*)$"},
+        "label": {"type": "string", "minLength": 1},
+        "date": {"type": ["string", "null"], "format": "date"},
+        "notes": {"type": "string", "minLength": 1},
+        "path": {"type": "string", "minLength": 1},
+        "status": {"enum": ["current", "archived"]},
+        "sourceSchema": {"type": ["string", "null"]},
+        "exportSchema": {"type": ["string", "null"]},
+        "termCount": {"type": "integer", "minimum": 0},
+        "tagCount": {"type": "integer", "minimum": 0},
+        "relationCount": {"type": "integer", "minimum": 0},
+        "validationSummary": {"$ref": "#/$defs/validationSummary"},
+        "artifacts": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"$ref": "#/$defs/artifact"}
+        }
+      }
+    },
+    "validationSummary": {
+      "type": "object",
+      "required": ["status", "termCount", "tagCount", "relationCount"],
+      "additionalProperties": false,
+      "properties": {
+        "status": {"enum": ["passed", "not-evaluated"]},
+        "termCount": {"type": ["integer", "null"], "minimum": 0},
+        "tagCount": {"type": ["integer", "null"], "minimum": 0},
+        "relationCount": {"type": ["integer", "null"], "minimum": 0}
+      }
+    },
+    "artifact": {
+      "type": "object",
+      "required": ["kind", "path", "sha256"],
+      "additionalProperties": false,
+      "properties": {
+        "kind": {"enum": ["source", "document", "package", "spreadsheet-export", "export", "site", "schema"]},
+        "path": {"type": "string", "minLength": 1},
+        "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+      }
+    }
+  }
+}

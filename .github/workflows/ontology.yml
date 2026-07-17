@@ -6,22 +6,64 @@ on:
     branches:
       - main
 
+permissions:
+  contents: read
+
 jobs:
   validate:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install pinned schema validator
+        run: python -m pip install --requirement requirements-ci.txt
+      - name: Install pinned manuscript dependencies
+        run: python -m pip install --requirement requirements-manuscript.txt
+      - name: Install pinned InstituteOS sidecar validator
+        run: >-
+          python -m pip install
+          "instituteos @ git+https://github.com/ActiveInferenceInstitute/InstituteOS.git@34a9d95938f523bd7cc0833f9e812867f2d7a1a2"
       - name: Show Python version
         run: python3 --version
-      - name: Lint ontology source
-        run: python3 scripts/build_json.py --lint --strict
+      - name: Validate ontology source and generated artifacts
+        run: python3 scripts/ontology.py validate --strict
+      - name: Validate published JSON Schemas
+        run: python3 scripts/ontology.py schema-check
       - name: Verify generated JSON
-        run: python3 scripts/build_json.py --check
+        run: python3 scripts/ontology.py build --check
+      - name: Verify spreadsheet export
+        run: python3 scripts/ontology.py export-csv --check
+      - name: Verify browsable site
+        run: python3 scripts/ontology.py site --check
       - name: Build validation report
-        run: python3 scripts/build_json.py --report > /tmp/ontology-validation-report.json
-      - name: Compare archived v4 to current v5
-        run: >-
-          python3 scripts/diff_releases.py
-          "Archived versions/v4 (12-12-2022 snapshot)/Ontology _ Definitions, Examples, Connections view.csv"
-          Ontology_v5_May_25_2023.csv
-          --json > /tmp/ontology-release-diff.json
+        run: python3 scripts/ontology.py report > /tmp/ontology-validation-report.json
+      - name: Run ontology regression tests
+        run: python3 -m unittest discover -s tests -v
+      - name: Verify sidecar structure
+        run: python -m instituteos.platform.aii_sidecar doctor "$GITHUB_WORKSPACE"
+      - name: Verify v2 diff command
+        run: python3 scripts/ontology.py diff ontology.source.json ontology.source.json > /tmp/ontology-release-diff.json
+
+  manuscript:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install pinned manuscript dependencies
+        run: |
+          python -m pip install --requirement requirements-ci.txt
+          python -m pip install --requirement requirements-manuscript.txt
+      - name: Verify manuscript generation
+        run: python3 scripts/manuscript.py generate --check
+      - name: Verify manuscript structure and hashes
+        run: python3 scripts/manuscript.py validate --strict
+      - name: Verify manuscript freshness
+        run: python3 scripts/manuscript.py check
+      - name: Verify repository whitespace
+        run: git diff --check

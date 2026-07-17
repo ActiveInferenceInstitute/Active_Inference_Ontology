@@ -1,0 +1,2 @@
+# Pinned contract validator used by validate --strict and the regression suite.
+jsonschema==4.24.0

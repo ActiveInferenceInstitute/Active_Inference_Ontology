@@ -1,0 +1,62 @@
+[
+  {
+    "caption": "Pipeline provenance and artifact flow.",
+    "figure_id": "pipeline_provenance",
+    "filename": "pipeline_provenance.png",
+    "generated_by": "scripts/manuscript.py:figure_bytes",
+    "label": "fig:pipeline",
+    "placement": "H",
+    "section": "03_methods.md",
+    "width": "0.92"
+  },
+  {
+    "caption": "Terms grouped by curation list in the current release.",
+    "figure_id": "term_composition",
+    "filename": "term_composition.png",
+    "generated_by": "scripts/manuscript.py:figure_bytes",
+    "label": "fig:composition",
+    "placement": "H",
+    "section": "04_results.md",
+    "width": "0.92"
+  },
+  {
+    "caption": "Distribution of explicit relation types.",
+    "figure_id": "relation_structure",
+    "filename": "relation_structure.png",
+    "generated_by": "scripts/manuscript.py:figure_bytes",
+    "label": "fig:relations",
+    "placement": "H",
+    "section": "04_results.md",
+    "width": "0.92"
+  },
+  {
+    "caption": "Coverage of optional and required descriptive fields.",
+    "figure_id": "metadata_completeness",
+    "filename": "metadata_completeness.png",
+    "generated_by": "scripts/manuscript.py:figure_bytes",
+    "label": "fig:metadata",
+    "placement": "H",
+    "section": "04_results.md",
+    "width": "0.92"
+  },
+  {
+    "caption": "Historical release sequence and current validation boundary.",
+    "figure_id": "release_history",
+    "filename": "release_history.png",
+    "generated_by": "scripts/manuscript.py:figure_bytes",
+    "label": "fig:release",
+    "placement": "H",
+    "section": "04_results.md",
+    "width": "0.92"
+  },
+  {
+    "caption": "Validation gates applied to the current generated release.",
+    "figure_id": "validation_integrity",
+    "filename": "validation_integrity.png",
+    "generated_by": "scripts/manuscript.py:figure_bytes",
+    "label": "fig:validation",
+    "placement": "H",
+    "section": "07_reproducibility.md",
+    "width": "0.92"
+  }
+]

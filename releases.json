@@ -1,76 +1,200 @@
 {
-  "description": "Machine-readable release manifest for the Active Inference Ontology repository.",
   "currentRelease": "v5",
+  "description": "Machine-readable release manifest for the Active Inference Ontology repository.",
   "releases": [
     {
-      "version": "v1",
+      "artifacts": [
+        {
+          "kind": "source",
+          "path": "Active Inference Lab ~ Terms List v1.0 candidate.xlsx",
+          "sha256": "597c8091f702ffa74faa522344d1cd12725ff634aa78b0e941d484653330d33f"
+        },
+        {
+          "kind": "document",
+          "path": "Active Inference Lab ~ Terms List v1.0 candidate - Core Terms.pdf",
+          "sha256": "34b63dbc264dc72d567cf5d3596a555106e774a042673283f34bfa8f1add603e"
+        },
+        {
+          "kind": "document",
+          "path": "Active Inference Lab ~ Terms List v1.0 candidate - Terms_Supplement.pdf",
+          "sha256": "6d1fccbdfac2a58119c9835190f032fd6404443845d2636e2aede63b5d6615f8"
+        }
+      ],
+      "date": null,
+      "exportSchema": null,
       "label": "Terms list candidate",
-      "status": "archived",
-      "date": null,
+      "notes": "Early terms-list candidate materials retained as historical source evidence.",
       "path": "Archived versions/v1 (terms list)",
-      "files": [
-        "Active Inference Lab ~ Terms List v1.0 candidate.xlsx",
-        "Active Inference Lab ~ Terms List v1.0 candidate - Core Terms.pdf",
-        "Active Inference Lab ~ Terms List v1.0 candidate - Terms_Supplement.pdf"
-      ],
-      "notes": "Early terms-list candidate materials retained as historical source evidence."
+      "sourceSchema": null,
+      "status": "archived",
+      "validationSummary": {
+        "relationCount": null,
+        "status": "not-evaluated",
+        "tagCount": null,
+        "termCount": null
+      },
+      "version": "v1"
     },
     {
-      "version": "v2",
+      "artifacts": [
+        {
+          "kind": "source",
+          "path": "ActInfLab _ Active Inference Ontology T2.D1.L1.E1.xlsx",
+          "sha256": "7744b480344aff179da731db190bbe59789bd31b8e9eb8db53f0ea762ae93dcb"
+        },
+        {
+          "kind": "source",
+          "path": "ActInfLab _ Active Inference Ontology T2.D1.L1.E1.ods",
+          "sha256": "dd3ec89d282be8559eef4cbcaa0353a26599a0b1a82ae08202b337bf3e538a60"
+        },
+        {
+          "kind": "package",
+          "path": "ActInfLab _ Active Inference Ontology T2.D1.L1.E1.zip",
+          "sha256": "3db446bd48f7867dab1e338157f1749a03e29a6de6ee996aee735e5f0ee778b2"
+        }
+      ],
+      "date": null,
+      "exportSchema": null,
       "label": "T2.D1.L1.E1",
-      "status": "archived",
-      "date": null,
+      "notes": "Spreadsheet and packaged release files for the v2 ontology snapshot.",
       "path": "Archived versions/v2 (T2.D1.L1.E1)",
-      "files": [
-        "ActInfLab _ Active Inference Ontology T2.D1.L1.E1.xlsx",
-        "ActInfLab _ Active Inference Ontology T2.D1.L1.E1.ods",
-        "ActInfLab _ Active Inference Ontology T2.D1.L1.E1.zip"
-      ],
-      "notes": "Spreadsheet and packaged release files for the v2 ontology snapshot."
+      "sourceSchema": null,
+      "status": "archived",
+      "validationSummary": {
+        "relationCount": null,
+        "status": "not-evaluated",
+        "tagCount": null,
+        "termCount": null
+      },
+      "version": "v2"
     },
     {
-      "version": "v3",
-      "label": "Version 3",
-      "status": "archived",
+      "artifacts": [
+        {
+          "kind": "source",
+          "path": "ActInf Ontology version 3.xlsx",
+          "sha256": "8e567bd1ff486b560b5e975e84b5866365f67e5b77856c1824459b209f6abeec"
+        },
+        {
+          "kind": "source",
+          "path": "ActInf Ontology version 3.ods",
+          "sha256": "5b7694b242c4df1bd3aaadf6f769b6544afe3dc3b9d63b029a0622854d07345f"
+        },
+        {
+          "kind": "package",
+          "path": "ActInf Ontology version 3.zip",
+          "sha256": "6a136127ac1f887f766d1ac7be0d06a2eb0063ab36e7fc04394b0024ef0f0ebc"
+        },
+        {
+          "kind": "source",
+          "path": "ActInf Ontology version 3 - Defintions.tsv",
+          "sha256": "430a23713b1a9088baa66dc2ee4d25f1959e62340e392d99f2f13090b1dab2db"
+        },
+        {
+          "kind": "source",
+          "path": "ActInf Ontology version 3 - Translation.tsv",
+          "sha256": "69d545f1ba87c29d67a47eaa0fcf39c87aa8f2e881b5608f45fefbb444962102"
+        }
+      ],
       "date": null,
+      "exportSchema": null,
+      "label": "Version 3",
+      "notes": "Version 3 spreadsheet, packaged archive, definitions TSV, and translation TSV.",
       "path": "Archived versions/v3",
-      "files": [
-        "ActInf Ontology version 3.xlsx",
-        "ActInf Ontology version 3.ods",
-        "ActInf Ontology version 3.zip",
-        "ActInf Ontology version 3 - Defintions.tsv",
-        "ActInf Ontology version 3 - Translation.tsv"
-      ],
-      "notes": "Version 3 spreadsheet, packaged archive, definitions TSV, and translation TSV."
-    },
-    {
-      "version": "v4",
-      "label": "12-12-2022 snapshot",
+      "sourceSchema": null,
       "status": "archived",
-      "date": "2022-12-12",
-      "path": "Archived versions/v4 (12-12-2022 snapshot)",
-      "files": [
-        "Ontology _ Definitions, Examples, Connections view.csv",
-        "Ontology _ Terms & Translations View.csv"
-      ],
-      "notes": "CSV snapshots exported from definition/example/connection and translation views."
+      "validationSummary": {
+        "relationCount": null,
+        "status": "not-evaluated",
+        "tagCount": null,
+        "termCount": null
+      },
+      "version": "v3"
     },
     {
-      "version": "v5",
-      "label": "May 25, 2023",
-      "status": "current",
+      "artifacts": [
+        {
+          "kind": "source",
+          "path": "Ontology _ Definitions, Examples, Connections view.csv",
+          "sha256": "fada086521b5b37b7469d2ecc34256fc3980aee189baa6dc31e7b2e664871b84"
+        },
+        {
+          "kind": "source",
+          "path": "Ontology _ Terms & Translations View.csv",
+          "sha256": "8769628db4c730093c54baf91d55eb3dbde177aa3b7499843fb24d445f39ad78"
+        }
+      ],
+      "date": "2022-12-12",
+      "exportSchema": null,
+      "label": "12-12-2022 snapshot",
+      "notes": "CSV snapshots exported from definition/example/connection and translation views.",
+      "path": "Archived versions/v4 (12-12-2022 snapshot)",
+      "sourceSchema": null,
+      "status": "archived",
+      "validationSummary": {
+        "relationCount": null,
+        "status": "not-evaluated",
+        "tagCount": null,
+        "termCount": null
+      },
+      "version": "v4"
+    },
+    {
+      "artifacts": [
+        {
+          "kind": "source",
+          "path": "ontology.source.json",
+          "sha256": "82fc5b03b3110e9dd9f74049d7ea0e578e05541a3cdeb0c6c24eaa0f99a9be0f"
+        },
+        {
+          "kind": "spreadsheet-export",
+          "path": "Ontology_v5_May_25_2023.csv",
+          "sha256": "f6d3648f796113059b9e81352d5005e45fd581162468300e86a0401fcb60b6b1"
+        },
+        {
+          "kind": "export",
+          "path": "ontology.json",
+          "sha256": "a2c8371264e9e3d83319268e93b2a8047a8ba5576b1a22ea26716b87828cb706"
+        },
+        {
+          "kind": "site",
+          "path": "site/index.html",
+          "sha256": "0256e585a90402924ef7683b3dd29745f6058dcab93ec06cd8a8c66916a6844a"
+        },
+        {
+          "kind": "schema",
+          "path": "schemas/source-v2.json",
+          "sha256": "6c6bf6235c491f9da4587056dd05540f04e2667142f8615c8131fa6f8ca3d0b1"
+        },
+        {
+          "kind": "schema",
+          "path": "schemas/export-v2.json",
+          "sha256": "f6591a1a5c9c41181a5c6aa65cc50e15040cc79421d744d7516506afda5407ba"
+        },
+        {
+          "kind": "schema",
+          "path": "schemas/manifest-v2.json",
+          "sha256": "5797225849a5defc8baa9274004789c204789b2690bb7f04e9a4dc930488762d"
+        }
+      ],
       "date": "2023-05-25",
+      "exportSchema": "active-inference-ontology/export/v2",
+      "label": "May 25, 2023",
+      "notes": "Current ontology content release with schema v2 source and export contracts.",
       "path": ".",
-      "sourceFiles": [
-        "Ontology_v5_May_25_2023.csv"
-      ],
-      "generatedFiles": [
-        "ontology.json"
-      ],
-      "termCount": 429,
+      "relationCount": 238,
+      "sourceSchema": "active-inference-ontology/source/v2",
+      "status": "current",
       "tagCount": 8,
-      "edgeCount": 238,
-      "notes": "Current root CSV and generated JSON export."
+      "termCount": 429,
+      "validationSummary": {
+        "relationCount": 238,
+        "status": "passed",
+        "tagCount": 8,
+        "termCount": 429
+      },
+      "version": "v5"
     }
-  ]
+  ],
+  "schema": "active-inference-ontology/releases/v2"
 }

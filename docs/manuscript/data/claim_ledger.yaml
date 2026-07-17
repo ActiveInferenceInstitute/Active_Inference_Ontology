@@ -1,0 +1,32 @@
+schema_version: 1
+claims:
+  - id: claim-source-model
+    claim: The release has one structured source and deterministic generated artifacts.
+    evidence:
+      - ontology.source.json
+      - scripts/ontology.py
+    citations:
+      - wilson2017
+      - peng2011
+  - id: claim-ontology-engineering
+    claim: Stable identifiers and explicit conceptual specifications support maintainable ontology artifacts.
+    evidence:
+      - docs/manuscript/03_methods.md
+    citations:
+      - gruber1993
+      - studer1998
+  - id: claim-domain-context
+    claim: Active inference scholarship supplies the domain context without determining the release contract.
+    evidence:
+      - docs/manuscript/02_related_work.md
+    citations:
+      - friston2010
+      - parr2022
+  - id: claim-provenance
+    claim: Hashes and explicit release metadata provide a reproducible artifact boundary.
+    evidence:
+      - releases.json
+      - docs/manuscript/artifact-manifest.json
+    citations:
+      - prov2013
+      - wilkinson2016

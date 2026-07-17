@@ -1,0 +1,125 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://activeinference.org/schemas/ontology-source-v2.json",
+  "title": "Active Inference Ontology source v2",
+  "type": "object",
+  "required": ["schema", "release", "terms"],
+  "additionalProperties": false,
+  "properties": {
+    "schema": {"const": "active-inference-ontology/source/v2"},
+    "release": {"$ref": "#/$defs/release"},
+    "terms": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/term"}
+    }
+  },
+  "$defs": {
+    "release": {
+      "type": "object",
+      "required": ["version", "label", "date"],
+      "additionalProperties": false,
+      "properties": {
+        "version": {"type": "string", "pattern": "^v(0|[1-9][0-9]*)$"},
+        "label": {"type": "string", "minLength": 1},
+        "date": {"type": "string", "format": "date"}
+      }
+    },
+    "relation": {
+      "type": "object",
+      "required": ["target", "type"],
+      "additionalProperties": false,
+      "properties": {
+        "target": {"type": "string", "pattern": "^term-[a-z0-9]+(?:-[a-z0-9]+)*$"},
+        "type": {"$ref": "#/$defs/relationType"}
+      }
+    },
+    "relationType": {
+      "enum": [
+        "mentions",
+        "related",
+        "inverse",
+        "prerequisite",
+        "part_of",
+        "broader",
+        "narrower",
+        "contrasts",
+        "causes"
+      ]
+    },
+    "definitions": {
+      "type": "object",
+      "required": ["primary", "secondary"],
+      "additionalProperties": false,
+      "properties": {
+        "primary": {"type": ["string", "null"]},
+        "secondary": {"type": ["string", "null"]}
+      }
+    },
+    "examples": {
+      "type": "object",
+      "required": ["correct", "incorrect"],
+      "additionalProperties": false,
+      "properties": {
+        "correct": {"type": ["string", "null"]},
+        "incorrect": {"type": ["string", "null"]}
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "required": ["sourceFile", "sourceRow"],
+      "additionalProperties": false,
+      "properties": {
+        "sourceFile": {"type": "string", "minLength": 1},
+        "sourceRow": {"type": "integer", "minimum": 2}
+      }
+    },
+    "term": {
+      "type": "object",
+      "required": [
+        "id",
+        "term",
+        "aliases",
+        "status",
+        "list",
+        "tag",
+        "definitions",
+        "examples",
+        "connectionsText",
+        "relations",
+        "provenance"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {"type": "string", "pattern": "^term-[a-z0-9]+(?:-[a-z0-9]+)*$"},
+        "term": {"type": "string", "minLength": 1},
+        "aliases": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+        "status": {"enum": ["published", "draft", "deprecated", "merged", "retired"]},
+        "list": {"enum": ["Core", "Entailed", "Supplement"]},
+        "tag": {
+          "type": ["string", "null"],
+          "enum": [
+            null,
+            "Action",
+            "Agents in the Niche",
+            "Bayesian Statistics",
+            "Free Energy",
+            "Information",
+            "Markov Partitioning",
+            "Perception",
+            "Systems"
+          ]
+        },
+        "definitions": {"$ref": "#/$defs/definitions"},
+        "examples": {"$ref": "#/$defs/examples"},
+        "connectionsText": {"type": ["string", "null"]},
+        "relations": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/relation"}
+        },
+        "provenance": {"$ref": "#/$defs/provenance"}
+      }
+    }
+  }
+}
