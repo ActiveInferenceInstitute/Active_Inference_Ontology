@@ -265,6 +265,33 @@ class OntologyPipelineTests(unittest.TestCase):
             current = next(item for item in manifest["releases"] if item["version"] == "v5")
             self.assertEqual(current["validationSummary"]["termCount"], 429)
 
+    def test_mention_relations_are_exact_word_boundary_and_conservative(self) -> None:
+        # Pins the documented conservative-migration contract: only exact case-insensitive
+        # label occurrences (word-boundary matched) become `mentions`; substrings, plurals,
+        # aliases and stronger relations are NOT inferred.
+        terms = [
+            {"id": "term-markov", "term": "Markov blanket"},
+            {"id": "term-energy", "term": "Free energy"},
+        ]
+        self_id = "term-other"
+        found = {rel["target"] for rel in ontology.mention_relations(
+            "The Markov blanket is central; Markov blankets differ. Markovian talk is loose.",
+            self_id,
+            terms,
+        )}
+        # Exact occurrence matches; the plural "Markov blankets" does not match the label
+        # boundary, and "Markovian" must not be captured as a substring.
+        self.assertEqual(found, {"term-markov"})
+        self.assertNotIn("term-energy", found)
+
+        found2 = {rel["target"] for rel in ontology.mention_relations(
+            "FREE ENERGY minimizes surprise.", self_id, terms,
+        )}
+        self.assertEqual(found2, {"term-energy"})
+
+        # The owning term's own label is never a self-mention.
+        self.assertNotIn(self_id, found)
+
     def test_audit_csv_reports_duplicates_without_importing(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             csv_path = Path(directory) / "audit.csv"

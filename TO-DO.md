@@ -12,31 +12,34 @@
 
 ## Major — Scoped (deferred)
 
-These items were validated during the 2026-08-01 hostile red-team review. They are
-intentionally NOT implemented: each needs a deliberate, dedicated decision (new upstream
-dependency, semantic curation, or a canonical regeneration environment) that is out of
-scope for a review/fix pass and would risk real harm if applied mechanically.
+These items were validated during the 2026-08-01 hostile red-team review and advanced in
+the follow-up cleanup pass. Neither is a mechanical bug: each needed either a canonical
+regeneration environment or a domain-curator decision. Both are now **handled** (as
+documented below), with the remaining action owned by the CI platform / a domain curator.
 
 1. **Figure byte-reproducibility is host-dependent (not a code defect).**
    - Affected: `scripts/manuscript.py` (`figure_bytes`), committed `docs/manuscript/output/figures/*.png`,
-     and the tests that require byte-equal figures (`test_generation_is_current_and_figures_are_deterministic`,
-     `test_cli_check_path_is_executable`, `scripts/manuscript.py validate --strict`/`check` on a non-CI host).
+     and the manuscript regression tests that previously demanded byte-equal figures.
    - Why it matters: matplotlib rasterization (font/anti-aliasing bytes) differs across OSes.
-     The committed PNGs were generated on the canonical CI/Linux toolchain; a fresh checkout on
-     macOS regenerates byte-different (but visually equivalent) figures, so `generate --check` and
-     the two tests report "figure is stale" locally. This is documented intended behavior
-     (`MANUSCRIPT_PORTABLE_CHECK=1`), not an integrity break. **Do not blindly regenerate/commit**
+     The committed PNGs are canonical to the CI/Linux toolchain; an off-CI checkout regenerates
+     byte-different (but visually equivalent) figures, so byte-strict checks report "stale" locally.
+     This is documented intended behavior, not an integrity break. **Do not blindly regenerate/commit**
      local PNGs — that would swap the canonical reference away from CI and break the remote gate.
-   - Suggested fix: leave canonical figures on the CI platform; document that off-CI hosts must run
-     figure checks portable (`MANUSCRIPT_PORTABLE_CHECK=1`, already docs-gated in `docs/manuscript/README.md`).
+   - Resolution (this pass): the manuscript tests now honor the documented `MANUSCRIPT_PORTABLE_CHECK`
+     contract (the same flag CI's `generate --check` step uses), so the suite is runnable on any host,
+     while CI's authoritative `validate --strict` and `check` steps remain byte-strict over the canonical
+     figures. Documented in `docs/build-and-validation.md` and `docs/manuscript/README.md`.
 
 2. **Mention-relation extraction is intentionally conservative (semantic ceiling).**
    - Affected: `scripts/ontology.py::mention_relations`, source `connectionsText`, `docs/manuscript/05_discussion.md`.
    - Why it matters: only exact case-insensitive phrase occurrences become `mentions` edges
      (word-boundary matched). Plural/derived/paraphrased references, aliases, and stronger relations
      are not inferred. This is a deliberate design decision preserving provenance, not a correctness bug.
-   - Suggested fix (future curation): add a reviewed, versioned alias-aware mention pass or explicit
-     typed-relation curation (broader/narrower/causes/…) with provenance and regression tests.
+   - Resolution (this pass): the conservative contract is now **pinned by a regression test**
+     (`test_mention_relations_are_exact_word_boundary_and_conservative`), and a curator-ready design
+     proposal for alias-aware mentions and native typed relations is recorded in
+     `docs/future-curation-relations.md`. Any expansion remains a domain-curator decision (Option A/B
+     in that proposal); it is not auto-applied because it would change curated edge counts.
 
 ## Completed / Closed (this pass, 2026-08-01)
 
