@@ -4,6 +4,8 @@ author:
   - "Active Inference Institute"
 date: "YYYY-MM-DD"
 lang: "en-US"
+abstract: "A reproducible data and software pipeline for publishing the Active Inference Ontology."
 link-citations: true
 toc: true
 number-sections: true
+colorlinks: true

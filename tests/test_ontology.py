@@ -242,6 +242,29 @@ class OntologyPipelineTests(unittest.TestCase):
             finally:
                 ontology.ROOT = original_root
 
+    def test_sync_manifest_is_idempotent_and_preserves_validity(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            copy = Path(directory) / "repo"
+            shutil.copytree(ROOT, copy)
+            manifest_path = copy / "releases.json"
+            before = manifest_path.read_text(encoding="utf-8")
+
+            result = subprocess.run(
+                [sys.executable, str(copy / "scripts/ontology.py"), "sync-manifest"],
+                cwd=copy,
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+            self.assertEqual(result.returncode, 0, result.stderr)
+            # sync-manifest must recompute the same hashes (idempotent rewrite).
+            after = manifest_path.read_text(encoding="utf-8")
+            self.assertEqual(before, after)
+            # And the rewritten manifest must still be internally consistent.
+            manifest = json.loads(after)
+            current = next(item for item in manifest["releases"] if item["version"] == "v5")
+            self.assertEqual(current["validationSummary"]["termCount"], 429)
+
     def test_audit_csv_reports_duplicates_without_importing(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             csv_path = Path(directory) / "audit.csv"

@@ -67,3 +67,18 @@ manifest validates its complete input/output closure, paths, hashes, byte counts
 derived counts, and figure-input digests. Install
 `requirements-manuscript.txt` plus Pandoc, `pandoc-crossref`, XeLaTeX, and qpdf for
 the complete local rendering gate.
+
+### Figure byte checks and CI portability
+
+Committed figure PNGs are byte-canonical to the toolchain that generated them (the CI
+runner). `generate --check` verifies figure **bytes** against the committed PNGs, and
+matplotlib rasterization (font/anti-aliasing) can differ across operating systems for the
+same version. Running the manuscript gates on a host whose rendering differs from the CI
+canonical platform will report `generated figure is stale` even though the figures are
+correct and current for CI.
+
+To check an off-CI checkout without that environmental byte difference, set
+`MANUSCRIPT_PORTABLE_CHECK=1` (the exact flag the CI `generate --check` step uses). The
+registry input digests, generated-variable freshness, and manifest hashes remain enforced;
+only the raw rasterized PNG byte comparison is skipped. See
+[`docs/manuscript/README.md`](manuscript/README.md).

@@ -465,10 +465,10 @@ def validate_source(
                 errors.append(f"{rel_prefix}.target is unknown: {target!r}")
             if relation_type not in allowed_relations:
                 errors.append(f"{rel_prefix}.type is not allowed: {relation_type!r}")
-            key = (str(target), str(relation_type))
-            if key in relation_keys:
+            relation_key = (str(target), str(relation_type))
+            if relation_key in relation_keys:
                 errors.append(f"{rel_prefix} duplicates a relation")
-            relation_keys.add(key)
+            relation_keys.add(relation_key)
     return errors
 
 

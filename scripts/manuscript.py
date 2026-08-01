@@ -321,8 +321,8 @@ def figure_bytes(name: str, values: dict[str, Any]) -> bytes:
         ax.bar_label(bars, fmt="%.1f%%", padding=3, rotation=90)
     elif name == "release_history":
         items = values["historicalReleases"]
-        x = list(range(len(items)))
-        ax.plot(x, [1] * len(items), marker="o", color=navy, linewidth=2)
+        x_positions = list(range(len(items)))
+        ax.plot(x_positions, [1] * len(items), marker="o", color=navy, linewidth=2)
         for index, item in enumerate(items):
             ax.text(index, 1.08, item["version"], ha="center", color=navy, weight="bold")
             ax.text(index, 0.88, item["label"], ha="center", va="top", rotation=20, fontsize=8)
