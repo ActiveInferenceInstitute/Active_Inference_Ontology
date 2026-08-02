@@ -59,10 +59,10 @@ summary in `REVIEW_LOG_2026-08-02.md`).
    Replaced with the verified Zenodo concept DOI `10.5281/zenodo.7430332` (the badge
    resolves to v5 record `10.5281/zenodo.7972289`), and added a License section plus
    surfaces-table rows for `.aii/`, `TO-DO.md`, `CITATION.cff`, and `LICENSE`. (✓ `f77a26b`)
-4. **Dead link in generated manuscript copies — `[references.bib](references.bib)`**
-   did not resolve from `docs/manuscript/output/manuscript/` (the bibliography lives one
-   level up). `replace_tokens` in `scripts/manuscript.py` now re-roots the link to
-   `../references.bib`, matching the existing figure-path rewriting; the tracked generated
+4. **Dead link in generated manuscript copies — the source section's `references.bib` link**
+   did not resolve from `docs/manuscript/output/manuscript/` (the bibliography lives two
+   levels up). `replace_tokens` in `scripts/manuscript.py` now re-roots the link to
+   `../../references.bib`, matching the existing figure-path rewriting; the tracked generated
    sections and `artifact-manifest.json` were regenerated (figure PNGs untouched — see
    Major #1). (✓ `9e38592`)
 
