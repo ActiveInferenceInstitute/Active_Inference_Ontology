@@ -41,9 +41,9 @@
       "sha256": "a9ec21122135372ecc30b492169d1c34ea2048375827e84549f10304efb43812"
     },
     {
-      "bytes": 20550,
+      "bytes": 20553,
       "path": "docs/manuscript/output/manuscript/combined.md",
-      "sha256": "805ae26f8f8808bb015dde6fb382109326100a418ae17ab29070c6a4e402566d"
+      "sha256": "09f7341bd0bc029e1e704746771f63c4f21799c7deac6cef9624981a9637e200"
     },
     {
       "bytes": 1429,
@@ -86,9 +86,9 @@
       "sha256": "86d0f55d900cfb084065320b45dc39c5b97eedf0cb0b4bfb3e06ad578ff0ffc0"
     },
     {
-      "bytes": 367,
+      "bytes": 370,
       "path": "docs/manuscript/output/manuscript/99_references.md",
-      "sha256": "bf4b90a37ba5ada468ff9d52e08f3fe910baf23f71cc30c11eb984e0e981d507"
+      "sha256": "09d6c7e6857f4a7040298fc69c7cacb0022a993c13a8a57e204d2e1b8acbfb46"
     },
     {
       "bytes": 292875,

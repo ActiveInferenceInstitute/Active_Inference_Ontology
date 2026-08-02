@@ -418,7 +418,9 @@ def replace_tokens(text: str, variables: dict[str, Any]) -> str:
         return str(variables[key])
 
     resolved = re.sub(r"\{\{([A-Z][A-Z0-9_]*)\}\}", replace, text)
-    return resolved.replace("output/figures/", "../figures/")
+    # Resolved sections live under output/manuscript/, so figure and bibliography
+    # links that are relative to the source directory must be re-rooted one level up.
+    return resolved.replace("output/figures/", "../figures/").replace("](references.bib)", "](../references.bib)")
 
 
 def generated_files() -> list[Path]:
