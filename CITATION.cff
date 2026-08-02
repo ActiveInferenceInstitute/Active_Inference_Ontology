@@ -1,0 +1,23 @@
+cff-version: 1.2.0
+message: "If you use this repository or any of its releases, please cite it as below."
+title: "Active Inference Ontology"
+abstract: >-
+  A controlled vocabulary of Active Inference and Free Energy Principle
+  concepts, published through a versioned structured source, deterministic
+  JSON and CSV exports, an explicit stable-identity model, typed relation
+  records, release-integrity manifests, and a generated manuscript.
+authors:
+  - name: "Active Inference Institute"
+    website: "https://www.activeinference.org/home"
+date-released: "2023-05-25"
+version: "v5"
+doi: "10.5281/zenodo.7972289"
+license: "CC-BY-4.0"
+url: "https://github.com/ActiveInferenceInstitute/Active_Inference_Ontology"
+keywords:
+  - active inference
+  - free energy principle
+  - ontology
+  - controlled vocabulary
+  - knowledge representation
+  - reproducible research
