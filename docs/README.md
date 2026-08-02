@@ -11,6 +11,7 @@ integrity checks, curation process, historical archives, and integration surface
 | [Build and Validation](build-and-validation.md) | CLI commands and acceptance gates. |
 | [Curation Workflow](curation-workflow.md) | Editing source terms and relations. |
 | [Curation Governance](curation-governance.md) | Review roles and release sign-off. |
+| [Future Curation](future-curation-relations.md) | Proposal for typed relations and alias-aware mention extraction (not implemented). |
 | [Archive and Provenance](archive-and-provenance.md) | Immutable historical material and hashes. |
 | [SUMO Integration](sumo-integration.md) | SUMO support scope. |
 | [SUMO Mapping Contract](sumo-mapping-contract.md) | Mapping fields and review states. |

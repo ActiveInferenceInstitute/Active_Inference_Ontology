@@ -10,7 +10,15 @@ and typed relation records.
 - **Export contract:** `active-inference-ontology/export/v2`
 - **Live website:** <https://coda.io/@active-inference-institute/active-inference-ontology-website>
 - **Institute information:** <https://www.activeinference.org/home>
-- **Citation:** [Zenodo concept DOI](https://zenodo.org/badge/latestdoi/343477486)
+- **Citation:** [10.5281/zenodo.7430332](https://doi.org/10.5281/zenodo.7430332) (Zenodo concept DOI; see [`CITATION.cff`](CITATION.cff))
+
+## Documentation
+
+- [`docs/README.md`](docs/README.md) — index of the repository documentation (source and export contracts, curation, releases, integration).
+- [`TO-DO.md`](TO-DO.md) — scoped worklog of completed and deferred review items.
+- [`CONTRIBUTING.md`](CONTRIBUTING.md) — how to propose changes and the acceptance gates.
+- [`AGENTS.md`](AGENTS.md) — orientation for AI agents and automation.
+- [`.aii/README.md`](.aii/README.md) — InstituteOS sidecar metadata for this repository.
 
 ## Repository surfaces
 
@@ -29,6 +37,10 @@ and typed relation records.
 | [`docs/`](docs/) | Source, export, migration, curation, release, and integration documentation. |
 | [`Archived versions/`](Archived%20versions/) | Immutable historical source evidence. |
 | [`SUMO/`](SUMO/) | SUMO mapping-support material. |
+| [`TO-DO.md`](TO-DO.md) | Scoped review worklog (completed and deferred items). |
+| [`CITATION.cff`](CITATION.cff) | Machine-readable citation metadata. |
+| [`.aii/`](.aii/) | InstituteOS sidecar metadata and integration notes. |
+| [`LICENSE`](LICENSE) | CC BY 4.0 license text. |
 
 ## CLI
 
@@ -84,5 +96,10 @@ Read [`docs/curation-workflow.md`](docs/curation-workflow.md), then run the stri
 validator and review the generated report before changing release metadata. Historical
 files are immutable and are checked by hash, not rewritten.
 
-For citation, include the Zenodo DOI, content release, source filename, and repository
-commit or tag.
+For citation, include the Zenodo DOI (concept DOI 10.5281/zenodo.7430332),
+content release, source filename, and repository commit or tag.
+
+## License
+
+The repository and its content releases are licensed under the
+[Creative Commons Attribution 4.0 International License](LICENSE) (CC BY 4.0).

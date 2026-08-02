@@ -1,6 +1,6 @@
 # Active Inference Ontology Manuscript
 
-This directory contains the template-compatible source and generated publication artifacts for the ontology data descriptor. It follows the template project conventions for ordered Markdown sections, labeled equations, cross-referenced figures and tables, `config.yaml`, `preamble`, a bibliography, a claim ledger, and generated manuscript variables.
+This directory contains the template-compatible source and generated publication artifacts for the ontology data descriptor. It follows the template project conventions for ordered Markdown sections, labeled equations, cross-referenced figures and tables, `config.yaml`, `preamble`, a bibliography, a claim ledger, and generated manuscript variables. It is part of the [repository documentation index](../README.md); see [`docs/build-and-validation.md`](../build-and-validation.md) for the full validation gate.
 
 ## Commands
 
