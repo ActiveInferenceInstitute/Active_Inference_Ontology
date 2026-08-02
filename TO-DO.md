@@ -2,7 +2,7 @@
 
 - **Owner:** Active Inference Institute (Daniel Ari Friedman, daniel@activeinference.institute)
 - **Status:** Clean / release-bound (v5). No active unfinished surface. See Completed below.
-- **Last reviewed:** 2026-08-01
+- **Last reviewed:** 2026-08-02
 
 > Convention note: this file is deliberately named `TO-DO.md` (hyphenated) so it does not
 > collide with the repository's `TODO.md`-absence gate in
@@ -41,10 +41,58 @@ documented below), with the remaining action owned by the CI platform / a domain
      `docs/future-curation-relations.md`. Any expansion remains a domain-curator decision (Option A/B
      in that proposal); it is not auto-applied because it would change curated edge counts.
 
-## Completed / Closed (this pass, 2026-08-01)
+## Completed / Closed (2026-08-02 docs-deep review pass)
 
-All items below were validated and implemented in this review pass; the ontology and manuscript
-gates pass on the canonical checks (see run summary in the review report).
+All items below were scoped during the 2026-08-02 documentation review and implemented in
+this pass; the ontology and manuscript gates pass on the canonical checks (see the run
+summary in `REVIEW_LOG_2026-08-02.md`).
+
+### Minor
+
+1. **Doc index gap — `docs/README.md` did not list `future-curation-relations.md`.**
+   The proposal document was unreferenced from the documentation index. Added a
+   "Future Curation" row. (✓ `f77a26b`)
+2. **Sidecar task inventory — `.aii/README.md` listed only five of the eleven declared tasks.**
+   Now enumerates `schema-check`, `audit-csv`, and the four `manuscript-*` tasks to match
+   `.aii/config.d/tasks.yaml`. (✓ `f77a26b`)
+3. **Citation precision — README pointed at the GitHub badge endpoint, not a DOI.**
+   Replaced with the verified Zenodo concept DOI `10.5281/zenodo.7430332` (the badge
+   resolves to v5 record `10.5281/zenodo.7972289`), and added a License section plus
+   surfaces-table rows for `.aii/`, `TO-DO.md`, `CITATION.cff`, and `LICENSE`. (✓ `f77a26b`)
+4. **Dead link in generated manuscript copies — `[references.bib](references.bib)`**
+   did not resolve from `docs/manuscript/output/manuscript/` (the bibliography lives one
+   level up). `replace_tokens` in `scripts/manuscript.py` now re-roots the link to
+   `../references.bib`, matching the existing figure-path rewriting; the tracked generated
+   sections and `artifact-manifest.json` were regenerated (figure PNGs untouched — see
+   Major #1). (✓ `9e38592`)
+
+### Medium
+
+5. **Root `CONTRIBUTING.md` added.** Editable surfaces, curation rules, code and manuscript
+   conventions, the acceptance gate, and the release path — all grounded in the existing
+   `docs/` documents. (✓ `0579c73`)
+6. **Root `SECURITY.md` added.** Public-safe scope note and reporting path (GitHub issues /
+   private vulnerability reporting); no invented contacts. (✓ `0579c73`)
+7. **Root `AGENTS.md` added.** Orientation for AI agents and automation: ground truth,
+   reading order, gate commands, conventions. (✓ `0579c73`)
+8. **`CITATION.cff` added.** Machine-readable citation grounded in the verified Zenodo
+   v5 record (`10.5281/zenodo.7972289`, author "Active Inference Institute",
+   date 2023-05-25) and the repository's CC BY 4.0 license. (✓ `0579c73`)
+9. **Cross-linking — `docs/manuscript/README.md`** now links back to the documentation
+   index and the build-and-validation gate. (✓ `f77a26b`)
+
+### Major
+
+10. **Repository documentation surface completed.** The pass added the missing contributor,
+    security, agent, and citation surfaces, fixed the index and cross-link gaps, and made
+    the README cite an actual DOI. No doc-splitting or consolidation was performed: the
+    `docs/` set is compact and coherent, so restructuring would be churn without benefit —
+    recorded here as a reviewed decision. (✓ `9e38592`, `f77a26b`, `0579c73`)
+
+## Completed / Closed (2026-08-01 red-team pass)
+
+All items below were validated and implemented in that review pass; the ontology and
+manuscript gates pass on the canonical checks.
 
 ### Minor
 
@@ -73,5 +121,16 @@ gates pass on the canonical checks (see run summary in the review report).
 - Ontology `validate --strict`, `schema-check`, `build --check`, `export-csv --check`,
   `site --check`, `report`, and `diff` all pass on this host (429 terms, 238 relations, 8 tags).
 - Figure-byte staleness described in Major #1 is environmental (host font rendering), not a source error.
-- mypy reports only third-party type-metadata absence (`jsonschema`, `yaml`) plus the two now-fixed
-  shadowing defects; no source typing errors remain.
+- mypy reports only third-party type-metadata absence (`jsonschema`, `yaml`, `matplotlib`) plus the
+  two now-fixed shadowing defects; no source typing errors remain.
+- The apparent duplicate `jsonschema==4.24.0` pin across the two `requirements-*.txt` files is
+  intentional: each file is self-contained (CI installs both). No change was made.
+
+## Open / deferred
+
+- Major #1 (CI-canonical figure bytes): owned by the CI platform; no action needed on any host.
+- Major #2 (alias-aware mentions / native typed relations): domain-curator decision; options and
+  controls are scoped in `docs/future-curation-relations.md`.
+- Rendered-format regeneration (`manuscript.py render`) requires the full Pandoc / XeLaTeX /
+  `pandoc-crossref` / qpdf toolchain; committed rendered artifacts remain manifest-validated
+  without it.
