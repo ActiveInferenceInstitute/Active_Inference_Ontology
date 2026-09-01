@@ -2,7 +2,7 @@
 
 - **Owner:** Active Inference Institute (Daniel Ari Friedman, daniel@activeinference.institute)
 - **Status:** Clean / release-bound (v5). No active unfinished surface. See Completed below.
-- **Last reviewed:** 2026-08-02
+- **Last reviewed:** 2026-08-31
 
 > Convention note: this file is deliberately named `TO-DO.md` (hyphenated) so it does not
 > collide with the repository's `TODO.md`-absence gate in
