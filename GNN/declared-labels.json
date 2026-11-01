@@ -1,0 +1,271 @@
+{
+  "schema": "active-inference-ontology/gnn-declared-labels/v1",
+  "description": "Reviewed input for `python3 scripts/ontology.py gnn-terms`: the vocabulary labels declared by the GNN pipeline's bundled ontology file, with the provenance of the audited revision. Update only to follow a new GNN revision.",
+  "source": {
+    "repository": "ActiveInferenceInstitute/Generalized_Notation_Notation",
+    "release": "v5.0.3",
+    "commit": "8f293d9ba810e6eda5c09842d9c7ed9ffa5f92c1",
+    "path": "src/gnn/ontology/act_inf_ontology_terms.json",
+    "sha256": "a9639fbabc2e227adcf00450aad23638ceaaa384caea29824ae2d063a4559d1c",
+    "auditedOn": "2026-11-01",
+    "uriPolicy": "The audited file declares `obo:ACTO_*` and `obo:TEMP_*` uri values. Neither prefix resolves in the OBO Foundry registry, Bioregistry, or OLS, and no ACTO ontology exists; they are local placeholders, are recorded here as declaredUri for audit only, and are never used as mapping targets."
+  },
+  "labels": [
+    {
+      "label": "HiddenState",
+      "declaredUri": "obo:ACTO_000001"
+    },
+    {
+      "label": "ObservableState",
+      "declaredUri": "obo:ACTO_000002"
+    },
+    {
+      "label": "Observation",
+      "declaredUri": "obo:ACTO_000003"
+    },
+    {
+      "label": "Action",
+      "declaredUri": "obo:ACTO_000004"
+    },
+    {
+      "label": "Policy",
+      "declaredUri": "obo:ACTO_000005"
+    },
+    {
+      "label": "PriorBelief",
+      "declaredUri": "obo:ACTO_000006"
+    },
+    {
+      "label": "PosteriorBelief",
+      "declaredUri": "obo:ACTO_000007"
+    },
+    {
+      "label": "LikelihoodMapping",
+      "declaredUri": "obo:ACTO_000008"
+    },
+    {
+      "label": "TransitionMatrix",
+      "declaredUri": "obo:ACTO_000009"
+    },
+    {
+      "label": "Preferences",
+      "declaredUri": "obo:ACTO_000010"
+    },
+    {
+      "label": "ExpectedFreeEnergy",
+      "declaredUri": "obo:ACTO_000011"
+    },
+    {
+      "label": "VariationalFreeEnergy",
+      "declaredUri": "obo:ACTO_000012"
+    },
+    {
+      "label": "GenerativeModel",
+      "declaredUri": "obo:ACTO_000013"
+    },
+    {
+      "label": "GenerativeProcess",
+      "declaredUri": "obo:ACTO_000014"
+    },
+    {
+      "label": "Precision",
+      "declaredUri": "obo:ACTO_000015"
+    },
+    {
+      "label": "RecognitionMatrix",
+      "declaredUri": "obo:TEMP_000016"
+    },
+    {
+      "label": "Prior",
+      "declaredUri": "obo:TEMP_000017"
+    },
+    {
+      "label": "NextHiddenState",
+      "declaredUri": "obo:TEMP_000018"
+    },
+    {
+      "label": "Time",
+      "declaredUri": "obo:TEMP_000019"
+    },
+    {
+      "label": "Preference",
+      "declaredUri": "obo:TEMP_000020"
+    },
+    {
+      "label": "PolicyVector",
+      "declaredUri": "obo:TEMP_000021"
+    },
+    {
+      "label": "PriorOnAction",
+      "declaredUri": "obo:TEMP_000022"
+    },
+    {
+      "label": "BetaParameter",
+      "declaredUri": "obo:TEMP_000023"
+    },
+    {
+      "label": "GammaParameter",
+      "declaredUri": "obo:TEMP_000024"
+    },
+    {
+      "label": "ExpectedFreeEnergyPerPolicy",
+      "declaredUri": "obo:TEMP_000025"
+    },
+    {
+      "label": "InitialPolicyProbability",
+      "declaredUri": "obo:TEMP_000026"
+    },
+    {
+      "label": "PrecisionParameter",
+      "declaredUri": "obo:TEMP_000027"
+    },
+    {
+      "label": "BetaUpdateTerm",
+      "declaredUri": "obo:TEMP_000028"
+    },
+    {
+      "label": "InitialBeta",
+      "declaredUri": "obo:TEMP_000029"
+    },
+    {
+      "label": "LikelihoodMatrixModality0",
+      "declaredUri": "obo:TEMP_000030"
+    },
+    {
+      "label": "LikelihoodMatrixModality1",
+      "declaredUri": "obo:TEMP_000031"
+    },
+    {
+      "label": "LikelihoodMatrixModality2",
+      "declaredUri": "obo:TEMP_000032"
+    },
+    {
+      "label": "TransitionMatrixFactor0",
+      "declaredUri": "obo:TEMP_000033"
+    },
+    {
+      "label": "TransitionMatrixFactor1",
+      "declaredUri": "obo:TEMP_000034"
+    },
+    {
+      "label": "LogPreferenceVectorModality0",
+      "declaredUri": "obo:TEMP_000035"
+    },
+    {
+      "label": "LogPreferenceVectorModality1",
+      "declaredUri": "obo:TEMP_000036"
+    },
+    {
+      "label": "LogPreferenceVectorModality2",
+      "declaredUri": "obo:TEMP_000037"
+    },
+    {
+      "label": "PriorOverHiddenStatesFactor0",
+      "declaredUri": "obo:TEMP_000038"
+    },
+    {
+      "label": "PriorOverHiddenStatesFactor1",
+      "declaredUri": "obo:TEMP_000039"
+    },
+    {
+      "label": "HiddenStateFactor0",
+      "declaredUri": "obo:TEMP_000040"
+    },
+    {
+      "label": "HiddenStateFactor1",
+      "declaredUri": "obo:TEMP_000041"
+    },
+    {
+      "label": "NextHiddenStateFactor0",
+      "declaredUri": "obo:TEMP_000042"
+    },
+    {
+      "label": "NextHiddenStateFactor1",
+      "declaredUri": "obo:TEMP_000043"
+    },
+    {
+      "label": "ObservationModality0",
+      "declaredUri": "obo:TEMP_000044"
+    },
+    {
+      "label": "ObservationModality1",
+      "declaredUri": "obo:TEMP_000045"
+    },
+    {
+      "label": "ObservationModality2",
+      "declaredUri": "obo:TEMP_000046"
+    },
+    {
+      "label": "PolicyVectorFactor1",
+      "declaredUri": "obo:TEMP_000047"
+    },
+    {
+      "label": "ActionFactor1",
+      "declaredUri": "obo:TEMP_000048"
+    },
+    {
+      "label": "TimeStep",
+      "declaredUri": "obo:TEMP_000049"
+    },
+    {
+      "label": "ConstraintParameter",
+      "declaredUri": "obo:TEMP_000050"
+    },
+    {
+      "label": "TrajectoryLength",
+      "declaredUri": "obo:TEMP_000051"
+    },
+    {
+      "label": "InferenceIterations",
+      "declaredUri": "obo:TEMP_000052"
+    },
+    {
+      "label": "NumberOfAgents",
+      "declaredUri": "obo:TEMP_000053"
+    },
+    {
+      "label": "SoftminTemperature",
+      "declaredUri": "obo:TEMP_000054"
+    },
+    {
+      "label": "StateTransitionMatrix",
+      "declaredUri": "obo:TEMP_000055"
+    },
+    {
+      "label": "ControlInputMatrix",
+      "declaredUri": "obo:TEMP_000056"
+    },
+    {
+      "label": "ObservationMatrix",
+      "declaredUri": "obo:TEMP_000057"
+    },
+    {
+      "label": "InitialStateVariance",
+      "declaredUri": "obo:TEMP_000058"
+    },
+    {
+      "label": "ControlVariance",
+      "declaredUri": "obo:TEMP_000059"
+    },
+    {
+      "label": "GoalConstraintVariance",
+      "declaredUri": "obo:TEMP_000060"
+    },
+    {
+      "label": "LikelihoodMatrix",
+      "declaredUri": "obo:TEMP_000061"
+    },
+    {
+      "label": "LogPreferenceVector",
+      "declaredUri": "obo:TEMP_000062"
+    },
+    {
+      "label": "PriorOverHiddenStates",
+      "declaredUri": "obo:TEMP_000063"
+    },
+    {
+      "label": "Habit",
+      "declaredUri": "obo:TEMP_000064"
+    }
+  ]
+}

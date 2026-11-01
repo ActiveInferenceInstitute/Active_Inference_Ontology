@@ -25,6 +25,12 @@ EXPORT_SCHEMA = "active-inference-ontology/export/v2"
 MANIFEST_SCHEMA = "active-inference-ontology/releases/v2"
 DIFF_SCHEMA = "active-inference-ontology/diff/v2"
 CSV_AUDIT_SCHEMA = "active-inference-ontology/csv-audit/v2"
+GNN_TERMS_SCHEMA = "active-inference-ontology/gnn-terms/v1"
+GNN_DECLARED_LABELS_SCHEMA = "active-inference-ontology/gnn-declared-labels/v1"
+GNN_MATCH_RULE = (
+    "casefold and remove every character outside [a-z0-9], then require exactly one "
+    "ontology label (or alias) to normalize to the same key"
+)
 PINNED_JSONSCHEMA = "4.24.0"
 SOURCE_COLUMNS = [
     "List",
@@ -60,6 +66,12 @@ def normalize(value: Any) -> str:
 
 def slugify(value: str) -> str:
     return re.sub(r"[^a-z0-9]+", "-", value.casefold()).strip("-")
+
+
+def normalize_label(value: str) -> str:
+    """Normalize a vocabulary label for exact, case- and punctuation-insensitive matching."""
+
+    return re.sub(r"[^a-z0-9]", "", value.casefold())
 
 
 def canonical_json(value: Any) -> str:
@@ -132,6 +144,8 @@ def configured_paths(config: dict[str, Any]) -> dict[str, Path]:
         "source_schema",
         "export_schema",
         "manifest_schema",
+        "gnn_terms",
+        "gnn_declared_labels",
     )
     missing = [key for key in required if not paths.get(key)]
     if missing:
@@ -484,7 +498,7 @@ def validate_json_schemas(
         import jsonschema
     except ImportError:
         return [
-            "strict validation requires jsonschema==4.24.0; "
+            f"strict validation requires jsonschema=={PINNED_JSONSCHEMA}; "
             "install requirements-ci.txt"
         ]
 
@@ -492,7 +506,7 @@ def validate_json_schemas(
         installed = metadata.version("jsonschema")
     except metadata.PackageNotFoundError:
         return [
-            "strict validation requires jsonschema==4.24.0; "
+            f"strict validation requires jsonschema=={PINNED_JSONSCHEMA}; "
             "install requirements-ci.txt"
         ]
     if installed != PINNED_JSONSCHEMA:
@@ -599,6 +613,149 @@ def csv_text(source: dict[str, Any]) -> str:
             }
         )
     return output.getvalue()
+
+
+def load_gnn_declared_labels(path: Path) -> dict[str, Any]:
+    """Load the reviewed GNN vocabulary input and verify its recorded provenance."""
+
+    document = read_json(path)
+    if document.get("schema") != GNN_DECLARED_LABELS_SCHEMA:
+        raise OntologyError(
+            f"{display_path(path)} must declare schema {GNN_DECLARED_LABELS_SCHEMA}"
+        )
+    source = document.get("source")
+    if not isinstance(source, dict):
+        raise OntologyError(f"{display_path(path)} is missing the source provenance object")
+    for field in ("repository", "commit", "path", "sha256"):
+        if not isinstance(source.get(field), str) or not source[field].strip():
+            raise OntologyError(f"{display_path(path)} source.{field} is required")
+    if not HASH_PATTERN.fullmatch(source["sha256"]):
+        raise OntologyError(f"{display_path(path)} source.sha256 must be a SHA-256 digest")
+    labels = document.get("labels")
+    if not isinstance(labels, list) or not labels:
+        raise OntologyError(f"{display_path(path)} labels must be a non-empty array")
+    seen: set[str] = set()
+    for index, entry in enumerate(labels, start=1):
+        if not isinstance(entry, dict):
+            raise OntologyError(f"{display_path(path)} labels[{index}] must be an object")
+        label = entry.get("label")
+        if not isinstance(label, str) or not label.strip():
+            raise OntologyError(f"{display_path(path)} labels[{index}].label is required")
+        key = label.casefold()
+        if key in seen:
+            raise OntologyError(
+                f"{display_path(path)} labels[{index}].label is duplicated: {label!r}"
+            )
+        seen.add(key)
+        uri = entry.get("declaredUri")
+        if uri is not None and (not isinstance(uri, str) or not uri.strip()):
+            raise OntologyError(
+                f"{display_path(path)} labels[{index}].declaredUri must be a string or null"
+            )
+    return document
+
+
+def gnn_terms_document(
+    source: dict[str, Any], config: dict[str, Any], paths: dict[str, Path]
+) -> dict[str, Any]:
+    """Build the deterministic GNN vocabulary bridge from the canonical source.
+
+    The document is a projection of the release: every canonical label maps to its
+    stable ID, and the labels declared by GNN's bundled vocabulary are resolved by
+    normalized label equality only. Unmatched labels stay explicit and unresolved;
+    no identifier is invented, and GNN's non-resolving `obo:` placeholder URIs are
+    never used as mapping targets.
+    """
+
+    expected_export = canonical_json(build_export(source, config, paths["source"]))
+    try:
+        current_export = paths["export"].read_text(encoding="utf-8")
+    except FileNotFoundError:
+        current_export = None
+    except UnicodeDecodeError as exc:
+        raise OntologyError(f"generated artifact is not valid UTF-8: {paths['export']}") from exc
+    if current_export != expected_export:
+        raise OntologyError(f"generated export is stale: {paths['export']}")
+
+    declared_input = load_gnn_declared_labels(paths["gnn_declared_labels"])
+    terms = source["terms"]
+    normalized: dict[str, list[dict[str, Any]]] = {}
+    for term in terms:
+        for name in [term["term"], *term["aliases"]]:
+            normalized.setdefault(normalize_label(name), []).append(term)
+
+    vocabulary = {
+        term["term"]: {
+            "id": term["id"],
+            "status": term["status"],
+            "tag": term["tag"],
+            "description": term["definitions"]["primary"],
+        }
+        for term in sorted(terms, key=lambda term: term["term"].casefold())
+    }
+    declared: dict[str, Any] = {}
+    resolved = 0
+    for entry in declared_input["labels"]:
+        label = entry["label"]
+        matches = normalized.get(normalize_label(label), [])
+        if len(matches) == 1:
+            match = matches[0]
+            declared[label] = {
+                "status": "resolved",
+                "match": "normalized-label",
+                "id": match["id"],
+                "ontologyTerm": match["term"],
+            }
+            resolved += 1
+        else:
+            declared[label] = {
+                "status": "unresolved",
+                "match": None,
+                "id": None,
+                "ontologyTerm": None,
+            }
+    return {
+        "schema": GNN_TERMS_SCHEMA,
+        "generator": "scripts/ontology.py gnn-terms",
+        "release": source["release"],
+        "source": {
+            "path": display_path(paths["source"]),
+            "schema": source["schema"],
+            "sha256": sha256(paths["source"]),
+        },
+        "export": {
+            "path": display_path(paths["export"]),
+            "schema": EXPORT_SCHEMA,
+            "schemaVersion": "2.0",
+            "sha256": hashlib.sha256(expected_export.encode("utf-8")).hexdigest(),
+        },
+        "matchRule": GNN_MATCH_RULE,
+        "counts": {
+            "terms": len(terms),
+            "declaredLabels": len(declared_input["labels"]),
+            "resolvedDeclaredLabels": resolved,
+            "unresolvedDeclaredLabels": len(declared_input["labels"]) - resolved,
+        },
+        "notes": [
+            "The audited GNN vocabulary declares `obo:ACTO_*` and `obo:TEMP_*` uri values. "
+            "Those prefixes do not resolve (no ACTO ontology exists in the OBO Foundry, "
+            "Bioregistry, or OLS) and are never used as mapping targets; this document maps "
+            "labels to stable `term-*` IDs only.",
+            "`declared` entries with status `unresolved` have no counterpart in the current "
+            "ontology release; they require ontology curation or GNN-side model migration "
+            "and are never guessed.",
+        ],
+        "terms": vocabulary,
+        "declared": declared,
+    }
+
+
+def gnn_terms_text(
+    source: dict[str, Any], config: dict[str, Any], paths: dict[str, Path]
+) -> str:
+    """Render the GNN vocabulary bridge as canonical deterministic JSON."""
+
+    return canonical_json(gnn_terms_document(source, config, paths))
 
 
 def site_text(export: dict[str, Any]) -> str:
@@ -886,17 +1043,28 @@ def load_and_validate(
     except OntologyError as exc:
         source_errors.append(str(exc))
     source_is_valid = not validate_source(source, config)
-    if export is not None and source_is_valid:
-        expected_export = build_export(source, config, paths["source"])
-        if export != expected_export:
-            source_errors.append(f"generated export is stale: {paths['export']}")
+    expected_export = build_export(source, config, paths["source"]) if source_is_valid else None
+    export_is_current = expected_export is not None and export == expected_export
+    if source_is_valid and not export_is_current:
+        source_errors.append(f"generated export is stale: {paths['export']}")
     if source_is_valid:
         expected_csv = csv_text(source)
         if not paths["csv_export"].exists() or paths["csv_export"].read_text(encoding="utf-8") != expected_csv:
             source_errors.append(f"generated CSV is stale: {paths['csv_export']}")
-        expected_site = site_text(build_export(source, config, paths["source"]))
+        expected_site = site_text(expected_export)
         if not paths["site"].exists() or paths["site"].read_text(encoding="utf-8") != expected_site:
             source_errors.append(f"generated site is stale: {paths['site']}")
+        if export_is_current:
+            try:
+                expected_gnn = gnn_terms_text(source, config, paths)
+            except OntologyError as exc:
+                source_errors.append(str(exc))
+            else:
+                if (
+                    not paths["gnn_terms"].exists()
+                    or paths["gnn_terms"].read_text(encoding="utf-8") != expected_gnn
+                ):
+                    source_errors.append(f"generated GNN terms are stale: {paths['gnn_terms']}")
     source_errors.extend(validate_manifest(paths["manifest"], config))
     manifest = None
     try:
@@ -981,6 +1149,18 @@ def site_command(config: dict[str, Any], *, check: bool = False) -> int:
     if not write_atomic(paths["site"], site_text(export), check=check):
         raise OntologyError(f"generated site is stale: {paths['site']}")
     print(f"{'Checked' if check else 'Wrote'} {paths['site'].relative_to(ROOT)}")
+    return 0
+
+
+def gnn_terms_command(config: dict[str, Any], *, check: bool = False) -> int:
+    paths = configured_paths(config)
+    source = read_json(paths["source"])
+    errors = validate_source(source, config)
+    if errors:
+        raise OntologyError("source validation failed:\n- " + "\n- ".join(errors))
+    if not write_atomic(paths["gnn_terms"], gnn_terms_text(source, config, paths), check=check):
+        raise OntologyError(f"generated GNN terms are stale: {paths['gnn_terms']}")
+    print(f"{'Checked' if check else 'Wrote'} {paths['gnn_terms'].relative_to(ROOT)}")
     return 0
 
 
@@ -1159,6 +1339,7 @@ def make_parser() -> argparse.ArgumentParser:
     sub.add_parser("schema-check")
     sub.add_parser("export-csv").add_argument("--check", action="store_true")
     sub.add_parser("site").add_argument("--check", action="store_true")
+    sub.add_parser("gnn-terms").add_argument("--check", action="store_true")
     migrate = sub.add_parser("migrate-csv")
     migrate.add_argument("csv", type=Path)
     migrate.add_argument("--output", type=Path, required=True)
@@ -1191,6 +1372,8 @@ def main(argv: Iterable[str] | None = None) -> int:
             return export_csv_command(config, check=args.check)
         if args.command == "site":
             return site_command(config, check=args.check)
+        if args.command == "gnn-terms":
+            return gnn_terms_command(config, check=args.check)
         if args.command == "migrate-csv":
             return migrate_command(args, config)
         if args.command == "audit-csv":

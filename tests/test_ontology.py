@@ -42,6 +42,13 @@ class OntologyPipelineTests(unittest.TestCase):
         self.assertTrue(ontology.write_atomic(self.paths["export"], ontology.canonical_json(self.export), check=True))
         self.assertTrue(ontology.write_atomic(self.paths["csv_export"], ontology.csv_text(self.source), check=True))
         self.assertTrue(ontology.write_atomic(self.paths["site"], ontology.site_text(self.export), check=True))
+        self.assertTrue(
+            ontology.write_atomic(
+                self.paths["gnn_terms"],
+                ontology.gnn_terms_text(self.source, self.config, self.paths),
+                check=True,
+            )
+        )
 
     def test_json_schema_contracts_validate_live_documents(self) -> None:
         manifest = ontology.read_json(self.paths["manifest"])
@@ -369,6 +376,131 @@ class OntologyPipelineTests(unittest.TestCase):
         site = ontology.site_text(export)
         self.assertNotIn("</script><img", site)
         self.assertIn("<\\/script>", site)
+
+    def test_gnn_terms_bridge_is_generated_and_current(self) -> None:
+        expected = ontology.gnn_terms_text(self.source, self.config, self.paths)
+        self.assertTrue(
+            ontology.write_atomic(self.paths["gnn_terms"], expected, check=True)
+        )
+        document = ontology.read_json(self.paths["gnn_terms"])
+        self.assertEqual(document["schema"], ontology.GNN_TERMS_SCHEMA)
+        self.assertEqual(document["release"], self.source["release"])
+        self.assertEqual(document["source"]["sha256"], ontology.sha256(self.paths["source"]))
+        self.assertEqual(document["export"]["sha256"], ontology.sha256(self.paths["export"]))
+
+    def test_gnn_terms_projection_and_mapping_rule(self) -> None:
+        document = ontology.read_json(self.paths["gnn_terms"])
+        source_ids = {term["id"]: term for term in self.source["terms"]}
+        self.assertEqual(set(document["terms"]), {term["term"] for term in self.source["terms"]})
+        self.assertEqual(document["counts"]["terms"], len(self.source["terms"]))
+        for label, entry in document["terms"].items():
+            self.assertEqual(entry["id"], source_ids[entry["id"]]["id"])
+            self.assertEqual(source_ids[entry["id"]]["term"], label)
+        declared = document["declared"]
+        self.assertEqual(len(declared), document["counts"]["declaredLabels"])
+        resolved = {label: entry for label, entry in declared.items() if entry["status"] == "resolved"}
+        unresolved = [label for label, entry in declared.items() if entry["status"] == "unresolved"]
+        self.assertEqual(len(resolved), document["counts"]["resolvedDeclaredLabels"])
+        self.assertEqual(len(unresolved), document["counts"]["unresolvedDeclaredLabels"])
+        self.assertEqual(len(resolved) + len(unresolved), 64)
+        for label, entry in resolved.items():
+            term = source_ids[entry["id"]]
+            self.assertEqual(entry["match"], "normalized-label")
+            self.assertEqual(entry["ontologyTerm"], term["term"])
+            self.assertEqual(
+                ontology.normalize_label(label), ontology.normalize_label(term["term"])
+            )
+        for entry in declared.values():
+            if entry["status"] == "unresolved":
+                self.assertIsNone(entry["id"])
+                self.assertIsNone(entry["match"])
+                self.assertIsNone(entry["ontologyTerm"])
+        mapping_targets = [entry["id"] for entry in declared.values() if entry["id"]]
+        mapping_targets += [entry["id"] for entry in document["terms"].values()]
+        self.assertTrue(all(target.startswith("term-") for target in mapping_targets))
+        self.assertFalse(any(target.startswith("obo:") for target in mapping_targets))
+
+    def test_gnn_terms_placeholder_uris_are_recorded_but_not_used(self) -> None:
+        declared_input = ontology.load_gnn_declared_labels(self.paths["gnn_declared_labels"])
+        self.assertEqual(len(declared_input["labels"]), 64)
+        self.assertTrue(
+            all(entry["declaredUri"].startswith("obo:") for entry in declared_input["labels"])
+        )
+        self.assertIn("Neither prefix resolves", declared_input["source"]["uriPolicy"])
+
+    def test_stale_gnn_terms_fail_validation(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            copy = Path(directory) / "repo"
+            shutil.copytree(ROOT, copy)
+            (copy / "GNN/act_inf_ontology_terms.json").write_text("{}\n", encoding="utf-8")
+            result = subprocess.run(
+                [sys.executable, str(copy / "scripts/ontology.py"), "validate", "--strict"],
+                cwd=copy,
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("generated GNN terms are stale", result.stderr)
+
+    def test_gnn_terms_check_mode_rejects_drift(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            copy = Path(directory) / "repo"
+            shutil.copytree(ROOT, copy)
+            artifact = copy / "GNN/act_inf_ontology_terms.json"
+            artifact.write_text("{}\n", encoding="utf-8")
+            stale = subprocess.run(
+                [sys.executable, str(copy / "scripts/ontology.py"), "gnn-terms", "--check"],
+                cwd=copy,
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+            self.assertEqual(stale.returncode, 2)
+            self.assertIn("generated GNN terms are stale", stale.stderr)
+            refreshed = subprocess.run(
+                [sys.executable, str(copy / "scripts/ontology.py"), "gnn-terms"],
+                cwd=copy,
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+            self.assertEqual(refreshed.returncode, 0, refreshed.stderr)
+
+    def test_gnn_declared_labels_input_rejects_duplicates_and_bad_provenance(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            document = json.loads(
+                (ROOT / "GNN/declared-labels.json").read_text(encoding="utf-8")
+            )
+            document["labels"].append({"label": "hiddenstate", "declaredUri": None})
+            path = Path(directory) / "declared-labels.json"
+            path.write_text(ontology.canonical_json(document), encoding="utf-8")
+            with self.assertRaises(ontology.OntologyError):
+                ontology.load_gnn_declared_labels(path)
+
+            document = json.loads(
+                (ROOT / "GNN/declared-labels.json").read_text(encoding="utf-8")
+            )
+            document["source"]["sha256"] = "not-a-digest"
+            path.write_text(ontology.canonical_json(document), encoding="utf-8")
+            with self.assertRaises(ontology.OntologyError):
+                ontology.load_gnn_declared_labels(path)
+
+    def test_gnn_terms_require_current_export(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            copy = Path(directory) / "repo"
+            shutil.copytree(ROOT, copy)
+            export_path = copy / "ontology.json"
+            export_path.write_text("{}\n", encoding="utf-8")
+            result = subprocess.run(
+                [sys.executable, str(copy / "scripts/ontology.py"), "gnn-terms"],
+                cwd=copy,
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+        self.assertEqual(result.returncode, 2)
+        self.assertIn("generated export is stale", result.stderr)
 
 
 if __name__ == "__main__":
