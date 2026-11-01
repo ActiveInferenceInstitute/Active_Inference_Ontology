@@ -9,6 +9,7 @@ python3 -m pip install -r requirements-ci.txt
 python3 scripts/ontology.py build
 python3 scripts/ontology.py export-csv
 python3 scripts/ontology.py site
+python3 scripts/ontology.py gnn-terms
 python3 scripts/ontology.py validate --strict
 python3 scripts/ontology.py schema-check
 python3 scripts/ontology.py report
@@ -30,7 +31,7 @@ Strict validation checks:
 - allowed lists, tags, statuses, and relation types;
 - required Core metadata;
 - relation targets, duplicate relations, and self-relations;
-- deterministic JSON, CSV, and site freshness;
+- deterministic JSON, CSV, site, and GNN vocabulary bridge freshness;
 - release paths, schema versions, counts, and SHA-256 hashes for current and archived artifacts.
 
 The manifest validator also rejects duplicate release versions, non-numeric release
@@ -48,12 +49,13 @@ python3 scripts/ontology.py schema-check
 python3 scripts/ontology.py build --check
 python3 scripts/ontology.py export-csv --check
 python3 scripts/ontology.py site --check
+python3 scripts/ontology.py gnn-terms --check
 python3 -m unittest discover -s tests -v
 ```
 
-`build`, `export-csv`, and `site` write through temporary files followed by atomic
-replacement. The `--check` forms are read-only and fail when a generated artifact is
-missing or stale.
+`build`, `export-csv`, `site`, and `gnn-terms` write through temporary files
+followed by atomic replacement. The `--check` forms are read-only and fail when a
+generated artifact is missing or stale.
 
 ## Manuscript publication gate
 

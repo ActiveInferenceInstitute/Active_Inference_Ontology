@@ -39,7 +39,9 @@ and [`AGENTS.md`](../AGENTS.md).
 - **Supporting mappings:** [`sumo-integration.md`](sumo-integration.md) and
   [`sumo-mapping-contract.md`](sumo-mapping-contract.md) scope the SUMO support;
   [`downstream-integration.md`](downstream-integration.md) shows how to import
-  JSON, CSV, and schemas.
+  JSON, CSV, and schemas and defines the GNN vocabulary bridge contract; the
+  generated bridge itself and its reviewed input live in
+  [`../GNN/`](../GNN/README.md).
 - **Open frontier:** [`future-curation-relations.md`](future-curation-relations.md)
   records the not-yet-implemented typed-relations proposal — treat it as design,
   not current behavior.

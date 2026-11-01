@@ -15,6 +15,8 @@ tag. The sidecar declares this with `ecosystem.relations` (`referenced-by` the J
 - `ontology.json` — the version 2 machine-readable export.
 - `releases.json` — the hashed release manifest, including archived versions.
 - `site/index.html` — the generated dependency-free browser surface.
+- `GNN/` — the generated bridge to the GNN pipeline's `ActInfOntologyAnnotation`
+  vocabulary and its reviewed declared-label input.
 - `docs/manuscript/` — the template-compatible manuscript source and generated publication artifacts.
 
 These are declared as artifacts in the modular sidecar; the sidecar validator confirms

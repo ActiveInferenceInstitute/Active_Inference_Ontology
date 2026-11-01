@@ -22,6 +22,9 @@ tasks:
   site:
     cmd: python3 scripts/ontology.py site
     description: Regenerate the dependency-free browsable site.
+  gnn-terms:
+    cmd: python3 scripts/ontology.py gnn-terms
+    description: Regenerate the GNN vocabulary bridge from the canonical source.
   manuscript-generate:
     cmd: python3 scripts/manuscript.py generate
     description: Generate manuscript variables, figures, tables, and resolved sections.

@@ -15,4 +15,5 @@ artifacts:
   - {path: docs/manuscript/artifact-manifest.json, kind: dataset, description: Hashed manuscript artifact manifest.}
   - {path: releases.json,                kind: dataset, description: Hashed release and archive manifest.}
   - {path: SUMO,                         kind: dataset, description: Suggested Upper Merged Ontology mapping material.}
+  - {path: GNN,                          kind: dataset, description: Generated GNN vocabulary bridge and its reviewed declared-label input.}
   - {path: LICENSE,                      kind: doc,     description: CC-BY-4.0 license.}

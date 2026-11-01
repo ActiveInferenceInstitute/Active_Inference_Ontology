@@ -72,6 +72,7 @@ python3 scripts/ontology.py schema-check
 python3 scripts/ontology.py build --check
 python3 scripts/ontology.py export-csv --check
 python3 scripts/ontology.py site --check
+python3 scripts/ontology.py gnn-terms --check
 python3 -m unittest discover -s tests -v
 MANUSCRIPT_PORTABLE_CHECK=1 python3 scripts/manuscript.py validate --strict
 MANUSCRIPT_PORTABLE_CHECK=1 python3 scripts/manuscript.py check
