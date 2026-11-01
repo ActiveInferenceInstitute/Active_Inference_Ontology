@@ -20,15 +20,17 @@ documented below), with the remaining action owned by the CI platform / a domain
 1. **Figure byte-reproducibility is host-dependent (not a code defect).**
    - Affected: `scripts/manuscript.py` (`figure_bytes`), committed `docs/manuscript/output/figures/*.png`,
      and the manuscript regression tests that previously demanded byte-equal figures.
-   - Why it matters: matplotlib rasterization (font/anti-aliasing bytes) differs across OSes.
-     The committed PNGs are canonical to the CI/Linux toolchain; an off-CI checkout regenerates
-     byte-different (but visually equivalent) figures, so byte-strict checks report "stale" locally.
-     This is documented intended behavior, not an integrity break. **Do not blindly regenerate/commit**
-     local PNGs — that would swap the canonical reference away from CI and break the remote gate.
-   - Resolution (this pass): the manuscript tests now honor the documented `MANUSCRIPT_PORTABLE_CHECK`
-     contract (the same flag CI's `generate --check` step uses), so the suite is runnable on any host,
-     while CI's authoritative `validate --strict` and `check` steps remain byte-strict over the canonical
-     figures. Documented in `docs/build-and-validation.md` and `docs/manuscript/README.md`.
+   - Why it matters: matplotlib rasterization (font hinting and anti-aliasing bytes) differs per
+     host, and the committed PNGs reproduce neither with the pinned toolchain on a maintainer host
+     (Python 3.12, `matplotlib==3.10.3`) nor on the CI runner, so a globally byte-strict figure
+     check fails wherever it is asserted. **Do not regenerate and commit local PNGs** to chase
+     that: the committed figures stay the published assets and the fix is to scope the comparison,
+     not to swap the reference.
+   - Resolution (2026-11-01): the manuscript tests honor `MANUSCRIPT_PORTABLE_CHECK` so the suite
+     runs on any host, the committed assets keep a structural check (valid PNG, 1280x720 canvas),
+     and the CI manuscript job regenerates the artifacts in its own toolchain and then requires
+     byte-identity for every artifact that is not rasterized. Documented in
+     `docs/build-and-validation.md` and `docs/manuscript/README.md`.
 
 2. **Mention-relation extraction is intentionally conservative (semantic ceiling).**
    - Affected: `scripts/ontology.py::mention_relations`, source `connectionsText`, `docs/manuscript/05_discussion.md`.
@@ -79,15 +81,53 @@ pipeline annotates (`ActInfOntologyAnnotation`, Step 10). The bridge is generate
 
 ### Major
 
-6. **No ontology gate has run in CI since the pinned sidecar-validator install step was added.**
-   Runs from 2026-08-01 onward fail in two independent, pre-existing places: the `validate` job
-   stops at "Install pinned InstituteOS sidecar validator" (`fatal: could not read Username for
+6. **No ontology gate had run in CI since the pinned sidecar-validator install step was added.**
+   Runs from 2026-08-01 onward failed in two independent, pre-existing places: the `validate` job
+   stopped at "Install pinned InstituteOS sidecar validator" (`fatal: could not read Username for
    'https://github.com'`, so the pinned project is not readable from public CI, and the pinned
    revision no longer provides the `instituteos.platform.aii_sidecar` module the next step
-   invokes), and the `manuscript` job stops at "Verify manuscript structure and hashes" (the six
+   invokes), and the `manuscript` job stopped at "Verify manuscript structure and hashes" (the six
    `docs/manuscript/output/figures/*.png` reported stale on the CI toolchain, the host-dependent
-   figure bytes recorded as Major #1 above). Neither is caused by this pass and neither is
-   fixable from inside this repository alone; the action is owned by the CI platform.
+   figure bytes recorded as Major #1 above). **Repaired in the follow-up pass below.**
+
+## Completed / Closed (2026-11-01 public CI repair)
+
+Follow-up to the alignment pass, scoped to the two CI failures it uncovered. Local commits only.
+
+### Minor
+
+1. **Public workflow now runs dependency-free gates only.** The "Install pinned InstituteOS
+   sidecar validator" and "Verify sidecar structure" steps are gone from
+   `.github/workflows/ontology.yml`; both jobs keep every public gate (`validate --strict`,
+   `schema-check`, `build --check`, `export-csv --check`, `site --check`, `gnn-terms --check`,
+   `report`, the regression suite, and `diff`). The workflow header states why the sidecar check is
+   separated, and `docs/build-and-validation.md` gained a "Private and manual checks" section with
+   the authoritative command (`python -m aii_platform.aii_sidecar.validate <repo>`), the
+   environment it needs, and the public structural fallback. No sidecar validation rule was
+   removed. (✓ `daf84fe`)
+2. **Public sidecar coverage restored without private dependencies.** `tests/test_sidecar.py`
+   deep-merges the sidecar fragments and asserts the documented invariants: schema marker,
+   required sections, artifact kinds and existing paths, documentation paths under `.aii/`,
+   `owner/repo` relation targets, resolving links, and complete task declarations. It runs in the
+   public `validate` job. Cross-checked against the authoritative validator in the private
+   environment: both report OK, and that validator's artifact-path check was confirmed
+   non-vacuous with a negative control (a bogus path reports `artifact path not found`).
+   (✓ `daf84fe`)
+3. **`aii_sidecar` references corrected.** The sidecar comments, README, agent guide, and
+   integration notes named `instituteos.platform.aii_sidecar`, which does not exist in the pinned
+   distribution; they now name `aii_platform.aii_sidecar` and state that it needs the private
+   kernel environment. Sidecar version 1.2.1. (✓ `daf84fe`)
+
+### Medium
+
+4. **Figure-byte gate scoped honestly.** The manuscript job regenerates the publication artifacts
+   in the CI toolchain (`generate`, then `manifest`) and requires byte-identity only for artifacts
+   that are not rasterized (`git diff --exit-code -- docs/manuscript`, excluding
+   `output/figures/**` and the manifest that hashes those figures); structure, references, the
+   claim ledger, and all hashes stay strict. The committed figure assets gained a structural
+   regression check (valid PNG, 1280x720 canvas), and the "byte-canonical to the CI toolchain"
+   claim is corrected in `docs/build-and-validation.md`, `docs/manuscript/README.md`,
+   `CONTRIBUTING.md`, `AGENTS.md`, and Major #1 above. (✓ `daf84fe`)
 
 ## Completed / Closed (2026-08-02 docs-deep review pass)
 
@@ -176,15 +216,19 @@ manuscript gates pass on the canonical checks.
   the 2026-11-01 pass.
 - The GNN vocabulary bridge, the route/command gates, and the `.aii/` sidecar declarations pass on
   this host against the current sidecar validator (including its artifact-path check).
+- The manuscript test file reports one failure and one error on this host
+  (`matplotlib` recursion on Python 3.14); both reproduce identically at `main` in a clean worktree.
 
 ## Open / deferred
 
-- Major #1 (CI-canonical figure bytes): owned by the CI platform; no action needed on any host.
+- Major #1 (figure byte portability, 2026-11-01): scoped — CI regenerates the figures in its own
+  toolchain and compares everything that is not rasterized; no host claims byte canonicity for the
+  committed PNGs.
 - Major #2 (alias-aware mentions / native typed relations): domain-curator decision; options and
   controls are scoped in `docs/future-curation-relations.md`.
-- Major #6 (CI gate execution, 2026-11-01): the sidecar-validator install step blocks the whole
-  `validate` job before any ontology gate runs, and the `manuscript` job's byte-strict figure check
-  fails on the CI toolchain. Both are owned by the CI platform.
+- Major #6 (CI gate execution, 2026-11-01): repaired in `daf84fe`; the public jobs no longer depend
+  on the private sidecar validator, and a credentialed run of that validator stays a documented
+  manual step.
 - Rendered-format regeneration (`manuscript.py render`) requires the full Pandoc / XeLaTeX /
   `pandoc-crossref` / qpdf toolchain; committed rendered artifacts remain manifest-validated
   without it.
