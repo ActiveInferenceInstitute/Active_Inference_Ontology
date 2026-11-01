@@ -79,10 +79,12 @@ MANUSCRIPT_PORTABLE_CHECK=1 python3 scripts/manuscript.py check
 ```
 
 `MANUSCRIPT_PORTABLE_CHECK=1` skips only the raw figure-byte comparison on
-hosts whose matplotlib rasterization differs from the CI toolchain; all other
+hosts whose matplotlib rasterization differs from the committed PNGs; all other
 integrity checks stay enforced (see
 [`docs/build-and-validation.md`](docs/build-and-validation.md)). CI runs the
-same gates on every push, with the manuscript figures checked byte-exactly.
+same gates on every push; its manuscript job regenerates the figures in the
+runner toolchain and then requires byte-identity for every artifact that is
+not rasterized.
 
 ## Release changes
 

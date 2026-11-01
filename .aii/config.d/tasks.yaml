@@ -1,5 +1,5 @@
 # Modular fragment — portable runnable tasks for InstituteOS.
-# Deep-merged over config.yaml at load time (instituteos.platform.aii_sidecar).
+# Deep-merged over config.yaml at load time (aii_platform.aii_sidecar).
 tasks:
   validate:
     cmd: python3 scripts/ontology.py validate --strict

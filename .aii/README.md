@@ -31,10 +31,11 @@ repos — without touching the repo's own content (like `.github/`).
 | `integration` | toggles: `analytics`, `dashboard`, `sync` |
 | `docs[]` | paths under `.aii/` (validated to exist) |
 
-Validate (and score completeness): `python -m instituteos.platform.aii_sidecar.validate <repo>`.
+Validate (and score completeness): `python -m aii_platform.aii_sidecar.validate <repo>`.
 The validator checks the schema, that artifact/manifest/doc paths exist, that repo-relative
-links resolve, and that relation targets are `owner/repo`.
-
+links resolve, and that relation targets are `owner/repo`. It ships in the private platform
+kernel package, so run it where that environment exists; the public regression suite keeps a
+dependency-free structural check of this sidecar.
 
 ## Modular config
 
@@ -44,8 +45,8 @@ load time. Here, `config.d/tasks.yaml` holds the task definitions, keeping conce
 ## Tasks (portable, runnable)
 
 ```
-python -m instituteos.platform.aii_sidecar.run <repo> --list
-python -m instituteos.platform.aii_sidecar.run <repo> validate
+python -m aii_platform.aii_sidecar.run <repo> --list
+python -m aii_platform.aii_sidecar.run <repo> validate
 ```
 `validate` · `build` · `lint` · `schema-check` · `audit-csv` · `report` · `site` ·
 `gnn-terms` map to `scripts/ontology.py`; `manuscript-generate` ·
@@ -53,5 +54,5 @@ python -m instituteos.platform.aii_sidecar.run <repo> validate
 `scripts/manuscript.py`. Tasks execute repo-declared commands — run them only for
 trusted repos.
 
-Canonical sidecar schema/source: `instituteos.platform.aii_sidecar` in
-[InstituteOS](https://github.com/ActiveInferenceInstitute/InstituteOS).
+Canonical sidecar schema and source: `aii_platform.aii_sidecar`, in the InstituteOS platform
+kernel package.

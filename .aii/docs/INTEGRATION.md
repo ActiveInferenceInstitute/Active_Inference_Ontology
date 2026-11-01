@@ -19,9 +19,10 @@ tag. The sidecar declares this with `ecosystem.relations` (`referenced-by` the J
   vocabulary and its reviewed declared-label input.
 - `docs/manuscript/` — the template-compatible manuscript source and generated publication artifacts.
 
-These are declared as artifacts in the modular sidecar; the sidecar validator confirms
-the integration paths exist. The ontology CLI separately validates content and generated
-artifact freshness.
+These are declared as artifacts in the modular sidecar; the sidecar validator confirms the
+integration paths exist. That validator ships in the private platform kernel package, so it
+runs outside public CI, where a dependency-free structural check covers the same paths. The
+ontology CLI separately validates content and generated artifact freshness.
 
 ## Completeness
 
@@ -34,6 +35,6 @@ integrity are checked by `python3 scripts/manuscript.py validate --strict`. Lice
 
 ## Maintaining this sidecar
 
-- Keep `config.yaml` valid: `python -m instituteos.platform.aii_sidecar.validate <repo>`.
+- Keep `config.yaml` valid: `python -m aii_platform.aii_sidecar.validate <repo>`.
 - Bump `meta.sidecar_version` + `meta.updated` when you change sidecar content.
 - The sidecar is standalone — it must make sense in this repo without the InstituteOS monorepo.

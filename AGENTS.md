@@ -35,9 +35,10 @@ python3 scripts/manuscript.py validate --strict
 ```
 
 The full acceptance gate is documented in `CONTRIBUTING.md`. On hosts whose
-matplotlib rasterization differs from CI, run manuscript checks with
-`MANUSCRIPT_PORTABLE_CHECK=1` (figure bytes only; all other integrity checks
-stay enforced).
+matplotlib rasterization differs from the committed figures, run manuscript
+checks with `MANUSCRIPT_PORTABLE_CHECK=1` (figure bytes only; all other
+integrity checks stay enforced); CI regenerates the figures in its own
+toolchain and compares every other artifact byte-exactly.
 
 ## Conventions
 
