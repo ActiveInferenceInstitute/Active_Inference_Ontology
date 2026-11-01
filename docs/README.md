@@ -5,6 +5,7 @@ integrity checks, curation process, historical archives, and integration surface
 
 | Document | Use it for |
 | --- | --- |
+| [Agent Guide](AGENTS.md) | Agent reading order, concept graph, and conventions for this directory. |
 | [Source Data Contract](source-data-contract.md) | Structured source fields and validation policy. |
 | [JSON Export Contract](json-export-contract.md) | Version 2 export and graph shape. |
 | [Migration v2](migration-v2.md) | Breaking changes and consumer migration. |
