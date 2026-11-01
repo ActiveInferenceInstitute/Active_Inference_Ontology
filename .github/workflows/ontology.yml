@@ -15,7 +15,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v7
         with:
           python-version: "3.12"
       - name: Install pinned schema validator
@@ -38,6 +38,8 @@ jobs:
         run: python3 scripts/ontology.py export-csv --check
       - name: Verify browsable site
         run: python3 scripts/ontology.py site --check
+      - name: Verify GNN vocabulary bridge
+        run: python3 scripts/ontology.py gnn-terms --check
       - name: Build validation report
         run: python3 scripts/ontology.py report > /tmp/ontology-validation-report.json
       - name: Run ontology regression tests
@@ -52,7 +54,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v7
         with:
           python-version: "3.12"
       - name: Install pinned manuscript dependencies

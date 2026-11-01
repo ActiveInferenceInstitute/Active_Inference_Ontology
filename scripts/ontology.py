@@ -31,7 +31,7 @@ GNN_MATCH_RULE = (
     "casefold and remove every character outside [a-z0-9], then require exactly one "
     "ontology label (or alias) to normalize to the same key"
 )
-PINNED_JSONSCHEMA = "4.24.0"
+PINNED_JSONSCHEMA = "4.26.0"
 SOURCE_COLUMNS = [
     "List",
     "Tag",
