@@ -43,3 +43,51 @@ treated as a stronger semantic assertion.
 
 The CSV is a generated spreadsheet export. Consumers needing stable machine imports
 should use the JSON export and the schemas under `../schemas/`.
+
+## GNN vocabulary bridge
+
+[`GNN/act_inf_ontology_terms.json`](../GNN/act_inf_ontology_terms.json) is the generated
+bridge to the GNN pipeline's `ActInfOntologyAnnotation` vocabulary (Step 10 ontology
+processing). It is derived from the canonical source and export and is checked for
+freshness by `validate`; it is an integration surface, not a release artifact, so it is
+not listed in the release manifest.
+
+| Field | Meaning |
+| --- | --- |
+| `release` | Content release metadata, copied from the source. |
+| `source`, `export` | The source and export paths plus the SHA-256 digests the document was generated from. |
+| `matchRule` | The deterministic rule used to resolve the declared GNN labels. |
+| `terms` | Every canonical ontology label mapped to `id`, `status`, `tag`, and primary `description`. Join on `id`. |
+| `declared` | The labels declared by GNN's bundled vocabulary (pinned in [`GNN/declared-labels.json`](../GNN/declared-labels.json)) with `status`, `match`, `id`, and `ontologyTerm`. |
+
+Declared-label resolution status:
+
+- `resolved` — exactly one ontology label (or alias) normalizes to the same key under
+  the documented rule. The mapping target is the ontology stable `id`.
+- `unresolved` — no counterpart exists in the current release. `id` stays `null`; the
+  label requires ontology curation or a GNN-side migration and is never guessed.
+
+### Freshness and pinning
+
+```bash
+python3 scripts/ontology.py gnn-terms
+python3 scripts/ontology.py gnn-terms --check
+```
+
+A consumer pin is the ontology repository commit plus the SHA-256 of
+`GNN/act_inf_ontology_terms.json`. The document records the source and export digests
+it was generated from, so a consumer can verify the projection as well as the file.
+GNN should pin both its copy of the bridge and the ontology revision and fail its own
+freshness check when the ontology side has moved, mirroring the repository's
+companion-pin freshness pattern.
+
+### Declared `obo:` values are not identifiers
+
+The audited GNN vocabulary declares OBO-style `uri` values such as `obo:ACTO_000001`
+and `obo:TEMP_000016`. No `ACTO` ontology exists in the OBO Foundry registry, the
+Bioregistry, or OLS, and `http://purl.obolibrary.org/obo/ACTO_000001` does not resolve.
+Those values are local placeholders recorded in
+[`GNN/declared-labels.json`](../GNN/declared-labels.json) for audit only. This bridge
+maps labels to stable `term-*` IDs and never adopts a declared placeholder as an
+identifier.
+

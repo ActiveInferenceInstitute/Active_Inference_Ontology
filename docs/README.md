@@ -15,7 +15,7 @@ integrity checks, curation process, historical archives, and integration surface
 | [Archive and Provenance](archive-and-provenance.md) | Immutable historical material and hashes. |
 | [SUMO Integration](sumo-integration.md) | SUMO support scope. |
 | [SUMO Mapping Contract](sumo-mapping-contract.md) | Mapping fields and review states. |
-| [Downstream Integration](downstream-integration.md) | Importing JSON, CSV, and schemas. |
+| [Downstream Integration](downstream-integration.md) | Importing JSON, CSV, and schemas, and the GNN vocabulary bridge contract. |
 | [Release Workflow](release-workflow.md) | Publishing a content release. |
 | [Version Diff](version-diff.md) | Comparing structured source releases by stable ID. |
 | [Manuscript](manuscript/README.md) | Template-compatible manuscript source, generation, rendering, and integrity checks. |

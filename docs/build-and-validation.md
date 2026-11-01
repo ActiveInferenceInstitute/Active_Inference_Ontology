@@ -9,6 +9,7 @@ python3 -m pip install -r requirements-ci.txt
 python3 scripts/ontology.py build
 python3 scripts/ontology.py export-csv
 python3 scripts/ontology.py site
+python3 scripts/ontology.py gnn-terms
 python3 scripts/ontology.py validate --strict
 python3 scripts/ontology.py schema-check
 python3 scripts/ontology.py report
@@ -30,7 +31,7 @@ Strict validation checks:
 - allowed lists, tags, statuses, and relation types;
 - required Core metadata;
 - relation targets, duplicate relations, and self-relations;
-- deterministic JSON, CSV, and site freshness;
+- deterministic JSON, CSV, site, and GNN vocabulary bridge freshness;
 - release paths, schema versions, counts, and SHA-256 hashes for current and archived artifacts.
 
 The manifest validator also rejects duplicate release versions, non-numeric release
@@ -48,12 +49,13 @@ python3 scripts/ontology.py schema-check
 python3 scripts/ontology.py build --check
 python3 scripts/ontology.py export-csv --check
 python3 scripts/ontology.py site --check
+python3 scripts/ontology.py gnn-terms --check
 python3 -m unittest discover -s tests -v
 ```
 
-`build`, `export-csv`, and `site` write through temporary files followed by atomic
-replacement. The `--check` forms are read-only and fail when a generated artifact is
-missing or stale.
+`build`, `export-csv`, `site`, and `gnn-terms` write through temporary files
+followed by atomic replacement. The `--check` forms are read-only and fail when a
+generated artifact is missing or stale.
 
 ## Manuscript publication gate
 
@@ -68,17 +70,39 @@ derived counts, and figure-input digests. Install
 `requirements-manuscript.txt` plus Pandoc, `pandoc-crossref`, XeLaTeX, and qpdf for
 the complete local rendering gate.
 
-### Figure byte checks and CI portability
+### Figure byte checks and host portability
 
-Committed figure PNGs are byte-canonical to the toolchain that generated them (the CI
-runner). `generate --check` verifies figure **bytes** against the committed PNGs, and
-matplotlib rasterization (font/anti-aliasing) can differ across operating systems for the
-same version. Running the manuscript gates on a host whose rendering differs from the CI
-canonical platform will report `generated figure is stale` even though the figures are
-correct and current for CI.
+`generate --check` verifies figure **bytes** against the committed PNGs, and matplotlib
+rasterization (font hinting and anti-aliasing) is host-dependent: regenerating the six
+figures with the pinned toolchain (`matplotlib==3.10.3`) reproduces neither the committed
+bytes on an off-CI host nor those on the CI runner. The committed PNGs stay the published
+assets, and the byte comparison is scoped per host instead of being asserted globally.
 
-To check an off-CI checkout without that environmental byte difference, set
-`MANUSCRIPT_PORTABLE_CHECK=1` (the exact flag the CI `generate --check` step uses). The
-registry input digests, generated-variable freshness, and manifest hashes remain enforced;
-only the raw rasterized PNG byte comparison is skipped. See
-[`docs/manuscript/README.md`](manuscript/README.md).
+- On a host whose rasterization differs, set `MANUSCRIPT_PORTABLE_CHECK=1`. Only the raw
+  PNG byte comparison is skipped; the registry input digests, generated-variable
+  freshness, and manifest hashes stay enforced. The committed figure assets keep a
+  structural check in the regression suite (valid PNG, expected canvas size).
+- In CI, the `manuscript` job regenerates the publication artifacts in its own toolchain
+  (`generate`, then `manifest`) and then requires byte-identity for every artifact that is
+  not rasterized: `git diff --exit-code -- docs/manuscript` excluding `output/figures/**`
+  and the manifest that hashes those figures. Structure, references, the claim ledger, and
+  all hashes are then validated against the freshly generated set.
+
+See [`docs/manuscript/README.md`](manuscript/README.md).
+
+## Private and manual checks
+
+`.aii/` (the InstituteOS sidecar) is validated by the `aii_platform.aii_sidecar` validator,
+which ships in a private kernel package and cannot be installed from public
+infrastructure. It is therefore not part of the public workflow. Run it wherever that
+environment and its credentials exist (maintainer host or a credentialed workflow):
+
+```bash
+python -m aii_platform.aii_sidecar.validate <repo>           # OK / problems
+python -m aii_platform.aii_sidecar.validate <repo> --scan    # every sidecar under a tree
+python -m aii_platform.aii_sidecar.run <repo> --list         # declared portable tasks
+```
+
+The public regression suite carries a dependency-free structural check of `.aii/` instead:
+the schema marker, required sections, existing artifact and documentation paths, and
+`owner/repo` relation targets.

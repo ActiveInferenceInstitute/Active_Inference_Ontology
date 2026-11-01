@@ -1,13 +1,13 @@
 # AII sidecar — InstituteOS metadata for this repository (reference exemplar).
-# Schema: instituteos.platform.aii_sidecar.models.AiiSidecar (aii-sidecar/v1)
+# Schema: aii_platform.aii_sidecar.models.AiiSidecar (aii-sidecar/v1)
 # Modular: this core config.yaml is deep-merged with config.d/*.yaml at load time:
 #   config.d/ecosystem.yaml · config.d/artifacts.yaml · config.d/tasks.yaml
-# Validate / score: python -m instituteos.platform.aii_sidecar doctor <repo>
+# Validate / score: python -m aii_platform.aii_sidecar.validate <repo> --completeness
 schema: aii-sidecar/v1
 
 meta:
-  sidecar_version: 1.1.0
-  updated: 2026-07-17
+  sidecar_version: 1.2.1
+  updated: 2026-11-01
 
 repo:
   name: Active_Inference_Ontology
@@ -39,7 +39,7 @@ instituteos:
   registries: []
   tags: [ontology, vocabulary, active-inference, free-energy-principle, controlled-vocabulary]
 
-capabilities: [structured-source, csv-export, json-export, typed-relations, release-integrity, static-site, manuscript-publication, sumo-mapping]
+capabilities: [structured-source, csv-export, json-export, typed-relations, release-integrity, static-site, manuscript-publication, sumo-mapping, gnn-vocabulary-bridge]
 
 integration:
   analytics: true

@@ -8,8 +8,10 @@ Orientation for AI agents and automation working in this repository.
   only editable ontology surface; `ontology.toml` configures paths, release
   metadata, and validation policy.
 - `ontology.json`, `Ontology_v5_May_25_2023.csv`, `site/index.html`,
-  `releases.json`, and everything under `docs/manuscript/output/` are
-  generated. Regenerate them with the CLI; never edit them by hand.
+  `releases.json`, `GNN/act_inf_ontology_terms.json`, and everything under
+  `docs/manuscript/output/` are generated. Regenerate them with the CLI;
+  never edit them by hand. `GNN/declared-labels.json` is reviewed input, not
+  generated.
 - `Archived versions/` is immutable historical evidence — never rewrite it.
 - Every claim about counts, edges, tags, or hashes should be verified by
   running the CLI (or reading the manifest), not copied from prose.
@@ -27,14 +29,16 @@ Orientation for AI agents and automation working in this repository.
 ```bash
 python3 scripts/ontology.py validate --strict   # full source/artifact gate
 python3 scripts/ontology.py report              # quality + integrity report
+python3 scripts/ontology.py gnn-terms --check   # GNN vocabulary bridge freshness
 python3 scripts/ontology.py diff OLD.json NEW.json
 python3 scripts/manuscript.py validate --strict
 ```
 
 The full acceptance gate is documented in `CONTRIBUTING.md`. On hosts whose
-matplotlib rasterization differs from CI, run manuscript checks with
-`MANUSCRIPT_PORTABLE_CHECK=1` (figure bytes only; all other integrity checks
-stay enforced).
+matplotlib rasterization differs from the committed figures, run manuscript
+checks with `MANUSCRIPT_PORTABLE_CHECK=1` (figure bytes only; all other
+integrity checks stay enforced); CI regenerates the figures in its own
+toolchain and compares every other artifact byte-exactly.
 
 ## Conventions
 

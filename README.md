@@ -37,6 +37,7 @@ and typed relation records.
 | [`docs/`](docs/) | Source, export, migration, curation, release, and integration documentation. |
 | [`Archived versions/`](Archived%20versions/) | Immutable historical source evidence. |
 | [`SUMO/`](SUMO/) | SUMO mapping-support material. |
+| [`GNN/`](GNN/) | Generated GNN vocabulary bridge and its reviewed declared-label input. |
 | [`TO-DO.md`](TO-DO.md) | Scoped review worklog (completed and deferred items). |
 | [`CITATION.cff`](CITATION.cff) | Machine-readable citation metadata. |
 | [`.aii/`](.aii/) | InstituteOS sidecar metadata and integration notes. |
@@ -57,6 +58,7 @@ python3 scripts/ontology.py report
 python3 scripts/ontology.py build --check
 python3 scripts/ontology.py export-csv --check
 python3 scripts/ontology.py site --check
+python3 scripts/ontology.py gnn-terms --check
 python3 scripts/ontology.py diff OLD_SOURCE.json NEW_SOURCE.json
 python3 scripts/ontology.py audit-csv INPUT.csv
 python3 scripts/manuscript.py generate
@@ -65,9 +67,10 @@ python3 scripts/manuscript.py render --format all
 python3 scripts/manuscript.py check
 ```
 
-`build`, `export-csv`, and `site` write deterministic artifacts atomically.
-`validate` checks source integrity, generated freshness, relation targets, release
-metadata, archive hashes, and current-release counts. `validate --strict` also
+`build`, `export-csv`, `site`, and `gnn-terms` write deterministic artifacts
+atomically. `validate` checks source integrity, generated freshness (including the
+GNN vocabulary bridge), relation targets, release metadata, archive hashes, and
+current-release counts. `validate --strict` also
 validates the source, export, and release manifest against their published JSON
 Schemas. `report` exposes quality gaps without presenting incomplete historical
 metadata as complete. `audit-csv` reports duplicate labels, generated-ID collisions,
