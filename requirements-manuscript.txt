@@ -1,5 +1,5 @@
 # Pinned publication-layer dependencies. matplotlib stays at the toolchain that
 # produced the committed figure bytes; other pins track the current stable release.
-matplotlib==3.10.3
+matplotlib==3.11.2
 PyYAML==6.0.3
 jsonschema==4.26.0
