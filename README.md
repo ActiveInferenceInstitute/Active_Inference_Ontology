@@ -43,6 +43,9 @@ and typed relation records.
 | [`.aii/`](.aii/) | InstituteOS sidecar metadata and integration notes. |
 | [`LICENSE`](LICENSE) | CC BY 4.0 license text. |
 
+Repositories that consume the notation follow the [GNN downstream adoption
+guide](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/blob/main/docs/gnn/integration/downstream_adoption.md).
+
 ## CLI
 
 Builds and ordinary structural checks use only Python 3.11+. The strict contract
