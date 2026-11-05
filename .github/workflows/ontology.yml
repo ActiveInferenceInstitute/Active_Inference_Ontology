@@ -22,6 +22,41 @@ permissions:
   contents: read
 
 jobs:
+  gnn-conformance:
+    name: gnn conformance (pinned)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Set up Python
+        uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: "3.12"
+      - name: Install pinned GNN parser
+        run: |
+          python -m pip install --disable-pip-version-check --requirement requirements-ci.txt
+          python -m pip install --disable-pip-version-check psutil
+          python - <<'PY'
+          import json
+          import subprocess
+          import sys
+          from pathlib import Path
+
+          pin = json.loads(Path(".github/gnn-pin.json").read_text(encoding="utf-8"))
+          assert pin["repository"] == "ActiveInferenceInstitute/Generalized_Notation_Notation"
+          spec = (
+              "generalized-notation-notation @ "
+              f"git+https://github.com/{pin['repository']}.git@{pin['revision']}"
+          )
+          subprocess.check_call(
+              [sys.executable, "-m", "pip", "install", "--disable-pip-version-check", "--no-deps", spec]
+          )
+          PY
+      - name: Verify pinned vocabulary and bridge
+        run: python3 scripts/validate_gnn_conformance.py
+      - name: Verify generated bridge freshness
+        run: python3 scripts/ontology.py gnn-terms --check
+
   validate:
     runs-on: ubuntu-latest
     steps:

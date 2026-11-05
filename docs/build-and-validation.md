@@ -53,6 +53,13 @@ python3 scripts/ontology.py gnn-terms --check
 python3 -m unittest discover -s tests -v
 ```
 
+The separate `gnn conformance (pinned)` CI job installs the GNN revision in
+[`.github/gnn-pin.json`](../.github/gnn-pin.json), verifies its vocabulary bytes
+against `GNN/declared-labels.json`, and runs
+`python3 scripts/validate_gnn_conformance.py` before the bridge freshness check.
+That job is the parser-facing half of the vocabulary contract; it fails closed
+when the pin, the parser, and the generated bridge disagree.
+
 `build`, `export-csv`, `site`, and `gnn-terms` write through temporary files
 followed by atomic replacement. The `--check` forms are read-only and fail when a
 generated artifact is missing or stale.
