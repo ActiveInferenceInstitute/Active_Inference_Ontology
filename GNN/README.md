@@ -23,3 +23,17 @@ counterpart stay `unresolved` with a null target. No identifier is guessed, and
 GNN's non-resolving `obo:ACTO_*` / `obo:TEMP_*` placeholders are never adopted as
 identifiers. The consumer contract is in
 [`docs/downstream-integration.md`](../docs/downstream-integration.md).
+
+## Pinned parser conformance
+
+[`../.github/gnn-pin.json`](../.github/gnn-pin.json) names the reviewed GNN
+release and revision. The `gnn conformance (pinned)` CI job installs exactly that
+revision, hashes its bundled vocabulary against `declared-labels.json`, compares
+the parser's term set with the bridge's declared labels, and then runs the
+ordinary bridge freshness check. Verify the same contract locally after
+installing the pinned GNN revision:
+
+```bash
+python3 scripts/validate_gnn_conformance.py
+python3 scripts/ontology.py gnn-terms --check
+```
