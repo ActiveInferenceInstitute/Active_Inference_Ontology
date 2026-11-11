@@ -35,7 +35,7 @@ and typed relation records.
 | [`docs/manuscript/`](docs/manuscript/) | Template-compatible manuscript source and rendered publication artifacts. |
 | [`releases.json`](releases.json) | Hashed current and historical release manifest. |
 | [`docs/`](docs/) | Source, export, migration, curation, release, and integration documentation. |
-| [`Archived versions/`](Archived%20versions/) | Immutable historical source evidence. |
+| [`Archived versions/`](Archived%20versions/README.md) | Immutable historical source evidence (indexed by the folder guide). |
 | [`SUMO/`](SUMO/) | SUMO mapping-support material. |
 | [`GNN/`](GNN/) | Generated GNN vocabulary bridge and its reviewed declared-label input. |
 | [`TO-DO.md`](TO-DO.md) | Scoped review worklog (completed and deferred items). |
