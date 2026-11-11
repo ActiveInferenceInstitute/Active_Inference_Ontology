@@ -32,6 +32,7 @@ python3 scripts/ontology.py report              # quality + integrity report
 python3 scripts/ontology.py gnn-terms --check   # GNN vocabulary bridge freshness
 python3 scripts/ontology.py diff OLD.json NEW.json
 python3 scripts/manuscript.py validate --strict
+python3 -m unittest discover -s tests -v   # regression suite
 ```
 
 The full acceptance gate is documented in `CONTRIBUTING.md`. On hosts whose

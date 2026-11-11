@@ -50,7 +50,8 @@ python -m aii_platform.aii_sidecar.run <repo> --list
 python -m aii_platform.aii_sidecar.run <repo> validate
 ```
 `validate` · `build` · `lint` · `schema-check` · `audit-csv` · `report` · `site` ·
-`gnn-terms` map to `scripts/ontology.py`; `manuscript-generate` ·
+`gnn-terms` map to `scripts/ontology.py`; `test` maps to the regression suite
+(`python3 -m unittest discover -s tests -v`); `manuscript-generate` ·
 `manuscript-validate` · `manuscript-render` · `manuscript-check` map to
 `scripts/manuscript.py`. Tasks execute repo-declared commands — run them only for
 trusted repos.

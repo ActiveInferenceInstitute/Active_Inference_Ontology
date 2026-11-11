@@ -503,5 +503,16 @@ class OntologyPipelineTests(unittest.TestCase):
         self.assertIn("generated export is stale", result.stderr)
 
 
+class WorklogConventionTests(unittest.TestCase):
+    """The documented worklog convention is enforced, not only asserted in prose."""
+
+    def test_worklog_is_hyphenated_and_root_todo_is_absent(self) -> None:
+        self.assertTrue((ROOT / "TO-DO.md").is_file())
+        self.assertFalse(
+            (ROOT / "TODO.md").exists(),
+            "use the hyphenated TO-DO.md worklog; a root TODO.md is disallowed",
+        )
+
+
 if __name__ == "__main__":
     unittest.main()

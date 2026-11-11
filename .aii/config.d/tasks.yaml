@@ -4,6 +4,9 @@ tasks:
   validate:
     cmd: python3 scripts/ontology.py validate --strict
     description: Verify source, generated artifacts, release hashes, and contracts.
+  test:
+    cmd: python3 -m unittest discover -s tests -v
+    description: Run the dependency-free regression suite.
   build:
     cmd: python3 scripts/ontology.py build
     description: Regenerate the version 2 JSON export.
