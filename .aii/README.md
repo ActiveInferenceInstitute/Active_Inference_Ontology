@@ -14,6 +14,7 @@ repos — without touching the repo's own content (like `.github/`).
 | [`config.yaml`](config.yaml) | Machine-readable metadata (schema `aii-sidecar/v1`). |
 | [`docs/INTEGRATION.md`](docs/INTEGRATION.md) | InstituteOS-specific integration notes for this repo. |
 | [`README.md`](README.md) · [`AGENTS.md`](AGENTS.md) | Human + agent guidance. |
+| [`readiness.json`](readiness.json) | This repository's tier, baseline commit and waivers for the organization's agent-readiness standard. |
 
 ## `config.yaml` schema (`aii-sidecar/v1`)
 

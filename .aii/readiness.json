@@ -1,0 +1,11 @@
+{
+  "schema": "aii-readiness/v1",
+  "repo": "ActiveInferenceInstitute/Active_Inference_Ontology",
+  "tier": "python-library",
+  "standard_version": "1.0.0",
+  "baseline": {
+    "commit": "a5c31e9170b5bb9cce574a33fd59cfe39e40ca67",
+    "measured_at": "2026-11-10"
+  },
+  "waivers": []
+}

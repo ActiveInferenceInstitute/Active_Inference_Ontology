@@ -1,0 +1,8 @@
+docs:
+- docs/INTEGRATION.md
+- README.md
+- AGENTS.md
+- docs/README.md
+- docs/AGENTS.md
+meta:
+  updated: '2026-11-10'
