@@ -26,8 +26,10 @@ ontology CLI separately validates content and generated artifact freshness.
 
 ## Completeness
 
-The sidecar is modular: the core `config.yaml` deep-merges `config.d/ecosystem.yaml`,
-`config.d/artifacts.yaml`, and `config.d/tasks.yaml`. Its structural completeness is
+The sidecar is modular: the core `config.yaml` deep-merges four fragments —
+`config.d/ecosystem.yaml` (related repositories and links), `config.d/artifacts.yaml`
+(key products), `config.d/docs.yaml` (documentation index and `meta.updated`), and
+`config.d/tasks.yaml` (runnable tasks). Its structural completeness is
 checked by InstituteOS; ontology content and generated-artifact freshness are checked by
 `python3 scripts/ontology.py validate --strict`; manuscript structure and rendered-output
 integrity are checked by `python3 scripts/manuscript.py validate --strict`. Licensed

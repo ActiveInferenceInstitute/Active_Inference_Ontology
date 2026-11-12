@@ -41,7 +41,14 @@ dependency-free structural check of this sidecar.
 ## Modular config
 
 `config.yaml` is the base; any `config.d/*.yaml` fragments are **deep-merged** over it at
-load time. Here, `config.d/tasks.yaml` holds the task definitions, keeping concerns split.
+load time. Here four fragments split the concerns:
+
+| Fragment | Holds |
+| --- | --- |
+| `config.d/ecosystem.yaml` | Related repositories (with the relation and a note) and external links (website, Coda, docs entry point). |
+| `config.d/artifacts.yaml` | The key products this repository provides (source, configuration, exports, schemas, code, tests), each with a kind and description. |
+| `config.d/docs.yaml` | The documentation index (`docs/INTEGRATION.md`, `README.md`, `AGENTS.md`, `docs/README.md`, `docs/AGENTS.md`) and a `meta.updated` stamp. |
+| `config.d/tasks.yaml` | The portable, runnable task definitions listed below. |
 
 ## Tasks (portable, runnable)
 
