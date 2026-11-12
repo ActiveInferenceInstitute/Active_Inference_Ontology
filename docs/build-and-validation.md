@@ -24,7 +24,9 @@ python3 scripts/manuscript.py check
 
 [`../run.sh`](../run.sh) is the single gate entry point. Each arm runs the exact
 command the public workflow runs, so `.github/workflows/ontology.yml` calls arms
-instead of restating commands and there is no second copy to drift.
+instead of restating commands and there is no second copy to drift. With no arm
+(`./run.sh`), it runs `fast` — the default is the cheap inner-loop selection, not the
+full gate.
 
 ```bash
 ./run.sh deps         # one locked install (requirements-manuscript.txt includes -r requirements-ci.txt)

@@ -65,8 +65,8 @@ them by hand; regenerate them with the commands below.
 ## Acceptance gates
 
 [`run.sh`](run.sh) is the single gate entry point, and its arms are the commands the
-public workflow runs. Run from the repository root with the pinned dependencies
-installed (`./run.sh deps`):
+public workflow runs. `./run.sh` with no arm runs `fast`. Run from the repository root
+with the pinned dependencies installed (`./run.sh deps`):
 
 ```bash
 ./run.sh fast          # inner loop: source, export, manifest, sidecar contracts

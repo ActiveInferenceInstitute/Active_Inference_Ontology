@@ -31,8 +31,8 @@ Orientation for AI agents and automation working in this repository.
 same arms.
 
 ```bash
+./run.sh             # default: the fast inner-loop selection
 ./run.sh deps        # one locked install
-./run.sh fast        # inner loop: source/export/manifest/sidecar contracts
 ./run.sh all         # every arm the public workflow runs
 ./run.sh docs        # documentation links, anchors, index, generated numbers
 ```
