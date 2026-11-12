@@ -1,0 +1,13 @@
+# Static-analysis policy for the Python toolchain (`scripts/`, `tests/`).
+#
+# The repository enforces correctness rules only. Line length is deliberately not
+# enforced: the docs and tests carry long prose and table literals, and the suite
+# (not a formatter) is the behaviour contract. Run it through the `lint` gate arm
+# documented in `docs/build-and-validation.md`; do not add a second configuration.
+
+target-version = "py311"
+line-length = 100
+
+[lint]
+select = ["E", "F", "W", "I"]
+ignore = ["E501"]

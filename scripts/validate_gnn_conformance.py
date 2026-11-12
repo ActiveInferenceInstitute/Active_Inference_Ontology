@@ -4,16 +4,19 @@
 The repository already treats ``GNN/declared-labels.json`` as reviewed input and
 ``GNN/act_inf_ontology_terms.json`` as its generated bridge. This check closes
 the other half of that contract: it installs the exact GNN revision named by
-``.github/gnn-pin.json``, verifies the GNN vocabulary bytes that the reviewed
-input records, and compares the pinned parser's term set with the bridge's
-declared labels.
+``.github/gnn-pin.json`` (``--install``, the gate arm does this), verifies the GNN
+vocabulary bytes that the reviewed input records, and compares the pinned
+parser's term set with the bridge's declared labels.
 """
 
 from __future__ import annotations
 
+import argparse
 import hashlib
 import json
 import re
+import subprocess
+import sys
 from importlib import resources
 from pathlib import Path
 from typing import Any
@@ -45,7 +48,42 @@ def _sha256(data: bytes) -> str:
     return hashlib.sha256(data).hexdigest()
 
 
-def main() -> None:
+def install_pin(repository: str, revision: str) -> None:
+    """Install the pinned parser revision into the active interpreter."""
+
+    specification = (
+        f"generalized-notation-notation @ git+https://github.com/{repository}.git@{revision}"
+    )
+    result = subprocess.run(
+        [
+            sys.executable,
+            "-m",
+            "pip",
+            "install",
+            "--disable-pip-version-check",
+            "--no-deps",
+            specification,
+        ],
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    if result.returncode:
+        detail = (result.stderr or result.stdout).strip().splitlines()
+        raise ConformanceError(
+            "installing the pinned GNN parser failed: "
+            + (detail[-1] if detail else "unknown error")
+        )
+
+
+def main(argv: list[str] | None = None) -> None:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--install",
+        action="store_true",
+        help="install the parser revision pinned in .github/gnn-pin.json before verifying",
+    )
+    args = parser.parse_args(argv)
     pin = _read_json(PIN_PATH)
     declared = _read_json(DECLARED_PATH)
     bridge = _read_json(BRIDGE_PATH)
@@ -59,6 +97,9 @@ def main() -> None:
         raise ConformanceError("GNN pin revision must be a 40-character lowercase SHA")
     if not isinstance(tag, str) or not re.fullmatch(r"v[0-9]+\.[0-9]+\.[0-9]+", tag):
         raise ConformanceError("GNN pin tag must match vMAJOR.MINOR.PATCH")
+
+    if args.install:
+        install_pin(repository, revision)
 
     source = declared.get("source")
     if not isinstance(source, dict):
@@ -81,8 +122,9 @@ def main() -> None:
     if len(expected_labels) != len(set(expected_labels)):
         raise ConformanceError("declared-labels.json contains duplicate labels")
 
-    import gnn
     from gnn.ontology.processor import load_defined_ontology_terms
+
+    import gnn
 
     expected_version = tag.removeprefix("v")
     if gnn.__version__ != expected_version:

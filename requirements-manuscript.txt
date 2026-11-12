@@ -1,5 +1,7 @@
 # Pinned publication-layer dependencies. matplotlib stays at the toolchain that
 # produced the committed figure bytes; other pins track the current stable release.
+# `-r requirements-ci.txt` keeps a single environment: no gate dependency is
+# re-pinned here, and one install satisfies every arm.
+-r requirements-ci.txt
 matplotlib==3.11.2
 PyYAML==6.0.3
-jsonschema==4.26.0
