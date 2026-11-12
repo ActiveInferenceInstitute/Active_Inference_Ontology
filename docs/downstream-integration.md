@@ -83,7 +83,7 @@ companion-pin freshness pattern.
 
 This repository's conformance gate is the `gnn-conformance` job (display name
 `gnn conformance (pinned)`), which runs `./run.sh gnn`. It installs the GNN revision
-`8f293d9ba810e6eda5c09842d9c7ed9ffa5f92c1` (`v5.0.3`) recorded in
+`75c834bd8519dc7b5adc4d24f16bf393cfd1ecdf` (`v5.1.0`) recorded in
 [`.github/gnn-pin.json`](../.github/gnn-pin.json) under schema `gnn-importer-pin/v1`,
 then verifies the pinned parser's bundled vocabulary bytes and term set against
 `GNN/declared-labels.json` and the generated bridge; [`../.github/GNN.md`](../.github/GNN.md)

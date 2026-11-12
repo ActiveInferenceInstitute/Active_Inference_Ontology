@@ -1,7 +1,7 @@
 # Active Inference Ontology — Scoped Worklog (TO-DO)
 
 - **Owner:** Active Inference Institute (Daniel Ari Friedman, daniel@activeinference.institute)
-- **Status:** GNN–FEP reader migration blocked on pinned reader availability; see below.
+- **Status:** GNN–FEP shared reader adopted at v5.1.0; see Completed below.
 - **Last reviewed:** 2026-11-12
 
 > Convention note: this file is deliberately named `TO-DO.md` (hyphenated) so it does not
@@ -43,18 +43,20 @@ documented below), with the remaining action owned by the CI platform / a domain
      `docs/future-curation-relations.md`. Any expansion remains a domain-curator decision (Option A/B
      in that proposal); it is not auto-applied because it would change curated edge counts.
 
-## Open (2026-11-12 GNN–FEP reader migration)
+## Completed / Closed (2026-11-12 GNN–FEP reader adoption)
 
-The GNN arm now calls `python -m gnn.importers check` with the repository's workflow
-and job key, and the vocabulary check delegates pin normalization to
-`gnn.importers.read_pin`. The member's duplicate revision/repository/tag validation
-is removed; vocabulary provenance, label-set, bridge, and freshness checks remain.
-The existing pointer already names the pin, revision, workflow, and job.
+The GNN pin advances from `v5.0.3`
+(`8f293d9ba810e6eda5c09842d9c7ed9ffa5f92c1`) to `v5.1.0`
+(`75c834bd8519dc7b5adc4d24f16bf393cfd1ecdf`), which ships `gnn.importers`.
+The GNN arm calls the shared checker with the repository's workflow and job key,
+and the vocabulary check delegates pin normalization to `gnn.importers.read_pin`.
+The duplicate revision/repository/tag validation is removed; vocabulary
+provenance, label-set, bridge, and freshness checks remain. Reviewed provenance
+and the generated bridge follow the new pin; the vocabulary bytes are unchanged.
 
-The pinned GNN revision does not provide `gnn.importers`. The migration cannot
-merge until a reader-bearing pin is reviewed with the vocabulary provenance and
-the contract resolves fresh-environment reader provisioning. This change does not
-advance the pin, copy upstream implementation, or add a second bootstrap pin.
+A minimal bootstrap read extracts only the raw repository/revision to install
+the pin before the reader exists. It has no normalization, validation, or second
+revision, and the GNN arm tests its result against the installed `read_pin`.
 
 ## Completed / Closed (2026-11-12 composable gate, measured arms)
 

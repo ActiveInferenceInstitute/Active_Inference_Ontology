@@ -13,14 +13,15 @@ The canonical pin is [`.github/gnn-pin.json`](gnn-pin.json) with schema
 | Field | Value |
 | --- | --- |
 | `repository` | `ActiveInferenceInstitute/Generalized_Notation_Notation` |
-| `revision` | `8f293d9ba810e6eda5c09842d9c7ed9ffa5f92c1` |
-| `tag` | `v5.0.3` |
+| `revision` | `75c834bd8519dc7b5adc4d24f16bf393cfd1ecdf` |
+| `tag` | `v5.1.0` |
 | `recorded` | `2026-11-12` |
 
-The arm installs the parser-side dependency file (`requirements-gnn.txt`), then uses
-`gnn.importers.read_pin` to obtain the revision for
-`validate_gnn_conformance.py --install`. After materialization it calls the shared
-reader directly:
+The arm installs the parser-side dependency file (`requirements-gnn.txt`).
+Its bootstrap read extracts only the raw `repository` and `revision` from the
+single pin JSON, then installs that exact commit before importing the shared
+reader. `validate_gnn_conformance.py` subsequently uses `gnn.importers.read_pin`
+for vocabulary provenance, and the arm calls the shared checker directly:
 
 ```bash
 python -m gnn.importers check --repo . --require-pointer \
@@ -31,14 +32,18 @@ Pin normalization and pin/pointer/specification validation belong to that upstre
 module, not a local copy. This follows the
 [GNN–FEP workflow contract](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/blob/main/docs/workflows/gnn-fep.md).
 
-### Migration blocker
+### Adopted reader
 
-The revision above predates `gnn.importers`, so its installed package cannot run
-either `read_pin` or the reader command. A fresh environment also cannot use
-`read_pin` to bootstrap its own installation. This migration therefore remains
-unmergeable until the upstream reader is available under the member's pin and the
-contract defines how an empty environment obtains it. No alternate reader,
-unpinned fallback, or duplicate revision is introduced here.
+The pin advances from `v5.0.3` at
+`8f293d9ba810e6eda5c09842d9c7ed9ffa5f92c1` to the reader-bearing
+`v5.1.0` at `75c834bd8519dc7b5adc4d24f16bf393cfd1ecdf`.
+The local pin normalization and validation are removed. The minimal bootstrap
+read is deliberately retained because an empty environment has no reader yet;
+it performs no normalization or validation and carries no second revision.
+`python -m unittest tests.gnn_bootstrap -v`, run after installation by the GNN
+arm, asserts that its pair equals the shipped `read_pin` result. The vocabulary
+bytes are unchanged between these releases; reviewed provenance and the
+generated bridge follow the new pin.
 
 ## What the job parses
 

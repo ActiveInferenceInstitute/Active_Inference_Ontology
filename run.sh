@@ -102,6 +102,7 @@ arm_render() {
 arm_gnn() {
   "$PY" -m pip install --disable-pip-version-check --requirement requirements-gnn.txt
   "$PY" scripts/validate_gnn_conformance.py --install
+  "$PY" -m unittest tests.gnn_bootstrap -v
   "$PY" -m gnn.importers check --repo . --require-pointer \
     --workflow .github/workflows/ontology.yml --job gnn-conformance
   "$PY" scripts/ontology.py gnn-terms --check

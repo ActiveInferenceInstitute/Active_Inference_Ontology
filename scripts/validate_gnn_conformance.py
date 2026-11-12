@@ -10,8 +10,8 @@ parser's term set with the bridge's declared labels.
 
 Pin normalization belongs to ``gnn.importers.read_pin``; the gate separately
 calls ``python -m gnn.importers check`` for pin, pointer, and specification
-validation. The active environment must already provide that upstream reader
-before ``--install`` can materialize the pin.
+validation. Only the raw repository/revision bootstrap read precedes installation;
+it performs no normalization or validation and uses no second pin.
 """
 
 from __future__ import annotations
@@ -80,6 +80,12 @@ def install_pin(repository: str, revision: str) -> None:
         )
 
 
+def bootstrap_pin(path: Path) -> tuple[str, str]:
+    """Extract only the raw install pair before the pinned reader exists."""
+    document = json.loads(path.read_text(encoding="utf-8"))
+    return document["repository"], document["revision"]
+
+
 def main(argv: list[str] | None = None) -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
@@ -88,6 +94,9 @@ def main(argv: list[str] | None = None) -> None:
         help="install the parser revision pinned in .github/gnn-pin.json before verifying",
     )
     args = parser.parse_args(argv)
+    if args.install:
+        install_pin(*bootstrap_pin(PIN_PATH))
+
     from gnn.importers import read_pin
 
     pin = read_pin(PIN_PATH)
@@ -97,9 +106,6 @@ def main(argv: list[str] | None = None) -> None:
     repository = pin.repository
     revision = pin.commit
     tag = pin.tag
-
-    if args.install:
-        install_pin(repository, revision)
 
     source = declared.get("source")
     if not isinstance(source, dict):

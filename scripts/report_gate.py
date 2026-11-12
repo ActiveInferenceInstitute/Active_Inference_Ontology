@@ -40,7 +40,7 @@ DESCRIPTIONS = {
     "full": "`python -m unittest discover -s tests -v`",
     "docs": "`scripts/check_docs.py`: relative links, anchors, index coverage",
     "manuscript": "`generate`, `manifest`, byte-identity diff, `validate --strict`, `check`",
-    "gnn": "pinned GNN parser install plus `validate_gnn_conformance.py` and `gnn-terms --check`",
+    "gnn": "pinned GNN install, vocabulary verification, bootstrap consistency test, shared importer check, and `gnn-terms --check`",
 }
 
 # An arm that installs something is measured against a cold installation, so the
