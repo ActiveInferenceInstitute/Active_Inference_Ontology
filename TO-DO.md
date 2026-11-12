@@ -2,7 +2,7 @@
 
 - **Owner:** Active Inference Institute (Daniel Ari Friedman, daniel@activeinference.institute)
 - **Status:** Clean / release-bound (v5). No active unfinished surface. See Completed below.
-- **Last reviewed:** 2026-11-01
+- **Last reviewed:** 2026-11-12
 
 > Convention note: this file is deliberately named `TO-DO.md` (hyphenated) so it does not
 > collide with the repository's `TODO.md`-absence gate in
@@ -42,6 +42,64 @@ documented below), with the remaining action owned by the CI platform / a domain
      proposal for alias-aware mentions and native typed relations is recorded in
      `docs/future-curation-relations.md`. Any expansion remains a domain-curator decision (Option A/B
      in that proposal); it is not auto-applied because it would change curated edge counts.
+
+## Completed / Closed (2026-11-12 composable gate, measured arms)
+
+Scope: give the repository one gate entry point with separately runnable arms, remove
+duplicated workflow work, make the manuscript job a measured arm, and document the GNN pin
+surface. All arms pass locally on this host (Python 3.12.16, `matplotlib==3.11.2`, Pandoc
+3.13, XeLaTeX, qpdf); hosted Actions runs are unavailable to the organization, so local
+arms are the only executed gate.
+
+### Minor
+
+1. **One entry point.** `run.sh` defines `deps`, `lint`, `ontology`, `fast`, `full`, `docs`,
+   `manuscript`, `render`, `gnn`, `bench`, and `all`. The workflow calls the arms, so no
+   command exists twice. `docs/build-and-validation.md` documents each arm, its job, and its
+   dependencies.
+2. **Lint and docs arms added.** `ruff.toml` pins correctness rules (`E`, `F`, `W`, `I`;
+   line length deliberately unenforced) and `scripts/check_docs.py` checks relative links,
+   anchors with exact filename case, and `docs/documentation-index.md` coverage. The
+   `.aii/` `lint` task now points at `./run.sh lint`, and a `docs` task was added
+   (sidecar 1.2.2).
+3. **One install, one pin per file.** `requirements-manuscript.txt` includes
+   `-r requirements-ci.txt`; the duplicated `jsonschema` pin is gone and the `gate` job
+   installs once. `requirements-gnn.txt` holds the parser-side `psutil` pin the `gnn`
+   conformance step previously installed unpinned.
+4. **Documentation index and generated numbers.** `docs/documentation-index.md` is the new
+   flat index; `docs/_generated/gate.md` records the measured arm wall time plus the
+   regression-test and source-term counts and is refreshed by `./run.sh bench`, with
+   `scripts/report_gate.py --check` in the `docs` arm failing on drift.
+
+### Medium
+
+5. **Workflow consolidation.** Three jobs (`validate`, `manuscript`, `gnn-conformance`)
+   became two: `gate` (lint, ontology, manuscript, full, docs) with one checkout, one
+   interpreter setup and one install, and `gnn-conformance` (display name
+   `gnn conformance (pinned)`), which runs `./run.sh gnn`. `gnn-terms --check` previously
+   ran in two jobs; it now runs once, in the GNN arm.
+6. **Measured wall time, before → after (one run each, this host).** Before, the
+   `validate`-shaped step set took 3.10 s plus a 62.14 s regression run, and the
+   `manuscript`-shaped set took 20.25 s, both failing for host reasons below, with two
+   `pip install -r` calls per job. After, the same coverage runs as arms:
+   `ontology` 1.15 s, `manuscript` 8.98 s, `full` 9.53 s, `docs` 0.40 s, `lint` 0.10 s
+   (gate job ≈ 20.2 s), `fast` 2.54 s, `gnn` 4.02 s, `deps` 0.51 s warm — all green.
+   Numbers live in `docs/_generated/gate.md`; the before values are recorded here because
+   the commands they measured no longer exist.
+7. **Two host-dependent defects fixed instead of papered over.** `shutil.copytree` fixtures
+   copied `.git` (failing on a Git fsmonitor socket) and `.venv`; they now copy repository
+   content only (`copy_repository`), which also cut the suite from 62.14 s to 9.53 s.
+   `lexical_hygiene` scanned an in-tree `.venv`; it now skips VCS state, environments, and
+   caches.
+
+### Major
+
+8. **Manuscript render is a gate arm, not a claim.** `./run.sh render` regenerated all four
+   publication formats (PDF 296 KB, HTML 280 KB, DOCX 174 KB, EPUB 170 KB) and passed
+   `check` in 16 s on this host, so the render path is executed rather than assumed. The
+   committed rendered bytes remain the published artifacts: a re-render on a different
+   Pandoc/TeX toolchain produces different bytes, and the arm deliberately does not update
+   them.
 
 ## Completed / Closed (2026-11-01 GNN vocabulary alignment)
 
@@ -211,13 +269,15 @@ manuscript gates pass on the canonical checks.
 - Figure-byte staleness described in Major #1 is environmental (host font rendering), not a source error.
 - mypy reports only third-party type-metadata absence (`jsonschema`, `yaml`, `matplotlib`) plus the
   two now-fixed shadowing defects; no source typing errors remain.
-- The duplicate `jsonschema==4.26.0` pin across the two `requirements-*.txt` files is intentional:
-  each file is self-contained (CI installs both), and both moved together to the current release in
-  the 2026-11-01 pass.
+- The `jsonschema` pin exists once, in `requirements-ci.txt`; `requirements-manuscript.txt`
+  includes that file with `-r`, so a publication checkout installs one consistent environment and
+  the `gate` job installs once.
 - The GNN vocabulary bridge, the route/command gates, and the `.aii/` sidecar declarations pass on
   this host against the current sidecar validator (including its artifact-path check).
-- The manuscript test file reports one failure and one error on this host
-  (`matplotlib` recursion on Python 3.14); both reproduce identically at `main` in a clean worktree.
+- The complete regression suite passes on this host (Python 3.12.16, `matplotlib==3.11.2`) when
+  the `manuscript`/`gnn` arms run first, because the publication arm regenerates the figures in
+  the local toolchain; a standalone `./run.sh full` on a clean checkout needs
+  `MANUSCRIPT_PORTABLE_CHECK=1` for the documented figure-byte exception.
 
 ## Open / deferred
 
