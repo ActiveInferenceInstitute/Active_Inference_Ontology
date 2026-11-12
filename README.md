@@ -28,11 +28,17 @@ and typed relation records.
 | [`ontology.json`](ontology.json) | Generated version 2 machine-readable export. |
 | [`Ontology_v5_May_25_2023.csv`](Ontology_v5_May_25_2023.csv) | Generated spreadsheet export. |
 | [`ontology.toml`](ontology.toml) | Explicit paths, release metadata, and validation policy. |
+| [`run.sh`](run.sh) | Gate entry point; its arms are the commands the public workflow runs. |
 | [`scripts/ontology.py`](scripts/ontology.py) | Build, validation, reporting, diff, export, and site CLI. |
 | [`scripts/manuscript.py`](scripts/manuscript.py) | Generate, validate, render, and hash the publication manuscript. |
+| [`scripts/check_docs.py`](scripts/check_docs.py) | Documentation links, anchors, and index coverage gate. |
+| [`scripts/validate_gnn_conformance.py`](scripts/validate_gnn_conformance.py) | Pinned-GNN parser conformance check (`.github/gnn-pin.json`). |
+| [`scripts/report_gate.py`](scripts/report_gate.py) | Measures the gate arms and writes `docs/_generated/gate.md`. |
 | [`schemas/`](schemas/) | Machine-readable source, export, and release-manifest schemas. |
 | [`site/index.html`](site/index.html) | Generated dependency-free browsing surface. |
 | [`docs/manuscript/`](docs/manuscript/) | Template-compatible manuscript source and rendered publication artifacts. |
+| [`docs/documentation-index.md`](docs/documentation-index.md) | Flat index of every long-lived document. |
+| [`docs/_generated/gate.md`](docs/_generated/gate.md) | Generated measured gate numbers (run `./run.sh bench`). |
 | [`releases.json`](releases.json) | Hashed current and historical release manifest. |
 | [`docs/`](docs/) | Source, export, migration, curation, release, and integration documentation. |
 | [`Archived versions/`](Archived%20versions/README.md) | Immutable historical source evidence (indexed by the folder guide). |
@@ -49,11 +55,21 @@ guide](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation
 ## CLI
 
 Builds and ordinary structural checks use only Python 3.11+. The strict contract
-gate additionally uses the pinned dependency in `requirements-ci.txt`. Run from
-the repository root:
+gate additionally uses the pinned dependency in `requirements-ci.txt`.
+
+[`run.sh`](run.sh) is the gate entry point; its arms are the exact commands the public
+workflow runs, and [`docs/build-and-validation.md`](docs/build-and-validation.md)
+documents them. From the repository root:
 
 ```bash
-python3 -m pip install -r requirements-ci.txt
+./run.sh deps        # one locked install
+./run.sh fast        # regression subset (inner loop)
+./run.sh all         # every arm the public workflow runs
+```
+
+The arms call the two CLIs directly:
+
+```bash
 python3 scripts/ontology.py build
 python3 scripts/ontology.py validate --strict
 python3 scripts/ontology.py schema-check

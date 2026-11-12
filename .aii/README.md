@@ -49,9 +49,10 @@ load time. Here, `config.d/tasks.yaml` holds the task definitions, keeping conce
 python -m aii_platform.aii_sidecar.run <repo> --list
 python -m aii_platform.aii_sidecar.run <repo> validate
 ```
-`validate` · `build` · `lint` · `schema-check` · `audit-csv` · `report` · `site` ·
+`validate` · `build` · `schema-check` · `audit-csv` · `report` · `site` ·
 `gnn-terms` map to `scripts/ontology.py`; `test` maps to the regression suite
-(`python3 -m unittest discover -s tests -v`); `manuscript-generate` ·
+(`python3 -m unittest discover -s tests -v`); `lint` and `docs` map to the
+`./run.sh` gate arms; `manuscript-generate` ·
 `manuscript-validate` · `manuscript-render` · `manuscript-check` map to
 `scripts/manuscript.py`. Tasks execute repo-declared commands — run them only for
 trusted repos.

@@ -4,12 +4,16 @@ This directory contains the template-compatible source and generated publication
 
 ## Commands
 
+Run the `manuscript` gate arm, which is the same command set the public workflow runs
+(see [`../build-and-validation.md`](../build-and-validation.md)):
+
 ```text
-python3 scripts/manuscript.py generate
-python3 scripts/manuscript.py validate --strict
-python3 scripts/manuscript.py render --format all
-python3 scripts/manuscript.py check
+./run.sh manuscript        # generate, manifest, byte-identity diff, validate --strict, check
+./run.sh render            # render --format all, then check (Pandoc, pandoc-crossref, XeLaTeX, qpdf)
 ```
+
+The underlying commands are `python3 scripts/manuscript.py` with the subcommands
+`generate`, `manifest`, `render --format all`, `validate --strict`, and `check`.
 
 The source sections contain `{{VARIABLE}}` markers. The generator resolves them into `output/manuscript/`, computes deterministic PNG figures in `output/figures/`, and records hashes in `artifact-manifest.json`. The manifest is closed over the expected inputs and generated outputs, including byte counts and SHA-256 values. Each figure registry entry also records a digest of the source values used to generate that figure.
 

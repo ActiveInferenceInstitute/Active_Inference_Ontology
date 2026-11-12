@@ -11,8 +11,11 @@ tasks:
     cmd: python3 scripts/ontology.py build
     description: Regenerate the version 2 JSON export.
   lint:
-    cmd: python3 scripts/ontology.py validate --strict
-    description: Validate the structured source and all generated artifacts.
+    cmd: ./run.sh lint
+    description: Static analysis with the repository's pinned ruff policy.
+  docs:
+    cmd: ./run.sh docs
+    description: Check documentation links, anchors, index coverage, and generated gate numbers.
   schema-check:
     cmd: python3 scripts/ontology.py schema-check
     description: Validate live documents against the published JSON Schemas.

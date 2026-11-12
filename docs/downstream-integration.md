@@ -79,9 +79,15 @@ A consumer pin is the ontology repository commit plus the SHA-256 of
 it was generated from, so a consumer can verify the projection as well as the file.
 GNN should pin both its copy of the bridge and the ontology revision and fail its own
 freshness check when the ontology side has moved, mirroring the repository's
-companion-pin freshness pattern. This repository's `gnn conformance (pinned)` CI job
-installs the GNN revision in `.github/gnn-pin.json` and verifies the pinned parser's
-vocabulary against `GNN/declared-labels.json` and the generated bridge.
+companion-pin freshness pattern.
+
+This repository's conformance gate is the `gnn-conformance` job (display name
+`gnn conformance (pinned)`), which runs `./run.sh gnn`. It installs the GNN revision
+`8f293d9ba810e6eda5c09842d9c7ed9ffa5f92c1` (`v5.0.3`) recorded in
+[`.github/gnn-pin.json`](../.github/gnn-pin.json) under schema `gnn-importer-pin/v1`,
+then verifies the pinned parser's bundled vocabulary bytes and term set against
+`GNN/declared-labels.json` and the generated bridge; [`../.github/GNN.md`](../.github/GNN.md)
+records exactly what the job parses.
 
 ### Declared `obo:` values are not identifiers
 
