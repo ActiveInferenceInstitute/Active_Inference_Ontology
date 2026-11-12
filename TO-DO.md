@@ -1,7 +1,7 @@
 # Active Inference Ontology — Scoped Worklog (TO-DO)
 
 - **Owner:** Active Inference Institute (Daniel Ari Friedman, daniel@activeinference.institute)
-- **Status:** Clean / release-bound (v5). No active unfinished surface. See Completed below.
+- **Status:** GNN–FEP reader migration blocked on pinned reader availability; see below.
 - **Last reviewed:** 2026-11-12
 
 > Convention note: this file is deliberately named `TO-DO.md` (hyphenated) so it does not
@@ -42,6 +42,19 @@ documented below), with the remaining action owned by the CI platform / a domain
      proposal for alias-aware mentions and native typed relations is recorded in
      `docs/future-curation-relations.md`. Any expansion remains a domain-curator decision (Option A/B
      in that proposal); it is not auto-applied because it would change curated edge counts.
+
+## Open (2026-11-12 GNN–FEP reader migration)
+
+The GNN arm now calls `python -m gnn.importers check` with the repository's workflow
+and job key, and the vocabulary check delegates pin normalization to
+`gnn.importers.read_pin`. The member's duplicate revision/repository/tag validation
+is removed; vocabulary provenance, label-set, bridge, and freshness checks remain.
+The existing pointer already names the pin, revision, workflow, and job.
+
+The pinned GNN revision does not provide `gnn.importers`. The migration cannot
+merge until a reader-bearing pin is reviewed with the vocabulary provenance and
+the contract resolves fresh-environment reader provisioning. This change does not
+advance the pin, copy upstream implementation, or add a second bootstrap pin.
 
 ## Completed / Closed (2026-11-12 composable gate, measured arms)
 

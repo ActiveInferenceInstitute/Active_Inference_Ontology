@@ -17,15 +17,34 @@ The canonical pin is [`.github/gnn-pin.json`](gnn-pin.json) with schema
 | `tag` | `v5.0.3` |
 | `recorded` | `2026-11-12` |
 
-The arm installs the parser-side dependency file (`requirements-gnn.txt`), then installs
-the pinned revision from that exact commit (`validate_gnn_conformance.py --install`), and
-then verifies.
+The arm installs the parser-side dependency file (`requirements-gnn.txt`), then uses
+`gnn.importers.read_pin` to obtain the revision for
+`validate_gnn_conformance.py --install`. After materialization it calls the shared
+reader directly:
+
+```bash
+python -m gnn.importers check --repo . --require-pointer \
+    --workflow .github/workflows/ontology.yml --job gnn-conformance
+```
+
+Pin normalization and pin/pointer/specification validation belong to that upstream
+module, not a local copy. This follows the
+[GNN–FEP workflow contract](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/blob/main/docs/workflows/gnn-fep.md).
+
+### Migration blocker
+
+The revision above predates `gnn.importers`, so its installed package cannot run
+either `read_pin` or the reader command. A fresh environment also cannot use
+`read_pin` to bootstrap its own installation. This migration therefore remains
+unmergeable until the upstream reader is available under the member's pin and the
+contract defines how an empty environment obtains it. No alternate reader,
+unpinned fallback, or duplicate revision is introduced here.
 
 ## What the job parses
 
-1. [`gnn-pin.json`](gnn-pin.json): the repository must be
-   `ActiveInferenceInstitute/Generalized_Notation_Notation`, the revision a 40-character
-   lowercase SHA, and the tag `vMAJOR.MINOR.PATCH`.
+1. [`gnn-pin.json`](gnn-pin.json), [this pointer](GNN.md), and any `*.gnn.md`
+   specifications: `gnn.importers check` owns their validation. The ontology carries
+   a vocabulary bridge rather than a generative-model specification.
 2. [`../GNN/declared-labels.json`](../GNN/declared-labels.json): the recorded `source`
    provenance (`repository`, `commit`, `release`, vocabulary `sha256`) and the reviewed
    label set.

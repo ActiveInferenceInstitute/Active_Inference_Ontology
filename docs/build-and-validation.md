@@ -100,14 +100,22 @@ and connection text. Those values are visible data quality facts, not validation
 same set the public workflow runs, so a green local run and a green workflow run mean the
 same thing.
 
-The separate `gnn conformance (pinned)` CI job runs `./run.sh gnn`, which installs the
-GNN revision in [`.github/gnn-pin.json`](../.github/gnn-pin.json) (schema
-`gnn-importer-pin/v1`), verifies its vocabulary bytes against
-`GNN/declared-labels.json`, and runs
-`python3 scripts/validate_gnn_conformance.py` before the bridge freshness check.
-That job is the parser-facing half of the vocabulary contract; it fails closed
-when the pin, the parser, and the generated bridge disagree. The pin, the job key, and
-what the job parses are recorded in [`.github/GNN.md`](../.github/GNN.md).
+The separate `gnn conformance (pinned)` CI job runs `./run.sh gnn`. The local
+`scripts/validate_gnn_conformance.py` uses `gnn.importers.read_pin` to obtain the
+revision from [`.github/gnn-pin.json`](../.github/gnn-pin.json) before installing it,
+then checks vocabulary bytes and labels against `GNN/declared-labels.json` and the
+generated bridge. The arm calls the canonical checker after materialization:
+
+```bash
+python -m gnn.importers check --repo . --require-pointer \
+    --workflow .github/workflows/ontology.yml --job gnn-conformance
+```
+
+The shared reader owns pin normalization and pin/pointer/specification validation;
+the member retains its vocabulary checks and `gnn-terms --check`. The pin, job key,
+and reader-availability blocker are recorded in [`.github/GNN.md`](../.github/GNN.md).
+The currently pinned package predates the reader, so the migration cannot pass the
+GNN arm yet; local pin-parsing fallbacks are deliberately absent.
 
 `build`, `export-csv`, `site`, and `gnn-terms` write through temporary files
 followed by atomic replacement. The `--check` forms are read-only and fail when a
