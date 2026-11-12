@@ -670,8 +670,23 @@ def lexical_hygiene() -> list[str]:
     terms = ["".join(chr(value) for value in values) for values in FORBIDDEN_TERMS]
     errors = []
     suffixes = {".md", ".py", ".yaml", ".yml", ".toml", ".json", ".bib", ".txt", ".html"}
+    local_environment = {
+        ".git",
+        ".venv",
+        "venv",
+        "__pycache__",
+        ".ruff_cache",
+        ".mypy_cache",
+        ".pytest_cache",
+        "node_modules",
+        "Archived versions",
+    }
     for path in ROOT.rglob("*"):
-        if not path.is_file() or path.suffix.lower() not in suffixes or ".git" in path.parts or "Archived versions" in path.parts:
+        if (
+            not path.is_file()
+            or path.suffix.lower() not in suffixes
+            or local_environment.intersection(path.parts)
+        ):
             continue
         try:
             text = path.read_text(encoding="utf-8").casefold()

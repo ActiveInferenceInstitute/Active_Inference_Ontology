@@ -2,3 +2,6 @@ __pycache__/
 *.py[cod]
 .pytest_cache/
 .ruff_cache/
+.mypy_cache/
+# Local gate environment (`./run.sh deps`); never repository content.
+.venv/

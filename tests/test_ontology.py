@@ -14,10 +14,31 @@ import unittest
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-SPEC = importlib.util.spec_from_file_location("ontology_cli", ROOT / "scripts/ontology.py")
+SPEC = importlib.util.spec_from_file_location("ontology_cli", ROOT / "scripts" / "ontology.py")
 assert SPEC and SPEC.loader
 ontology = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(ontology)
+
+# Repository content only: VCS state (a Git fsmonitor socket is not copyable),
+# local virtual environments, and interpreter caches are reproduced by neither a
+# checkout nor a consumer, and copying them makes fixtures host-dependent.
+NON_CONTENT = (
+    ".git",
+    ".venv",
+    "venv",
+    "__pycache__",
+    ".ruff_cache",
+    ".mypy_cache",
+    ".pytest_cache",
+    "node_modules",
+    "Local",
+)
+
+
+def copy_repository(destination: Path) -> None:
+    """Copy the repository tree without VCS state, environments, or caches."""
+
+    shutil.copytree(ROOT, destination, ignore=shutil.ignore_patterns(*NON_CONTENT))
 
 
 class OntologyPipelineTests(unittest.TestCase):
@@ -179,7 +200,7 @@ class OntologyPipelineTests(unittest.TestCase):
     def test_stale_export_fails_validation(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             copy = Path(directory) / "repo"
-            shutil.copytree(ROOT, copy)
+            copy_repository(copy)
             export_path = copy / "ontology.json"
             export_path.write_text("{}\n", encoding="utf-8")
             result = subprocess.run(
@@ -195,7 +216,7 @@ class OntologyPipelineTests(unittest.TestCase):
     def test_malformed_source_root_fails_concisely(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             copy = Path(directory) / "repo"
-            shutil.copytree(ROOT, copy)
+            copy_repository(copy)
             (copy / "ontology.source.json").write_text("[]\n", encoding="utf-8")
             result = subprocess.run(
                 [sys.executable, str(copy / "scripts/ontology.py"), "validate", "--strict"],
@@ -252,7 +273,7 @@ class OntologyPipelineTests(unittest.TestCase):
     def test_sync_manifest_is_idempotent_and_preserves_validity(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             copy = Path(directory) / "repo"
-            shutil.copytree(ROOT, copy)
+            copy_repository(copy)
             manifest_path = copy / "releases.json"
             before = manifest_path.read_text(encoding="utf-8")
 
@@ -431,7 +452,7 @@ class OntologyPipelineTests(unittest.TestCase):
     def test_stale_gnn_terms_fail_validation(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             copy = Path(directory) / "repo"
-            shutil.copytree(ROOT, copy)
+            copy_repository(copy)
             (copy / "GNN/act_inf_ontology_terms.json").write_text("{}\n", encoding="utf-8")
             result = subprocess.run(
                 [sys.executable, str(copy / "scripts/ontology.py"), "validate", "--strict"],
@@ -446,7 +467,7 @@ class OntologyPipelineTests(unittest.TestCase):
     def test_gnn_terms_check_mode_rejects_drift(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             copy = Path(directory) / "repo"
-            shutil.copytree(ROOT, copy)
+            copy_repository(copy)
             artifact = copy / "GNN/act_inf_ontology_terms.json"
             artifact.write_text("{}\n", encoding="utf-8")
             stale = subprocess.run(
@@ -489,7 +510,7 @@ class OntologyPipelineTests(unittest.TestCase):
     def test_gnn_terms_require_current_export(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             copy = Path(directory) / "repo"
-            shutil.copytree(ROOT, copy)
+            copy_repository(copy)
             export_path = copy / "ontology.json"
             export_path.write_text("{}\n", encoding="utf-8")
             result = subprocess.run(
