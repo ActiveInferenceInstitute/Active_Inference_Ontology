@@ -12,7 +12,8 @@ and [`AGENTS.md`](../AGENTS.md).
 ## Reading order (cold start)
 
 1. [`../AGENTS.md`](../AGENTS.md) — what this repo is, ground truth, commands.
-2. [`README.md`](README.md) — the documentation index (one row per topic).
+2. [`README.md`](README.md) — the documentation hub (one row per topic); for the complete
+   flat list use [`documentation-index.md`](documentation-index.md).
 3. [`../ontology.source.json`](../ontology.source.json) is the only editable
    ontology surface. `ontology.json`, the CSV, `site/index.html`, and
    `releases.json` are generated — never edit them by hand.
@@ -52,4 +53,8 @@ and [`AGENTS.md`](../AGENTS.md).
 - Cross-references use relative paths with descriptive link text.
 - Claims about counts, edges, tags, or hashes must be verified via the CLI
   (`python3 ../scripts/ontology.py report` / `validate --strict`), never copied
-  from prose.
+  from prose. Measured gate numbers live only in
+  [`_generated/gate.md`](_generated/gate.md), which `./run.sh bench` writes.
+- Adding, renaming, or removing a document here means updating
+  [`documentation-index.md`](documentation-index.md) and the hub row in
+  [`README.md`](README.md); `./run.sh docs` fails otherwise.

@@ -52,7 +52,8 @@ them by hand; regenerate them with the commands below.
 - `scripts/ontology.py` and `scripts/manuscript.py` are Python 3.11+ with no
   runtime dependency beyond the pinned `requirements-ci.txt` and
   `requirements-manuscript.txt` files. Keep it that way.
-- Follow the repository's style (ruff-compatible); keep changes focused.
+- Follow `ruff.toml` (correctness rules only; line length is not enforced) and
+  keep changes focused.
 - The manuscript is generated from the ontology source and manifest. See
   [`docs/manuscript/README.md`](docs/manuscript/README.md) and
   [`docs/manuscript/SYNTAX.md`](docs/manuscript/SYNTAX.md) before touching
@@ -63,28 +64,29 @@ them by hand; regenerate them with the commands below.
 
 ## Acceptance gates
 
-Run from the repository root with the pinned dependencies installed:
+[`run.sh`](run.sh) is the single gate entry point, and its arms are the commands the
+public workflow runs. Run from the repository root with the pinned dependencies
+installed (`./run.sh deps`):
 
 ```bash
-python3 -m pip install -r requirements-ci.txt -r requirements-manuscript.txt
-python3 scripts/ontology.py validate --strict
-python3 scripts/ontology.py schema-check
-python3 scripts/ontology.py build --check
-python3 scripts/ontology.py export-csv --check
-python3 scripts/ontology.py site --check
-python3 scripts/ontology.py gnn-terms --check
-python3 -m unittest discover -s tests -v
-MANUSCRIPT_PORTABLE_CHECK=1 python3 scripts/manuscript.py validate --strict
-MANUSCRIPT_PORTABLE_CHECK=1 python3 scripts/manuscript.py check
+./run.sh fast          # inner loop: source, export, manifest, sidecar contracts
+./run.sh all           # every arm the public workflow runs
+./run.sh lint          # static analysis (policy in ruff.toml)
+./run.sh ontology      # source, schema, export, CSV, site, GNN bridge checks
+./run.sh full          # complete regression suite
+./run.sh docs          # documentation links, anchors, index, generated gate numbers
+./run.sh manuscript    # manuscript freshness and byte identity
+./run.sh gnn           # pinned GNN parser conformance (installs the pin; needs network)
 ```
 
 `MANUSCRIPT_PORTABLE_CHECK=1` skips only the raw figure-byte comparison on
 hosts whose matplotlib rasterization differs from the committed PNGs; all other
 integrity checks stay enforced (see
-[`docs/build-and-validation.md`](docs/build-and-validation.md)). CI runs the
-same gates on every push; its manuscript job regenerates the figures in the
-runner toolchain and then requires byte-identity for every artifact that is
-not rasterized.
+[`docs/build-and-validation.md`](docs/build-and-validation.md)). The public workflow
+calls the same arms; its `manuscript` arm regenerates the figures in the runner
+toolchain and then requires byte-identity for every artifact that is not rasterized.
+Measured arm wall time lives in [`docs/_generated/gate.md`](docs/_generated/gate.md)
+(refresh with `./run.sh bench`).
 
 ## Release changes
 

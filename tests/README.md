@@ -1,14 +1,22 @@
 # Regression tests
 
-Run the suite from the repository root:
+Run the suite through the gate arms (from the repository root):
 
 ```bash
-python3 -m pip install -r requirements-ci.txt
-python3 -m unittest discover -s tests -v
+./run.sh deps   # one locked install
+./run.sh fast   # tests/test_ontology.py and tests/test_sidecar.py
+./run.sh full   # python3 -m unittest discover -s tests -v
 ```
 
-CI runs the same command in
-[`.github/workflows/ontology.yml`](../.github/workflows/ontology.yml).
+`fast` is the inner-loop selection: the source, export, manifest, and sidecar
+contracts, with no figure rasterization or rendering. `full` is what the public
+workflow runs. [`../.github/workflows/ontology.yml`](../.github/workflows/ontology.yml)
+calls the same arms, so a local run and a hosted run execute the same command.
+
+Fixtures that need a repository copy use `copy_repository()` in
+`test_ontology.py`, which copies repository content only: VCS state (`.git`),
+local virtual environments, and interpreter caches are excluded, so the fixtures do
+not depend on a host's Git configuration or in-tree `.venv`.
 
 - `test_ontology.py` — source, export, and manifest contracts: schema
   validation, stable IDs across label renames, duplicate IDs/labels/aliases,
@@ -20,7 +28,7 @@ CI runs the same command in
   generation, committed PNG canvas and validity, template sections and labels,
   manifest tampering and closure, manifest counts and figure provenance,
   rendered format structure, HTML escaping, the CLI check path, and lexical
-  hygiene.
+  hygiene (which skips local environments and caches).
 - `test_sidecar.py` — structural checks for the InstituteOS `.aii/` sidecar:
   schema marker and required sections, repository identity and provenance,
   artifact paths and kinds, documentation paths, relations and links, and task

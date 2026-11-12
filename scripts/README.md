@@ -1,8 +1,10 @@
 # Ontology and manuscript toolchain
 
-Two Python entry points, both requiring Python 3.11 or newer. The CI workflow
-[`.github/workflows/ontology.yml`](../.github/workflows/ontology.yml) runs their
-acceptance commands.
+Two Python entry points, both requiring Python 3.11 or newer, plus the gate
+scripts. [`run.sh`](../run.sh) at the repository root is the single entry point;
+the public workflow
+[`.github/workflows/ontology.yml`](../.github/workflows/ontology.yml) calls its arms
+(see [`../docs/build-and-validation.md`](../docs/build-and-validation.md)).
 
 ## `ontology.py`
 
@@ -32,9 +34,22 @@ full acceptance sequence.
 
 Generates, validates, renders, and checks the manuscript under
 `docs/manuscript`. Subcommands: `generate`, `manifest`,
-`render --format`, `validate --strict`, and `check`. CI regenerates the
-publication artifacts and then requires byte-identity for every
+`render --format`, `validate --strict`, and `check`. The `manuscript` arm
+regenerates the publication artifacts and then requires byte-identity for every
 rasterizer-independent artifact.
+
+## Gate scripts
+
+- `check_docs.py` — the documentation gate behind `./run.sh docs`: relative links and
+  image targets (exact filename case), in-repository anchors, and coverage of
+  `docs/documentation-index.md`. `--json` prints a machine-readable summary.
+- `report_gate.py` — measures each arm and writes
+  [`../docs/_generated/gate.md`](../docs/_generated/gate.md); `--check` fails when the
+  recorded arm list or the test/document counts drift.
+- `validate_gnn_conformance.py` — verifies the pinned GNN parser against
+  [`../.github/gnn-pin.json`](../.github/gnn-pin.json), `GNN/declared-labels.json`, and the
+  generated bridge. `--install` installs the pinned revision first (the `gnn` arm does
+  this).
 
 The modules have no local test files; the regression suite lives in
 [`../tests/`](../tests/).

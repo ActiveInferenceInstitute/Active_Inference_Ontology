@@ -1,0 +1,7 @@
+# Parser-side dependencies for the `gnn` gate arm. The pinned GNN release imports
+# psutil from its observability module, so the arm installs this file before the
+# pin itself. It stays separate from `requirements-ci.txt`: the ontology gate
+# environment must not carry parser-only dependencies. `-r requirements-ci.txt`
+# keeps one consistent environment for the arm.
+-r requirements-ci.txt
+psutil==7.2.2
