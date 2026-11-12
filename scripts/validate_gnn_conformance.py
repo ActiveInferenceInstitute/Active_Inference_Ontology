@@ -7,6 +7,11 @@ the other half of that contract: it installs the exact GNN revision named by
 ``.github/gnn-pin.json`` (``--install``, the gate arm does this), verifies the GNN
 vocabulary bytes that the reviewed input records, and compares the pinned
 parser's term set with the bridge's declared labels.
+
+Pin normalization belongs to ``gnn.importers.read_pin``; the gate separately
+calls ``python -m gnn.importers check`` for pin, pointer, and specification
+validation. The active environment must already provide that upstream reader
+before ``--install`` can materialize the pin.
 """
 
 from __future__ import annotations
@@ -14,7 +19,6 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
-import re
 import subprocess
 import sys
 from importlib import resources
@@ -84,19 +88,15 @@ def main(argv: list[str] | None = None) -> None:
         help="install the parser revision pinned in .github/gnn-pin.json before verifying",
     )
     args = parser.parse_args(argv)
-    pin = _read_json(PIN_PATH)
+    from gnn.importers import read_pin
+
+    pin = read_pin(PIN_PATH)
     declared = _read_json(DECLARED_PATH)
     bridge = _read_json(BRIDGE_PATH)
 
-    repository = pin.get("repository")
-    revision = pin.get("revision")
-    tag = pin.get("tag")
-    if repository != "ActiveInferenceInstitute/Generalized_Notation_Notation":
-        raise ConformanceError(f"unexpected GNN repository pin: {repository!r}")
-    if not isinstance(revision, str) or not re.fullmatch(r"[0-9a-f]{40}", revision):
-        raise ConformanceError("GNN pin revision must be a 40-character lowercase SHA")
-    if not isinstance(tag, str) or not re.fullmatch(r"v[0-9]+\.[0-9]+\.[0-9]+", tag):
-        raise ConformanceError("GNN pin tag must match vMAJOR.MINOR.PATCH")
+    repository = pin.repository
+    revision = pin.commit
+    tag = pin.tag
 
     if args.install:
         install_pin(repository, revision)
