@@ -1,7 +1,9 @@
 # Active Inference Ontology — Scoped Worklog (TO-DO)
 
 - **Owner:** Active Inference Institute (Daniel Ari Friedman, daniel@activeinference.institute)
-- **Status:** GNN–FEP shared reader adopted at v5.1.0; see Completed below.
+- **Status:** GNN–FEP shared reader adopted at v5.1.0 (PR #13, `6a9208c`); see Completed below.
+  Hosted gates cannot execute in this organization (billing lock), so local arms are the only
+  executed gate; see Open / deferred.
 - **Last reviewed:** 2026-11-12
 
 > Convention note: this file is deliberately named `TO-DO.md` (hyphenated) so it does not
@@ -15,7 +17,8 @@
 These items were validated during the 2026-08-01 hostile red-team review and advanced in
 the follow-up cleanup pass. Neither is a mechanical bug: each needed either a canonical
 regeneration environment or a domain-curator decision. Both are now **handled** (as
-documented below), with the remaining action owned by the CI platform / a domain curator.
+documented below), with the remaining action owned by the organization's Actions billing and
+by a domain curator; both are restated with owner and blocker under Open / deferred.
 
 1. **Figure byte-reproducibility is host-dependent (not a code defect).**
    - Affected: `scripts/manuscript.py` (`figure_bytes`), committed `docs/manuscript/output/figures/*.png`,
@@ -57,6 +60,8 @@ and the generated bridge follow the new pin; the vocabulary bytes are unchanged.
 A minimal bootstrap read extracts only the raw repository/revision to install
 the pin before the reader exists. It has no normalization, validation, or second
 revision, and the GNN arm tests its result against the installed `read_pin`.
+Merged to `main` as PR #13 (`6a9208c`); the pin lives in `.github/gnn-pin.json`
+and its contract in `.github/GNN.md`.
 
 ## Completed / Closed (2026-11-12 composable gate, measured arms)
 
@@ -64,7 +69,9 @@ Scope: give the repository one gate entry point with separately runnable arms, r
 duplicated workflow work, make the manuscript job a measured arm, and document the GNN pin
 surface. All arms pass locally on this host (Python 3.12.16, `matplotlib==3.11.2`, Pandoc
 3.13, XeLaTeX, qpdf); hosted Actions runs are unavailable to the organization, so local
-arms are the only executed gate.
+arms are the only executed gate (the exact block is recorded under Open / deferred).
+Merged to `main` as PR #11 (`11740f3`), with the no-argument fast-arm default in PR #12
+(`19ffe59`).
 
 ### Minor
 
@@ -289,21 +296,41 @@ manuscript gates pass on the canonical checks.
   the `gate` job installs once.
 - The GNN vocabulary bridge, the route/command gates, and the `.aii/` sidecar declarations pass on
   this host against the current sidecar validator (including its artifact-path check).
-- The complete regression suite passes on this host (Python 3.12.16, `matplotlib==3.11.2`) when
-  the `manuscript`/`gnn` arms run first, because the publication arm regenerates the figures in
-  the local toolchain; a standalone `./run.sh full` on a clean checkout needs
-  `MANUSCRIPT_PORTABLE_CHECK=1` for the documented figure-byte exception.
+- The complete regression suite passes on a clean checkout with no environment set: 50 tests, no
+  failures, exit 0, in a fresh `git clone --depth 1` on this host (Python 3.12.16,
+  `matplotlib==3.11.2`, 2026-11-12). `MANUSCRIPT_PORTABLE_CHECK` is not needed for the suite;
+  `tests/test_manuscript.py` sets it for its own figure comparison.
+- Committed figure PNGs still do not reproduce on this host: a direct
+  `scripts/manuscript.py validate --strict` reports all six as stale unless
+  `MANUSCRIPT_PORTABLE_CHECK=1`. `./run.sh manuscript` regenerates before validating, so its figure
+  comparison cannot fail there; its byte-identity check covers only the rasterizer-independent
+  artifacts (`docs/manuscript/data/manuscript_variables.json`,
+  `docs/manuscript/output/manuscript`, `docs/manuscript/output/figures/figure_registry.json`).
+- `./run.sh render` needs Pandoc 3.13, `pandoc-crossref` 0.3.26, XeLaTeX and qpdf 12.4.2; all four
+  are installed on this host and the arm was executed in the 2026-11-12 gate pass (Major #8 above).
+  The committed rendered bytes stay the published artifacts and are deliberately not rewritten.
 
 ## Open / deferred
 
-- Major #1 (figure byte portability, 2026-11-01): scoped — CI regenerates the figures in its own
-  toolchain and compares everything that is not rasterized; no host claims byte canonicity for the
-  committed PNGs.
-- Major #2 (alias-aware mentions / native typed relations): domain-curator decision; options and
-  controls are scoped in `docs/future-curation-relations.md`.
-- Major #6 (CI gate execution, 2026-11-01): repaired in `daf84fe`; the public jobs no longer depend
-  on the private sidecar validator, and a credentialed run of that validator stays a documented
-  manual step.
-- Rendered-format regeneration (`manuscript.py render`) requires the full Pandoc / XeLaTeX /
-  `pandoc-crossref` / qpdf toolchain; committed rendered artifacts remain manifest-validated
-  without it.
+- **No gate compares the committed figure PNGs with a regeneration in the pinned toolchain.**
+  `./run.sh manuscript` regenerates before validating, the suite forces
+  `MANUSCRIPT_PORTABLE_CHECK=1`, and the one invocation that can fail — a direct
+  `scripts/manuscript.py validate --strict` — reports all six figures stale on this host. Closing
+  it needs a gate step that validates the committed bytes *before* regenerating, on the runner
+  whose toolchain is the reference; that step cannot run today (next item). Owner: repository
+  maintainer, blocked by the billing lock.
+- **Alias-aware mentions and native typed relations.** Nothing in the repository decides this:
+  either option changes curated edge counts, and both are scoped with their controls in
+  `docs/future-curation-relations.md`. Owner: domain curator (Daniel Ari Friedman); needs a
+  curation decision, not code.
+- **Both hosted jobs, and CodeQL default setup, are blocked before any step runs.** Runs
+  `43258257237` (push to `main`, 2026-11-12) and `43258258062` (CodeQL) both annotate "The job was
+  not started because your account is locked due to a billing issue", so `gate`,
+  `gnn conformance (pinned)` and both CodeQL analyses never execute; PR #13 merged with that
+  failing run. Blocker: an organization billing action outside this repository. Owner: Institute
+  org owner (Daniel Ari Friedman). Everything claimed green in this file was executed locally.
+- **`runs-on: ubuntu-latest` floats in both jobs** of `.github/workflows/ontology.yml`. The same
+  runs carry GitHub's annotation that `ubuntu-latest` migrates to Ubuntu 26 from 2026-10-19
+  (`actions/runner-images#14748`), so the image under a job that asserts manuscript byte-identity
+  changes without a commit. Not blocked: pin the image (for example `ubuntu-24.04`) or record the
+  migration as accepted. Owner: repository maintainer.
