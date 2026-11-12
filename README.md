@@ -62,8 +62,8 @@ workflow runs, and [`docs/build-and-validation.md`](docs/build-and-validation.md
 documents them. From the repository root:
 
 ```bash
+./run.sh             # no arm: the fast inner-loop selection
 ./run.sh deps        # one locked install
-./run.sh fast        # regression subset (inner loop)
 ./run.sh all         # every arm the public workflow runs
 ```
 

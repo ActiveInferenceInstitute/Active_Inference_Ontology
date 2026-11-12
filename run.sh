@@ -25,7 +25,9 @@ python_bin() {
 
 usage() {
   cat <<'EOF'
-usage: ./run.sh ARM [ARM ...]
+usage: ./run.sh [ARM ...]
+
+With no arm, ./run.sh runs the fast inner-loop selection.
 
 Arms (each runs the same command the public workflow runs):
   deps        install the pinned dependencies in one locked install
@@ -120,15 +122,14 @@ PY="$(python_bin)"
 
 ARMS=(deps lint ontology manuscript full docs fast gnn render bench all)
 
-if [[ $# -eq 0 || "${1:-}" == "--help" || "${1:-}" == "-h" ]]; then
+if [[ "${1:-}" == "--help" || "${1:-}" == "-h" || "${1:-}" == "--list" ]]; then
   usage
-  [[ $# -eq 0 ]] && exit 2
   exit 0
 fi
 
-if [[ "${1:-}" == "--list" ]]; then
-  usage
-  exit 0
+if [[ $# -eq 0 ]]; then
+  printf '%s: no arm named; running the fast inner-loop arm (./run.sh --help lists all arms)\n' "$PROG"
+  set -- fast
 fi
 
 if [[ "${1:-}" == "--arms" ]]; then
