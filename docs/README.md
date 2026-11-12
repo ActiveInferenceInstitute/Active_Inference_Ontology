@@ -20,6 +20,17 @@ integrity checks, curation process, historical archives, and integration surface
 | [Release Workflow](release-workflow.md) | Publishing a content release. |
 | [Version Diff](version-diff.md) | Comparing structured source releases by stable ID. |
 | [Manuscript](manuscript/README.md) | Template-compatible manuscript source, generation, rendering, and integrity checks. |
+| [Manuscript: Abstract](manuscript/00_abstract.md) | Abstract section of the generated manuscript. |
+| [Manuscript: Introduction](manuscript/01_introduction.md) | Introduction section. |
+| [Manuscript: Related Work](manuscript/02_related_work.md) | Related-work section. |
+| [Manuscript: Methods](manuscript/03_methods.md) | Methods section. |
+| [Manuscript: Results](manuscript/04_results.md) | Results section. |
+| [Manuscript: Discussion](manuscript/05_discussion.md) | Discussion section. |
+| [Manuscript: Conclusion](manuscript/06_conclusion.md) | Conclusion section. |
+| [Manuscript: Reproducibility](manuscript/07_reproducibility.md) | Reproducibility section. |
+| [Manuscript: References](manuscript/99_references.md) | References section. |
+| [Manuscript Syntax](manuscript/SYNTAX.md) | Section, equation, figure, table, and citation conventions. |
+| [Manuscript Preamble](manuscript/preamble.md) | Rendering preamble companion to `preamble.tex`. |
 
 The canonical source is [`../ontology.source.json`](../ontology.source.json). The
 CSV, JSON, and site are generated artifacts and are checked for freshness by

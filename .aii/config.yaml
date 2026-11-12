@@ -1,7 +1,7 @@
 # AII sidecar — InstituteOS metadata for this repository (reference exemplar).
 # Schema: aii_platform.aii_sidecar.models.AiiSidecar (aii-sidecar/v1)
 # Modular: this core config.yaml is deep-merged with config.d/*.yaml at load time:
-#   config.d/ecosystem.yaml · config.d/artifacts.yaml · config.d/tasks.yaml
+#   config.d/ecosystem.yaml · config.d/artifacts.yaml · config.d/docs.yaml · config.d/tasks.yaml
 # Validate / score: python -m aii_platform.aii_sidecar.validate <repo> --completeness
 schema: aii-sidecar/v1
 

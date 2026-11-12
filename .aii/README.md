@@ -41,7 +41,9 @@ dependency-free structural check of this sidecar.
 ## Modular config
 
 `config.yaml` is the base; any `config.d/*.yaml` fragments are **deep-merged** over it at
-load time. Here, `config.d/tasks.yaml` holds the task definitions, keeping concerns split.
+load time. Here, the fragments keep concerns split: `config.d/tasks.yaml` holds the task
+definitions, `config.d/docs.yaml` the document paths, `config.d/artifacts.yaml` the key
+products, and `config.d/ecosystem.yaml` the relations and links.
 
 ## Tasks (portable, runnable)
 
