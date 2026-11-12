@@ -22,6 +22,17 @@ integrity checks, curation process, historical archives, and integration surface
 | [Release Workflow](release-workflow.md) | Publishing a content release. |
 | [Version Diff](version-diff.md) | Comparing structured source releases by stable ID. |
 | [Manuscript](manuscript/README.md) | Template-compatible manuscript source, generation, rendering, and integrity checks. |
+| [Manuscript: Abstract](manuscript/00_abstract.md) | Abstract section of the publication manuscript. |
+| [Manuscript: Introduction](manuscript/01_introduction.md) | Introduction section. |
+| [Manuscript: Related Work](manuscript/02_related_work.md) | Related-work section. |
+| [Manuscript: Methods](manuscript/03_methods.md) | Methods section (source model). |
+| [Manuscript: Results](manuscript/04_results.md) | Results section (generated release profile). |
+| [Manuscript: Discussion](manuscript/05_discussion.md) | Discussion section, including limitations. |
+| [Manuscript: Conclusion](manuscript/06_conclusion.md) | Conclusion section. |
+| [Manuscript: Reproducibility](manuscript/07_reproducibility.md) | Reproducibility section. |
+| [Manuscript: References](manuscript/99_references.md) | Reference section; the bibliography lives in `references.bib`. |
+| [Manuscript Syntax](manuscript/SYNTAX.md) | Section, equation, figure, table, citation, and variable conventions the renderer validates. |
+| [Rendering Preamble](manuscript/preamble.md) | Markdown companion to `preamble.tex` (packages for equations, tables, figures, links, typography). |
 
 The canonical source is [`../ontology.source.json`](../ontology.source.json). The
 CSV, JSON, and site are generated artifacts and are checked for freshness by the
