@@ -128,9 +128,8 @@ def main(argv: list[str] | None = None) -> None:
     if len(expected_labels) != len(set(expected_labels)):
         raise ConformanceError("declared-labels.json contains duplicate labels")
 
-    from gnn.ontology.processor import load_defined_ontology_terms
-
     import gnn
+    from gnn.ontology.processor import load_defined_ontology_terms
 
     expected_version = tag.removeprefix("v")
     if gnn.__version__ != expected_version:

@@ -11,3 +11,9 @@ line-length = 100
 [lint]
 select = ["E", "F", "W", "I"]
 ignore = ["E501"]
+
+[lint.isort]
+# The installed parser is third-party. Declaring it keeps import ordering stable
+# on case-insensitive checkouts, where the tracked `GNN/` archive otherwise
+# shadows the `gnn` package and splits one import block into two sections.
+known-third-party = ["gnn"]
