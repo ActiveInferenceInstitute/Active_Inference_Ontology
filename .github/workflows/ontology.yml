@@ -15,8 +15,8 @@ name: Ontology
 # manual checks" in docs/build-and-validation.md).
 #
 # Figure PNG bytes are rasterized per host, so the committed figures are not reproducible
-# on the runner. The `manuscript` arm regenerates the publication artifacts in the CI
-# toolchain and then requires byte-identity for every rasterizer-independent artifact.
+# on the runner. The `manuscript` arm checks existing artifacts and per-format
+# render provenance without regenerating or recertifying published outputs.
 
 on:
   pull_request:
@@ -34,7 +34,7 @@ concurrency:
 jobs:
   gate:
     name: gate
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 120
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -57,7 +57,7 @@ jobs:
 
   gnn-conformance:
     name: gnn conformance (pinned)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1

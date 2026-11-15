@@ -524,6 +524,138 @@ class OntologyPipelineTests(unittest.TestCase):
         self.assertIn("generated export is stale", result.stderr)
 
 
+class OntologyAdmissionTests(unittest.TestCase):
+    def test_config_requires_complete_release_identity(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "ontology.toml"
+            path.write_text(
+                'schema_version = 2\n[paths]\n[release]\nversion = "v5"\n'
+                'date = "2023-05-25"\n[validation]\n',
+                encoding="utf-8",
+            )
+            with self.assertRaisesRegex(ontology.OntologyError, "release.label"):
+                ontology.load_config(path)
+
+    def setUp(self) -> None:
+        self.config = ontology.load_config()
+        self.source = ontology.read_json(ontology.configured_paths(self.config)["source"])
+
+    def invoke(self, root: Path, *arguments: str) -> subprocess.CompletedProcess[str]:
+        return subprocess.run(
+            [sys.executable, str(root / "scripts/ontology.py"), *arguments],
+            cwd=root, capture_output=True, text=True, check=False,
+        )
+
+    def test_sync_refuses_archive_changes_without_rebaselining(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory) / "repo"
+            copy_repository(root)
+            path = root / "releases.json"
+            before = path.read_bytes()
+            manifest = json.loads(before)
+            archived = next(r for r in manifest["releases"] if r["status"] == "archived")
+            artifact = root / archived["path"] / archived["artifacts"][0]["path"]
+            changed = artifact.read_bytes() + b"\nchanged evidence\n"
+            artifact.write_bytes(changed)
+            result = self.invoke(root, "sync-manifest")
+            self.assertEqual(result.returncode, 2, result.stderr)
+            self.assertIn("hash mismatch", result.stderr)
+            self.assertEqual(path.read_bytes(), before)
+            self.assertEqual(artifact.read_bytes(), changed)
+
+    def test_sync_updates_only_current_hashes(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory) / "repo"
+            copy_repository(root)
+            path = root / "releases.json"
+            before = json.loads(path.read_text(encoding="utf-8"))
+            (root / "ontology.json").write_text("{}\n", encoding="utf-8")
+            result = self.invoke(root, "sync-manifest")
+            self.assertEqual(result.returncode, 0, result.stderr)
+            after = json.loads(path.read_text(encoding="utf-8"))
+            self.assertEqual(
+                [r for r in after["releases"] if r["status"] == "archived"],
+                [r for r in before["releases"] if r["status"] == "archived"],
+            )
+            current = next(r for r in after["releases"] if r["status"] == "current")
+            export = next(a for a in current["artifacts"] if a["path"] == "ontology.json")
+            self.assertEqual(export["sha256"], ontology.sha256(root / "ontology.json"))
+
+    def test_check_missing_target_does_not_create_parent(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            target = Path(directory) / "absent/nested/result.json"
+            self.assertFalse(ontology.write_atomic(target, "{}\n", check=True))
+            self.assertFalse(target.parent.exists())
+            self.assertTrue(ontology.write_atomic(target, "{}\n"))
+            self.assertEqual(target.read_text(encoding="utf-8"), "{}\n")
+
+    def test_nested_source_shapes_have_classified_errors(self) -> None:
+        cases = [
+            ("status", []), ("list", {}), ("tag", []),
+            ("definitions", ["bad"]), ("examples", "bad"), ("relations", None),
+            ("relations", [{"target": "term-unknown", "type": {}}]),
+        ]
+        for field, value in cases:
+            with self.subTest(field=field, value=value):
+                source = json.loads(json.dumps(self.source))
+                source["terms"][0][field] = value
+                self.assertTrue(ontology.validate_source(source, self.config))
+                with self.assertRaises(ontology.OntologyError):
+                    ontology.quality_report(source, self.config)
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory) / "repo"
+            copy_repository(root)
+            source = json.loads(json.dumps(self.source))
+            source["terms"][0]["status"] = []
+            (root / "ontology.source.json").write_text(ontology.canonical_json(source), encoding="utf-8")
+            result = self.invoke(root, "validate", "--strict")
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("status is not allowed", result.stderr)
+            self.assertNotIn("Traceback", result.stderr)
+
+    def test_nested_manifest_shapes_are_reported_without_tracebacks(self) -> None:
+        original = ontology.read_json(ontology.configured_paths(self.config)["manifest"])
+        for field, value in (
+            ("artifacts", None), ("status", []), ("validationSummary", {"status": {}}),
+            ("artifacts", [{"path": [], "kind": {}}]),
+        ):
+            with self.subTest(field=field):
+                manifest = json.loads(json.dumps(original))
+                current = next(r for r in manifest["releases"] if r["status"] == "current")
+                current[field] = value
+                with tempfile.TemporaryDirectory() as directory:
+                    path = Path(directory) / "releases.json"
+                    path.write_text(ontology.canonical_json(manifest), encoding="utf-8")
+                    self.assertTrue(ontology.validate_manifest(path, self.config))
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory) / "repo"
+            copy_repository(root)
+            original["releases"].insert(0, None)
+            (root / "releases.json").write_text(ontology.canonical_json(original), encoding="utf-8")
+            result = self.invoke(root, "validate", "--strict")
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("must be an object", result.stderr)
+            self.assertNotIn("Traceback", result.stderr)
+
+    def test_release_label_and_date_must_agree(self) -> None:
+        for field, value in (("label", "Different label"), ("date", "2024-01-01")):
+            with self.subTest(field=field):
+                source = json.loads(json.dumps(self.source))
+                source["release"][field] = value
+                errors = ontology.validate_source(source, self.config)
+                self.assertIn(f"source release {field} does not match ontology.toml", errors)
+                manifest = ontology.read_json(ontology.configured_paths(self.config)["manifest"])
+                current = next(r for r in manifest["releases"] if r["status"] == "current")
+                current[field] = value
+                with tempfile.TemporaryDirectory() as directory:
+                    path = Path(directory) / "releases.json"
+                    path.write_text(ontology.canonical_json(manifest), encoding="utf-8")
+                    self.assertIn(
+                        f"current release {field} does not match ontology.toml",
+                        ontology.validate_manifest(path, self.config),
+                    )
+
+
 class WorklogConventionTests(unittest.TestCase):
     """The documented worklog convention is enforced, not only asserted in prose."""
 

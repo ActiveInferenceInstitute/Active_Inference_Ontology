@@ -27,8 +27,9 @@ Use [SUMO Mapping Contract](sumo-mapping-contract.md) and
 [`SUMO/mapping-template.csv`](../SUMO/mapping-template.csv) for durable
 mapping work.
 
-Do not use the SUMO folder as a substitute source of truth for term definitions
-unless a release process explicitly promotes mapped terms back into the root CSV.
+The SUMO folder is not a substitute source of truth for term definitions.
+Promote reviewed mapping decisions only through the curation governance process
+into `ontology.source.json`; regenerate the root CSV and other projections afterward.
 
 ## Handling Notes
 

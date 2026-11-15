@@ -130,6 +130,10 @@ def load_config(path: Path = DEFAULT_CONFIG) -> dict[str, Any]:
     for section in ("paths", "release", "validation"):
         if not isinstance(config.get(section), dict):
             raise OntologyError(f"ontology.toml is missing [{section}]")
+    for field in ("version", "label", "date"):
+        value = config["release"].get(field)
+        if not isinstance(value, str) or not value.strip():
+            raise OntologyError(f"ontology.toml release.{field} must be a non-empty string")
     return config
 
 
@@ -169,13 +173,13 @@ def read_json(path: Path) -> dict[str, Any]:
 
 
 def write_atomic(path: Path, content: str, *, check: bool = False) -> bool:
-    path.parent.mkdir(parents=True, exist_ok=True)
     if check:
         try:
             current = path.read_text(encoding="utf-8") if path.exists() else None
         except UnicodeDecodeError as exc:
             raise OntologyError(f"generated artifact is not valid UTF-8: {path}") from exc
         return current == content
+    path.parent.mkdir(parents=True, exist_ok=True)
     temporary: Path | None = None
     try:
         with tempfile.NamedTemporaryFile(
@@ -353,8 +357,8 @@ def validate_source(
         errors.append("source.release must be an object")
     else:
         for field in ("version", "label", "date"):
-            if not normalize(release.get(field)):
-                errors.append(f"source.release.{field} is required")
+            if not isinstance(release.get(field), str) or not release[field].strip():
+                errors.append(f"source.release.{field} must be a non-empty string")
         if isinstance(release.get("version"), str) and not RELEASE_PATTERN.fullmatch(release["version"]):
             errors.append("source.release.version must match v<integer>")
         if isinstance(release.get("date"), str):
@@ -362,8 +366,10 @@ def validate_source(
                 date.fromisoformat(release["date"])
             except ValueError:
                 errors.append("source.release.date must be an ISO date")
-        if check_release and release.get("version") != config["release"]["version"]:
-            errors.append("source release version does not match ontology.toml")
+        if check_release:
+            for field in ("version", "label", "date"):
+                if release.get(field) != config["release"][field]:
+                    errors.append(f"source release {field} does not match ontology.toml")
     terms = source.get("terms")
     if not isinstance(terms, list) or not terms:
         return errors + ["source.terms must be a non-empty array"]
@@ -375,6 +381,8 @@ def validate_source(
     allowed_tags = set(validation["allowed_tags"])
     allowed_statuses = set(validation["statuses"])
     allowed_relations = set(validation["relation_types"])
+    required_tag_lists = set(validation["required_tag_lists"])
+    required_definition_lists = set(validation["required_definition_lists"])
     id_set: set[str] = set()
     for index, term in enumerate(terms, start=1):
         if isinstance(term, dict):
@@ -415,8 +423,8 @@ def validate_source(
         elif term_id not in ids:
             ids[term_id] = index
             id_set.add(term_id)
-        if not label:
-            errors.append(f"{prefix}.term is required")
+        if not isinstance(term.get("term"), str) or not label:
+            errors.append(f"{prefix}.term must be a non-empty string")
         else:
             key = label.casefold()
             if key not in labels:
@@ -432,22 +440,22 @@ def validate_source(
                 if key not in labels and key not in aliases:
                     aliases[key] = index
         status = term.get("status")
-        if status not in allowed_statuses:
+        if not isinstance(status, str) or status not in allowed_statuses:
             errors.append(f"{prefix}.status is not allowed: {status!r}")
         list_name = term.get("list")
-        if list_name not in allowed_lists:
+        if not isinstance(list_name, str) or list_name not in allowed_lists:
             errors.append(f"{prefix}.list is not allowed: {list_name!r}")
         tag = term.get("tag")
-        if tag is not None and tag not in allowed_tags:
+        if tag is not None and (not isinstance(tag, str) or tag not in allowed_tags):
             errors.append(f"{prefix}.tag is not allowed: {tag!r}")
-        if list_name in set(validation["required_tag_lists"]) and not tag:
+        if isinstance(list_name, str) and list_name in required_tag_lists and not tag:
             errors.append(f"{prefix}.tag is required for list {list_name!r}")
         definitions = term.get("definitions")
         examples = term.get("examples")
         if not isinstance(definitions, dict) or not isinstance(examples, dict):
             errors.append(f"{prefix}.definitions and .examples must be objects")
         else:
-            if list_name in set(validation["required_definition_lists"]):
+            if isinstance(list_name, str) and list_name in required_definition_lists:
                 if not normalize(definitions.get("primary")):
                     errors.append(f"{prefix}.definitions.primary is required")
                 if not normalize(examples.get("correct")):
@@ -477,7 +485,7 @@ def validate_source(
                 errors.append(f"{rel_prefix}.target is invalid: {target!r}")
             elif target not in id_set:
                 errors.append(f"{rel_prefix}.target is unknown: {target!r}")
-            if relation_type not in allowed_relations:
+            if not isinstance(relation_type, str) or relation_type not in allowed_relations:
                 errors.append(f"{rel_prefix}.type is not allowed: {relation_type!r}")
             relation_key = (str(target), str(relation_type))
             if relation_key in relation_keys:
@@ -837,7 +845,8 @@ search.addEventListener('input', render); tag.addEventListener('change', render)
 
 
 def validate_manifest(
-    manifest_path: Path, config: dict[str, Any], *, verify_hashes: bool = True
+    manifest_path: Path, config: dict[str, Any], *, verify_hashes: bool = True,
+    verify_current_hashes: bool = True,
 ) -> list[str]:
     try:
         manifest = read_json(manifest_path)
@@ -888,7 +897,7 @@ def validate_manifest(
                 except ValueError:
                     errors.append(f"{prefix}: date must be an ISO date or null")
         status = release.get("status")
-        if status not in {"current", "archived"}:
+        if not isinstance(status, str) or status not in {"current", "archived"}:
             errors.append(f"{prefix}: status must be current or archived")
         elif status == "current":
             current_statuses += 1
@@ -906,7 +915,7 @@ def validate_manifest(
             errors.append(f"{prefix}: validationSummary must be an object")
         else:
             summary_status = summary.get("status")
-            if summary_status not in {"passed", "not-evaluated"}:
+            if not isinstance(summary_status, str) or summary_status not in {"passed", "not-evaluated"}:
                 errors.append(f"{prefix}: validationSummary.status is invalid")
             for field in ("termCount", "tagCount", "relationCount"):
                 value = summary.get(field)
@@ -938,7 +947,7 @@ def validate_manifest(
                 continue
             relative = artifact.get("path")
             kind = artifact.get("kind")
-            if kind not in ARTIFACT_KINDS:
+            if not isinstance(kind, str) or kind not in ARTIFACT_KINDS:
                 errors.append(f"{prefix}: invalid artifact kind for {relative!r}")
             if not isinstance(relative, str) or not relative:
                 errors.append(f"{prefix}: artifact path is missing")
@@ -963,7 +972,11 @@ def validate_manifest(
             expected = artifact.get("sha256")
             if not isinstance(expected, str) or not HASH_PATTERN.fullmatch(expected):
                 errors.append(f"{prefix}: invalid hash for {relative}")
-            elif verify_hashes and sha256(artifact_path) != expected:
+            elif (
+                verify_hashes
+                and (verify_current_hashes or version != current)
+                and sha256(artifact_path) != expected
+            ):
                 errors.append(f"{prefix}: hash mismatch for {relative}")
     if versions and versions != sorted(versions):
         errors.append("release entries must be ordered numerically by version")
@@ -973,16 +986,18 @@ def validate_manifest(
         current_entry = matches[0]
         if current_entry.get("status") != "current":
             errors.append("current release must have status=current")
-        if current_entry.get("version") != config["release"]["version"]:
-            errors.append("current release version does not match ontology.toml")
+        for field in ("version", "label", "date"):
+            if current_entry.get(field) != config["release"][field]:
+                errors.append(f"current release {field} does not match ontology.toml")
         expected_paths = {
             Path(config["paths"][key]).as_posix()
             for key in ("source", "export", "csv_export", "site", "source_schema", "export_schema", "manifest_schema")
         }
+        current_artifacts = current_entry.get("artifacts")
         current_paths = {
             artifact.get("path")
-            for artifact in current_entry.get("artifacts", [])
-            if isinstance(artifact, dict)
+            for artifact in (current_artifacts if isinstance(current_artifacts, list) else [])
+            if isinstance(artifact, dict) and isinstance(artifact.get("path"), str)
         }
         missing_paths = sorted(expected_paths - current_paths)
         if missing_paths:
@@ -991,6 +1006,9 @@ def validate_manifest(
 
 
 def quality_report(source: dict[str, Any], config: dict[str, Any]) -> dict[str, Any]:
+    errors = validate_source(source, config)
+    if errors:
+        raise OntologyError("cannot report invalid source:\n- " + "\n- ".join(errors))
     terms_value = source.get("terms", [])
     terms = [term for term in terms_value if isinstance(term, dict)] if isinstance(terms_value, list) else []
     missing = {
@@ -1023,6 +1041,7 @@ def load_and_validate(
     paths = configured_paths(config)
     source = read_json(paths["source"])
     source_errors = validate_source(source, config)
+    source_is_valid = not source_errors
     for schema_key, schema_id in (
         ("source_schema", SOURCE_SCHEMA),
         ("export_schema", EXPORT_SCHEMA),
@@ -1042,7 +1061,6 @@ def load_and_validate(
         export = read_json(paths["export"])
     except OntologyError as exc:
         source_errors.append(str(exc))
-    source_is_valid = not validate_source(source, config)
     expected_export = build_export(source, config, paths["source"]) if source_is_valid else None
     export_is_current = expected_export is not None and export == expected_export
     if source_is_valid and not export_is_current:
@@ -1069,10 +1087,18 @@ def load_and_validate(
     manifest = None
     try:
         manifest = read_json(paths["manifest"])
+        releases = manifest.get("releases")
+        if not isinstance(releases, list):
+            raise OntologyError("release manifest releases must be an array")
         current_release = next(
-            release for release in manifest["releases"]
-            if release.get("version") == manifest.get("currentRelease")
+            release for release in releases
+            if isinstance(release, dict) and release.get("version") == manifest.get("currentRelease")
         )
+        summary = current_release.get("validationSummary")
+        if not isinstance(summary, dict):
+            raise OntologyError("current release validationSummary must be an object")
+        if not source_is_valid:
+            raise OntologyError("source is invalid")
         expected_counts = quality_report(source, config)
         for field, expected in (
             ("termCount", expected_counts["termCount"]),
@@ -1083,7 +1109,7 @@ def load_and_validate(
                 (f"current release {field}", current_release.get(field)),
                 (
                     f"current release validationSummary.{field}",
-                    (current_release.get("validationSummary") or {}).get(field),
+                    summary.get(field),
                 ),
             ):
                 if actual != expected:
@@ -1297,32 +1323,27 @@ def diff_command(old_path: Path, new_path: Path, config: dict[str, Any]) -> int:
 def sync_manifest(config: dict[str, Any]) -> int:
     paths = configured_paths(config)
     manifest = read_json(paths["manifest"])
-    errors = validate_manifest(paths["manifest"], config, verify_hashes=False)
+    # Current artifacts may have just been regenerated. Archived evidence may not.
+    errors = validate_manifest(paths["manifest"], config, verify_current_hashes=False)
+    source = read_json(paths["source"])
+    errors.extend(validate_source(source, config))
     if errors:
-        raise OntologyError("manifest validation failed:\n- " + "\n- ".join(errors))
-    current = manifest.get("currentRelease")
-    for release in manifest.get("releases", []):
-        base = root_path(release.get("path", "."))
-        for artifact in release.get("artifacts", []):
-            artifact_path = base / artifact["path"]
-            if not artifact_path.is_file():
-                raise OntologyError(f"missing manifest artifact: {artifact_path}")
-            artifact["sha256"] = sha256(artifact_path)
-        if release.get("version") != current:
-            continue
-        source = read_json(paths["source"])
-        release["termCount"] = len(source["terms"])
-        release["tagCount"] = len({term["tag"] for term in source["terms"] if term["tag"]})
-        release["relationCount"] = sum(len(term["relations"]) for term in source["terms"])
-        release["sourceSchema"] = SOURCE_SCHEMA
-        release["exportSchema"] = EXPORT_SCHEMA
-        release["validationSummary"] = {
-            "status": "passed",
-            "termCount": release["termCount"],
-            "tagCount": release["tagCount"],
-            "relationCount": release["relationCount"],
-        }
-        break
+        raise OntologyError("manifest synchronization rejected:\n- " + "\n- ".join(errors))
+    current = next(
+        release for release in manifest["releases"]
+        if release["version"] == manifest["currentRelease"]
+    )
+    base = safe_relative_path(current["path"], "current release path")
+    for artifact in current["artifacts"]:
+        artifact["sha256"] = sha256(base / artifact["path"])
+    report = quality_report(source, config)
+    current.update({field: report[field] for field in ("termCount", "tagCount", "relationCount")})
+    current["sourceSchema"] = SOURCE_SCHEMA
+    current["exportSchema"] = EXPORT_SCHEMA
+    current["validationSummary"] = {
+        "status": "passed",
+        **{field: report[field] for field in ("termCount", "tagCount", "relationCount")},
+    }
     write_atomic(paths["manifest"], canonical_json(manifest))
     print(f"Updated {display_path(paths['manifest'])}")
     return 0

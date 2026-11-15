@@ -39,7 +39,7 @@ DESCRIPTIONS = {
     "fast": "regression subset without the publication layer (`test_ontology`, `test_sidecar`)",
     "full": "`python -m unittest discover -s tests -v`",
     "docs": "`scripts/check_docs.py`: relative links, anchors, index coverage",
-    "manuscript": "`generate`, `manifest`, byte-identity diff, `validate --strict`, `check`",
+    "manuscript": "read-only generated freshness, render provenance, `validate --strict`, `check`",
     "gnn": "pinned GNN install, vocabulary verification, bootstrap consistency test, shared importer check, and `gnn-terms --check`",
 }
 

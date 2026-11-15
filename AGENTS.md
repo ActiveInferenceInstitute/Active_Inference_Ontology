@@ -50,11 +50,13 @@ python3 -m unittest discover -s tests -v   # regression suite
 
 The full acceptance gate is documented in `CONTRIBUTING.md` and
 `docs/build-and-validation.md`; measured arm wall time is generated into
-`docs/_generated/gate.md` by `./run.sh bench`. On hosts whose
-matplotlib rasterization differs from the committed figures, run manuscript
-checks with `MANUSCRIPT_PORTABLE_CHECK=1` (figure bytes only; all other
-integrity checks stay enforced); CI regenerates the figures in its own
-toolchain and compares every other artifact byte-exactly.
+`docs/_generated/gate.md` by its owning producer. The `manuscript` arm is read-only:
+it checks existing generated freshness and per-format render provenance.
+On hosts whose rasterization differs, `MANUSCRIPT_PORTABLE_CHECK=1` affects only
+PNG-byte comparison; all other integrity checks remain enforced. Use an admitted
+disposable copy for rendering, preserve pre-existing artifact edits, and leave
+publication to the integration owner. The workflow selects `ubuntu-24.04`;
+local proof is not hosted acceptance.
 
 ## Conventions
 

@@ -41,5 +41,6 @@ mapping work.
 - Keep rejected mappings when they prevent repeated false-positive proposals.
 - Update `review_status`, `reviewer`, and `review_date` whenever a mapping is
   promoted or rejected.
-- Do not promote SUMO mappings back into the canonical CSV without the curation
-  governance process.
+- Promote reviewed SUMO mappings only through the curation governance process
+  into `ontology.source.json`. The canonical spreadsheet CSV is a generated
+  projection, not an editable promotion target.

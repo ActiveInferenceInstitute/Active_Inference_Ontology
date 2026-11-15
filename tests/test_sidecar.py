@@ -10,6 +10,7 @@ schema marker, the required sections, artifact and documentation paths that exis
 from __future__ import annotations
 
 import re
+import tempfile
 import unittest
 from pathlib import Path
 from typing import Any
@@ -18,12 +19,7 @@ import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
 SIDECAR = ROOT / ".aii"
-FRAGMENTS = (
-    "config.yaml",
-    "config.d/ecosystem.yaml",
-    "config.d/artifacts.yaml",
-    "config.d/tasks.yaml",
-)
+FRAGMENTS = ("config.yaml",)
 ARTIFACT_KINDS = {"source", "dataset", "export", "code", "doc", "model"}
 RELATION_TARGET = re.compile(r"^[A-Za-z0-9._-]+/[A-Za-z0-9._-]+$")
 VERSION = re.compile(r"^\d+\.\d+\.\d+$")
@@ -41,19 +37,49 @@ def deep_merge(base: dict[str, Any], overlay: dict[str, Any]) -> dict[str, Any]:
     return merged
 
 
-def load_sidecar() -> dict[str, Any]:
+def load_sidecar(sidecar: Path = SIDECAR) -> dict[str, Any]:
     config: dict[str, Any] = {}
-    for name in FRAGMENTS:
-        path = SIDECAR / name
+    paths = [sidecar / name for name in FRAGMENTS]
+    paths.extend(sorted((sidecar / "config.d").glob("*.yaml")))
+    for path in paths:
         if path.is_file():
             config = deep_merge(config, yaml.safe_load(path.read_text(encoding="utf-8")) or {})
     return config
+
+
+def missing_documentation(config: dict[str, Any], sidecar: Path = SIDECAR) -> list[str]:
+    return [str(name) for name in config["docs"] if not (sidecar / str(name)).is_file()]
 
 
 class SidecarStructureTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
         cls.config = load_sidecar()
+
+    def test_fragment_documentation_replaces_base_and_is_validated(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            sidecar = Path(directory)
+            (sidecar / "config.d").mkdir()
+            (sidecar / "config.yaml").write_text(
+                "docs: [base.md]\nmeta: {updated: '2026-11-13'}\n", encoding="utf-8"
+            )
+            (sidecar / "config.d/docs.yaml").write_text(
+                "docs: [missing-guide.md]\n", encoding="utf-8"
+            )
+            effective = load_sidecar(sidecar)
+            self.assertEqual(effective["docs"], ["missing-guide.md"])
+            self.assertEqual(str(effective["meta"]["updated"]), "2026-11-13")
+            self.assertEqual(missing_documentation(effective, sidecar), ["missing-guide.md"])
+            (sidecar / "missing-guide.md").write_text("# Guide\n", encoding="utf-8")
+            self.assertEqual(missing_documentation(effective, sidecar), [])
+
+    def test_effective_metadata_has_one_update_authority(self) -> None:
+        base = yaml.safe_load((SIDECAR / "config.yaml").read_text(encoding="utf-8"))
+        self.assertEqual(self.config["meta"], base["meta"])
+        self.assertEqual(
+            self.config["provenance"]["citation"]["zenodo"],
+            "https://doi.org/10.5281/zenodo.7430332",
+        )
 
     def test_schema_marker_and_required_sections(self) -> None:
         self.assertEqual(self.config.get("schema"), "aii-sidecar/v1")
@@ -102,8 +128,7 @@ class SidecarStructureTests(unittest.TestCase):
             self.assertTrue(path.exists(), f"artifact path missing: {item['path']}")
 
     def test_documentation_paths_live_under_the_sidecar(self) -> None:
-        for name in self.config["docs"]:
-            self.assertTrue((SIDECAR / str(name)).is_file(), f"sidecar documentation missing: {name}")
+        self.assertEqual(missing_documentation(self.config), [])
 
     def test_relations_and_links_are_well_formed(self) -> None:
         ecosystem = self.config["ecosystem"]

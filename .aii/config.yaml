@@ -7,8 +7,8 @@
 schema: aii-sidecar/v1
 
 meta:
-  sidecar_version: 1.2.2
-  updated: 2026-11-12
+  sidecar_version: 1.2.3
+  updated: 2026-11-13
 
 repo:
   name: Active_Inference_Ontology
@@ -30,8 +30,8 @@ institute:
 provenance:
   license: CC-BY-4.0
   citation:
-    zenodo: https://zenodo.org/badge/latestdoi/343477486
-    text: "Active Inference Institute — Active Inference Ontology (Zenodo, concept DOI 343477486)."
+    zenodo: https://doi.org/10.5281/zenodo.7430332
+    text: "Active Inference Institute — Active Inference Ontology (concept DOI 10.5281/zenodo.7430332; v5 DOI 10.5281/zenodo.7972289)."
   current_release: v5
   releases_manifest: releases.json
 

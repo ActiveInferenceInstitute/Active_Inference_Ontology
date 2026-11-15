@@ -19,6 +19,7 @@ relative links cannot be repaired without rewriting the archive.
 from __future__ import annotations
 
 import json
+import os
 import re
 import sys
 import unicodedata
@@ -29,8 +30,13 @@ ROOT = Path(__file__).resolve().parent.parent
 INDEX = ROOT / "docs" / "documentation-index.md"
 ARCHIVE = "Archived versions"
 GENERATED_OUTPUT = ("docs", "manuscript", "output")
+SKIP_DIRS = {
+    ".git", ".venv", "venv", "env", "__pycache__", "node_modules",
+    ".pytest_cache", ".mypy_cache", ".ruff_cache", ".tox", ".nox",
+    "site-packages", "build", "dist",
+}
 
-FENCE = re.compile(r"^(```|~~~)")
+FENCE = re.compile(r"^ {0,3}(`{3,}|~{3,})(.*)$")
 INLINE_CODE = re.compile(r"`[^`\n]*`")
 LINK = re.compile(r"!?\[[^\]\n]*\]\(\s*(<[^>\n]*>|[^)\s]+)(?:\s+(?:\"[^\"\n]*\"|'[^'\n]*'))?\s*\)")
 DEFINITION = re.compile(r"^\s{0,3}\[[^\]\n]+\]:\s*(\S+)")
@@ -47,46 +53,61 @@ def normalize(text: str) -> str:
 
 def slugify(heading: str) -> str:
     text = EXPLICIT_ID.sub("", heading)
-    text = re.sub(r"[*_`]", "", text)
+    text = "".join(
+        part[1:-1] if part.startswith("`") and part.endswith("`")
+        else re.sub(r"[*_]", "", part)
+        for part in re.split(r"(`[^`\n]*`)", text)
+    )
     text = normalize(text).strip().casefold()
     return SLUG_DROP.sub("", text).replace(" ", "-")
 
 
 def markdown_files() -> list[Path]:
     files = []
-    for path in sorted(ROOT.rglob("*.md")):
-        relative = path.relative_to(ROOT)
-        if any(part.startswith(".") and part != "." for part in relative.parts[:-1]):
-            continue
-        if relative.parts and relative.parts[0] == ARCHIVE:
-            continue
-        files.append(path)
-    return files
+    for directory, names, filenames in os.walk(ROOT, followlinks=False):
+        current = Path(directory)
+        names[:] = sorted(
+            name for name in names
+            if name not in SKIP_DIRS
+            and not (current == ROOT and name == ARCHIVE)
+            and not (current / name).is_symlink()
+        )
+        files.extend(current / name for name in sorted(filenames) if name.endswith(".md"))
+    return sorted(files)
 
 
-def strip_code(text: str) -> str:
-    """Blank out fenced blocks and inline code while preserving line numbers."""
+def strip_code(text: str, *, inline: bool = True) -> str:
+    """Blank fenced content; optionally hide code spans when finding links."""
 
     lines = []
-    fenced = False
+    fence = ""
     for line in text.splitlines():
-        if FENCE.match(line):
-            fenced = not fenced
+        match = FENCE.match(line)
+        if fence:
+            if (
+                match and match[1][0] == fence[0]
+                and len(match[1]) >= len(fence) and not match[2].strip()
+            ):
+                fence = ""
             lines.append("")
-            continue
-        lines.append("" if fenced else INLINE_CODE.sub("", line))
+        elif match:
+            fence = match[1]
+            lines.append("")
+        else:
+            lines.append(INLINE_CODE.sub("", line) if inline else line)
     return "\n".join(lines)
 
 
 def anchors(path: Path) -> set[str]:
     try:
-        text = strip_code(path.read_text(encoding="utf-8"))
+        text = strip_code(path.read_text(encoding="utf-8"), inline=False)
     except (OSError, UnicodeDecodeError):
         return set()
     found = set()
     for line in text.splitlines():
-        found.update(EXPLICIT_ID.findall(line))
-        found.update(HTML_ANCHOR.findall(line))
+        anchor_text = INLINE_CODE.sub("", line)
+        found.update(EXPLICIT_ID.findall(anchor_text))
+        found.update(HTML_ANCHOR.findall(anchor_text))
         match = HEADING.match(line)
         if match:
             slug = slugify(match.group(1))
@@ -116,13 +137,13 @@ def exact_exists(path: Path) -> bool:
             continue
         try:
             entries = {normalize(entry.name): entry for entry in current.iterdir()}
-        except (NotADirectoryError, PermissionError):
+        except (FileNotFoundError, NotADirectoryError, PermissionError):
             return False
         entry = entries.get(normalize(part))
         if entry is None:
             return False
         current = entry
-    return True
+    return current.exists()
 
 
 def targets(text: str) -> list[tuple[int, str]]:
@@ -156,10 +177,11 @@ def check(path: Path, cache: dict[Path, set[str]]) -> list[str]:
         if not raw_path:
             destination = path
         else:
-            destination = (path.parent / unquote(raw_path)).resolve()
+            destination = path.parent / unquote(raw_path)
             if not exact_exists(destination):
                 problems.append(f"{location}: unresolved link target {target!r}")
                 continue
+            destination = destination.resolve()
         if not fragment:
             continue
         if destination.suffix.lower() != ".md":

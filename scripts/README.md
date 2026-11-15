@@ -24,6 +24,8 @@ Configured by `ontology.toml` at the repository root. Subcommands:
 - `diff OLD NEW` — report release differences by stable ID.
 - `audit-csv INPUT.csv` — audit an external spreadsheet export without importing
   it.
+- `sync-manifest` — verify immutable archive hashes, then update only the current
+  release's hashes and counts after regenerating all projections.
 
 Writes are atomic (a temporary file followed by replacement); the `--check`
 forms are read-only. See
@@ -33,10 +35,15 @@ full acceptance sequence.
 ## `manuscript.py`
 
 Generates, validates, renders, and checks the manuscript under
-`docs/manuscript`. Subcommands: `generate`, `manifest`,
-`render --format`, `validate --strict`, and `check`. The `manuscript` arm
-regenerates the publication artifacts and then requires byte-identity for every
-rasterizer-independent artifact.
+`docs/manuscript`. Subcommands: `generate`, `manifest`, `render --format`,
+`validate --strict`, and `check`. The `manuscript` arm checks existing evidence
+read-only; `render` renders all formats and then checks.
+
+The `active-inference-ontology/manuscript/v2` manifest requires per-format
+`.render.json` records that bind inputs, invocation/environment, toolchain,
+and output hash/size. A manifest refresh cannot certify old unbound outputs.
+Partial rendering preserves the original records for untouched formats.
+Render in an admitted disposable copy and publish only under integration custody.
 
 ## Gate scripts
 

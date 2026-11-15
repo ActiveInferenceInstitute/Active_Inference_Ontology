@@ -71,6 +71,10 @@ The arms call the two CLIs directly:
 
 ```bash
 python3 scripts/ontology.py build
+python3 scripts/ontology.py export-csv
+python3 scripts/ontology.py site
+python3 scripts/ontology.py gnn-terms
+python3 scripts/ontology.py sync-manifest
 python3 scripts/ontology.py validate --strict
 python3 scripts/ontology.py schema-check
 python3 scripts/ontology.py report
@@ -80,9 +84,9 @@ python3 scripts/ontology.py site --check
 python3 scripts/ontology.py gnn-terms --check
 python3 scripts/ontology.py diff OLD_SOURCE.json NEW_SOURCE.json
 python3 scripts/ontology.py audit-csv INPUT.csv
-python3 scripts/manuscript.py generate
-python3 scripts/manuscript.py validate --strict
+python3 scripts/manuscript.py generate             # admitted disposable publication copy
 python3 scripts/manuscript.py render --format all
+python3 scripts/manuscript.py validate --strict
 python3 scripts/manuscript.py check
 ```
 
@@ -99,6 +103,10 @@ The manuscript pipeline derives all reported metrics, tables, figures, and prove
 from the canonical source and release manifest. It renders PDF, HTML, DOCX, and EPUB
 outputs with Pandoc and records their hashes in
 [`docs/manuscript/artifact-manifest.json`](docs/manuscript/artifact-manifest.json).
+The read-only `manuscript` arm validates existing input and per-format render
+provenance; it never regenerates or backfills receipts. Rendering belongs in an
+admitted disposable copy, with publication reserved to the integration owner.
+The workflow selects `ubuntu-24.04`; local qualification is not hosted acceptance.
 
 ## Source model
 
@@ -114,9 +122,10 @@ structured source and must not be edited independently. See
 
 ## Curation and releases
 
-Read [`docs/curation-workflow.md`](docs/curation-workflow.md), then run the strict
-validator and review the generated report before changing release metadata. Historical
-files are immutable and are checked by hash, not rewritten.
+Follow [`docs/curation-workflow.md`](docs/curation-workflow.md) and the
+[release sequence](docs/release-workflow.md): align approved release metadata,
+regenerate every projection, synchronize the current manifest, then validate.
+Historical files and their recorded hashes remain immutable.
 
 For citation, include the Zenodo DOI (concept DOI 10.5281/zenodo.7430332),
 content release, source filename, and repository commit or tag.

@@ -8,6 +8,7 @@ import hashlib
 import importlib.util
 import json
 import os
+import platform
 import re
 import shutil
 import subprocess
@@ -17,6 +18,7 @@ import zipfile
 from collections import Counter
 from collections.abc import Iterable
 from datetime import UTC, date, datetime
+from importlib import metadata
 from pathlib import Path, PurePosixPath
 from typing import Any
 
@@ -65,7 +67,9 @@ FORBIDDEN_TERMS = (
     tuple((119, 111, 114, 107, 32, 105, 110, 32, 112, 114, 111, 103, 114, 101, 115, 115)),
 )
 HASH_PATTERN = re.compile(r"^[0-9a-f]{64}$")
-MANIFEST_SCHEMA = "active-inference-ontology/manuscript/v1"
+MANIFEST_SCHEMA = "active-inference-ontology/manuscript/v2"
+RENDER_SCHEMA = "active-inference-ontology/render/v1"
+FORMATS = ("pdf", "html", "docx", "epub")
 
 
 class ManuscriptError(Exception):
@@ -627,19 +631,37 @@ def validate_claim_ledger() -> list[str]:
         return ["claim ledger must contain a non-empty claims array"]
     bibliography = parse_bib(MANUSCRIPT / "references.bib")
     errors: list[str] = []
+    identifiers: set[str] = set()
     for index, claim in enumerate(claims, start=1):
+        prefix = f"claim ledger entry {index}"
         if not isinstance(claim, dict):
-            errors.append(f"claim ledger entry {index} must be an object")
+            errors.append(f"{prefix} must be an object")
             continue
-        for field in ("id", "claim", "evidence", "citations"):
-            if not claim.get(field):
-                errors.append(f"claim ledger entry {index} is missing {field}")
-        for citation in claim.get("citations", []):
-            if citation not in bibliography:
-                errors.append(f"claim ledger entry {claim.get('id')} cites unknown reference {citation}")
-        for evidence in claim.get("evidence", []):
-            if not (ROOT / evidence).is_file():
-                errors.append(f"claim ledger evidence path is missing: {evidence}")
+        for field in ("id", "claim"):
+            if not isinstance(claim.get(field), str) or not claim[field].strip():
+                errors.append(f"{prefix}.{field} must be a non-empty string")
+        identifier = claim.get("id")
+        if isinstance(identifier, str):
+            if identifier in identifiers:
+                errors.append(f"duplicate claim id: {identifier}")
+            identifiers.add(identifier)
+        for field in ("evidence", "citations"):
+            values = claim.get(field)
+            if not isinstance(values, list) or not values:
+                errors.append(f"{prefix}.{field} must be a non-empty array")
+                continue
+            for value in values:
+                if not isinstance(value, str) or not value.strip():
+                    errors.append(f"{prefix}.{field} members must be non-empty strings")
+                elif field == "citations":
+                    if value not in bibliography:
+                        errors.append(f"{prefix} cites unknown reference {value}")
+                else:
+                    path, error = _manifest_path(value, f"{prefix}.evidence")
+                    if error:
+                        errors.append(error)
+                    elif path is not None and not path.is_file():
+                        errors.append(f"claim ledger evidence path is missing: {value}")
     return errors
 
 
@@ -698,37 +720,210 @@ def lexical_hygiene() -> list[str]:
     return sorted(set(errors))
 
 
+def publication_path(fmt: str) -> Path:
+    if fmt not in FORMATS:
+        raise ManuscriptError(f"unsupported manuscript format: {fmt}")
+    return OUTPUT / fmt / f"active_inference_ontology.{fmt}"
+
+
+def render_receipt_path(fmt: str) -> Path:
+    path = publication_path(fmt)
+    return path.with_name(path.name + ".render.json")
+
+
+def render_input_paths() -> list[Path]:
+    paths = [
+        ROOT / name for name in (
+            "ontology.source.json", "ontology.json", "ontology.toml", "releases.json",
+            "schemas/source-v2.json", "schemas/export-v2.json", "schemas/manifest-v2.json",
+            "scripts/ontology.py", "scripts/manuscript.py",
+            "requirements-ci.txt", "requirements-manuscript.txt",
+            ".github/gnn-pin.json", "GNN/declared-labels.json", "GNN/act_inf_ontology_terms.json",
+        )
+    ]
+    paths.extend(MANUSCRIPT / name for name in (
+        *SECTION_FILES, "config.yaml", "preamble.tex", "references.bib", "data/claim_ledger.yaml",
+    ))
+    paths.extend(generated_files())
+    return sorted(set(paths))
+
+
+def render_input_records() -> list[dict[str, str]]:
+    records = []
+    for path in render_input_paths():
+        if not path.resolve().is_relative_to(ROOT.resolve()):
+            raise ManuscriptError(f"render input escapes repository: {path.relative_to(ROOT)}")
+        if not path.is_file():
+            raise ManuscriptError(f"missing render input: {path.relative_to(ROOT)}")
+        records.append({"path": path.relative_to(ROOT).as_posix(), "sha256": sha256(path)})
+    return records
+
+
+def render_environment() -> dict[str, str]:
+    source = json.loads((ROOT / "ontology.source.json").read_text(encoding="utf-8"))
+    epoch = int(datetime.fromisoformat(source["release"]["date"]).replace(tzinfo=UTC).timestamp())
+    return {"SOURCE_DATE_EPOCH": str(epoch), "TZ": "UTC"}
+
+
+def render_command(fmt: str, target: Path, tools: dict[str, str]) -> list[str]:
+    command = [
+        tools["pandoc"], (RESOLVED / "combined.md").relative_to(ROOT).as_posix(),
+        "--standalone", "--metadata-file", (MANUSCRIPT / "config.yaml").relative_to(ROOT).as_posix(),
+        "--bibliography", (MANUSCRIPT / "references.bib").relative_to(ROOT).as_posix(),
+        "--citeproc", "--filter", tools["pandoc-crossref"], "--resource-path",
+        f"{MANUSCRIPT.relative_to(ROOT).as_posix()}:{FIGURES.relative_to(ROOT).as_posix()}",
+        "--output", str(target),
+    ]
+    if fmt == "pdf":
+        command.extend([
+            f"--pdf-engine={tools['xelatex']}", "--include-in-header",
+            (MANUSCRIPT / "preamble.tex").relative_to(ROOT).as_posix(),
+        ])
+    elif fmt == "html":
+        command.extend(["--to", "html5", "--embed-resources"])
+    else:
+        command.extend(["--to", fmt])
+    return command
+
+
+def render_tool_names(fmt: str) -> tuple[str, ...]:
+    return ("pandoc", "pandoc-crossref", "xelatex", "qpdf") if fmt == "pdf" else ("pandoc", "pandoc-crossref")
+
+
+def render_toolchain(fmt: str) -> tuple[dict[str, str], dict[str, Any]]:
+    executables: dict[str, str] = {}
+    tools: dict[str, Any] = {}
+    for name in render_tool_names(fmt):
+        executable = shutil.which(name)
+        if not executable:
+            raise ManuscriptError(f"{name} is required for {fmt} rendering")
+        result = subprocess.run(
+            [executable, "--version"], cwd=ROOT, stdin=subprocess.DEVNULL,
+            capture_output=True, text=True, check=False, timeout=15,
+        )
+        version = (result.stdout or result.stderr).strip()
+        if result.returncode or not version:
+            raise ManuscriptError(f"cannot identify rendering tool: {name}")
+        executables[name] = executable
+        tools[name] = {"sha256": sha256(Path(executable)), "version": version}
+    try:
+        packages = {name: metadata.version(name) for name in ("jsonschema", "PyYAML", "matplotlib")}
+    except metadata.PackageNotFoundError as exc:
+        raise ManuscriptError(f"missing rendering dependency: {exc}") from exc
+    return executables, {
+        "python": sys.version,
+        "platform": f"{platform.system()}/{platform.machine()}",
+        "packages": packages,
+        "tools": tools,
+    }
+
+
+def render_context(fmt: str, toolchain: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "format": fmt,
+        "inputs": render_input_records(),
+        "command": render_command(
+            fmt, publication_path(fmt).relative_to(ROOT),
+            {name: name for name in render_tool_names(fmt)},
+        ),
+        "environment": render_environment(),
+        "toolchain": toolchain,
+    }
+
+
+def render_record_errors(record: Any, fmt: str, inputs: list[dict[str, str]]) -> list[str]:
+    prefix = f"{fmt} render provenance"
+    if not isinstance(record, dict):
+        return [f"{prefix} is missing; render --format {fmt} is required"]
+    errors: list[str] = []
+    if set(record) != {"schema", "context", "sha256", "output"} or record.get("schema") != RENDER_SCHEMA:
+        errors.append(f"{prefix} has invalid schema or fields")
+    context = record.get("context")
+    if not isinstance(context, dict):
+        return errors + [f"{prefix}.context must be an object"]
+    if set(context) != {"format", "inputs", "command", "environment", "toolchain"}:
+        errors.append(f"{prefix}.context has invalid fields")
+    if context.get("format") != fmt or context.get("inputs") != inputs:
+        errors.append(f"{prefix} is stale: input closure differs")
+    names = {name: name for name in render_tool_names(fmt)}
+    if context.get("command") != render_command(fmt, publication_path(fmt).relative_to(ROOT), names):
+        errors.append(f"{prefix} is stale: command differs")
+    if context.get("environment") != render_environment():
+        errors.append(f"{prefix} is stale: environment differs")
+    toolchain = context.get("toolchain")
+    if not isinstance(toolchain, dict) or set(toolchain) != {"python", "platform", "packages", "tools"}:
+        errors.append(f"{prefix}.toolchain is incomplete")
+    else:
+        if not all(isinstance(toolchain.get(key), str) and toolchain[key].strip() for key in ("python", "platform")):
+            errors.append(f"{prefix}.toolchain runtime identity is incomplete")
+        packages = toolchain.get("packages")
+        if (
+            not isinstance(packages, dict) or set(packages) != {"jsonschema", "PyYAML", "matplotlib"}
+            or not all(isinstance(value, str) and value.strip() for value in packages.values())
+        ):
+            errors.append(f"{prefix}.toolchain package identity is incomplete")
+        tools = toolchain.get("tools")
+        if not isinstance(tools, dict) or set(tools) != set(names):
+            errors.append(f"{prefix}.toolchain tools are incomplete")
+        else:
+            for name, tool in tools.items():
+                if (
+                    not isinstance(tool, dict) or set(tool) != {"sha256", "version"}
+                    or not isinstance(tool.get("sha256"), str) or not HASH_PATTERN.fullmatch(tool["sha256"])
+                    or not isinstance(tool.get("version"), str) or not tool["version"].strip()
+                ):
+                    errors.append(f"{prefix}.toolchain tool identity is invalid: {name}")
+    digest = hashlib.sha256(canonical_json(context).encode("utf-8")).hexdigest()
+    if record.get("sha256") != digest:
+        errors.append(f"{prefix} fingerprint mismatch")
+    errors.extend(_manifest_record_errors(
+        [record.get("output")], label=f"{fmt} rendered output",
+        expected_paths={publication_path(fmt).relative_to(ROOT).as_posix()}, require_bytes=True,
+    ))
+    return errors
+
+
 def manifest_content(*, require_rendered: bool) -> dict[str, Any]:
     ontology, source, export, release_manifest, report = ontology_state(strict=True)
     del ontology
     values = flatten_variables(source, export, release_manifest, report)
+    inputs = render_input_records()
+    renders: dict[str, Any] = {}
+    errors: list[str] = []
+    for fmt in FORMATS:
+        receipt = render_receipt_path(fmt)
+        if receipt.is_file():
+            if not receipt.resolve().is_relative_to(ROOT.resolve()):
+                raise ManuscriptError(f"{fmt} render provenance escapes repository")
+            try:
+                renders[fmt] = json.loads(receipt.read_text(encoding="utf-8"))
+            except (ValueError, OSError) as exc:
+                raise ManuscriptError(f"cannot read {fmt} render provenance: {exc}") from exc
+        if require_rendered:
+            errors.extend(render_record_errors(renders.get(fmt), fmt, inputs))
+    if errors:
+        raise ManuscriptError("\n- ".join(errors))
+    expected = generated_files()
+    for fmt in renders:
+        expected.extend([publication_path(fmt), render_receipt_path(fmt)])
     artifacts: list[dict[str, Any]] = []
-    expected = [VARIABLES_PATH, REGISTRY_PATH, *(FIGURES / f"{name}.png" for name, *_ in FIGURE_SPECS), RESOLVED / "combined.md", *(RESOLVED / name for name in SECTION_FILES)]
-    if require_rendered:
-        expected.extend([
-            OUTPUT / "pdf" / "active_inference_ontology.pdf",
-            OUTPUT / "html" / "active_inference_ontology.html",
-            OUTPUT / "docx" / "active_inference_ontology.docx",
-            OUTPUT / "epub" / "active_inference_ontology.epub",
-        ])
     for path in expected:
-        if path.is_file():
-            artifacts.append({"path": str(path.relative_to(ROOT)), "sha256": sha256(path), "bytes": path.stat().st_size})
-        elif require_rendered:
+        if not path.is_file():
             raise ManuscriptError(f"missing manuscript artifact: {path.relative_to(ROOT)}")
+        artifacts.append({
+            "path": path.relative_to(ROOT).as_posix(),
+            "sha256": sha256(path), "bytes": path.stat().st_size,
+        })
     return {
         "schema": MANIFEST_SCHEMA,
         "release": source["release"],
         "source": {"path": "ontology.source.json", "sha256": sha256(ROOT / "ontology.source.json")},
-        "inputs": [
-            {"path": "ontology.json", "sha256": sha256(ROOT / "ontology.json")},
-            {"path": "releases.json", "sha256": sha256(ROOT / "releases.json")},
-            {"path": "docs/manuscript/references.bib", "sha256": sha256(MANUSCRIPT / "references.bib")},
-        ],
+        "inputs": inputs,
         "counts": values["counts"],
         "sections": len(SECTION_FILES),
         "figures": len(FIGURE_SPECS),
-        "formats": ["pdf", "html", "docx", "epub"] if require_rendered else [],
+        "formats": [fmt for fmt in FORMATS if fmt in renders],
+        "renders": renders,
         "artifacts": artifacts,
     }
 
@@ -742,12 +937,12 @@ def _manifest_path(value: Any, label: str) -> tuple[Path | None, str | None]:
         return None, f"{label} must be a non-empty relative path"
     normalized = value.replace("\\", "/")
     pure = PurePosixPath(normalized)
-    if pure.is_absolute() or ":" in pure.parts[0] or ".." in pure.parts:
+    if not pure.parts or "\x00" in normalized or pure.is_absolute() or any(":" in part for part in pure.parts) or ".." in pure.parts:
         return None, f"{label} must stay within the repository: {value!r}"
     path = ROOT.joinpath(*pure.parts)
     try:
         path.resolve().relative_to(ROOT.resolve())
-    except ValueError:
+    except (OSError, ValueError, RuntimeError):
         return None, f"{label} must stay within the repository: {value!r}"
     return path, None
 
@@ -806,7 +1001,7 @@ def validate_manifest_document(manifest: Any, *, require_rendered: bool) -> list
     errors: list[str] = []
     if not isinstance(manifest, dict):
         return ["manuscript manifest root must be an object"]
-    required = {"schema", "release", "source", "inputs", "counts", "sections", "figures", "formats", "artifacts"}
+    required = {"schema", "release", "source", "inputs", "counts", "sections", "figures", "formats", "artifacts", "renders"}
     unexpected = sorted(set(manifest) - required)
     if unexpected:
         errors.append("manuscript manifest contains unexpected fields: " + ", ".join(unexpected))
@@ -814,7 +1009,7 @@ def validate_manifest_document(manifest: Any, *, require_rendered: bool) -> list
     if missing:
         errors.append("manuscript manifest is missing fields: " + ", ".join(missing))
     if manifest.get("schema") != MANIFEST_SCHEMA:
-        errors.append("invalid manuscript manifest schema")
+        errors.append("invalid manuscript manifest schema; render --format all is required for bound publications")
     release = manifest.get("release")
     if isinstance(release, dict):
         unexpected_release = sorted(set(release) - {"version", "label", "date"})
@@ -846,7 +1041,7 @@ def validate_manifest_document(manifest: Any, *, require_rendered: bool) -> list
     elif source_path is not None and source_path.is_file() and sha256(source_path) != source_record["sha256"]:
         errors.append("manuscript manifest source hash mismatch")
 
-    expected_inputs = {"ontology.json", "releases.json", "docs/manuscript/references.bib"}
+    expected_inputs = {path.relative_to(ROOT).as_posix() for path in render_input_paths()}
     errors.extend(_manifest_record_errors(manifest.get("inputs"), label="inputs", expected_paths=expected_inputs, require_bytes=False))
     expected_artifacts = {
         str(path.relative_to(ROOT))
@@ -858,16 +1053,25 @@ def validate_manifest_document(manifest: Any, *, require_rendered: bool) -> list
             *(RESOLVED / name for name in SECTION_FILES),
         )
     }
-    if require_rendered:
-        expected_artifacts.update(
-            str(path.relative_to(ROOT))
-            for path in (
-                OUTPUT / "pdf" / "active_inference_ontology.pdf",
-                OUTPUT / "html" / "active_inference_ontology.html",
-                OUTPUT / "docx" / "active_inference_ontology.docx",
-                OUTPUT / "epub" / "active_inference_ontology.epub",
-            )
-        )
+    renders = manifest.get("renders")
+    if not isinstance(renders, dict):
+        errors.append("manuscript manifest renders must be an object")
+        renders = {}
+    if set(renders) - set(FORMATS):
+        errors.append("manuscript manifest contains unsupported render formats")
+    try:
+        inputs = render_input_records()
+        for fmt in FORMATS:
+            if require_rendered or fmt in renders:
+                errors.extend(render_record_errors(renders.get(fmt), fmt, inputs))
+    except (ManuscriptError, OSError, ValueError, KeyError, TypeError) as exc:
+        errors.append(f"cannot verify render provenance: {exc}")
+    for fmt in FORMATS:
+        if fmt in renders:
+            expected_artifacts.update({
+                publication_path(fmt).relative_to(ROOT).as_posix(),
+                render_receipt_path(fmt).relative_to(ROOT).as_posix(),
+            })
     errors.extend(_manifest_record_errors(manifest.get("artifacts"), label="artifacts", expected_paths=expected_artifacts, require_bytes=True))
 
     counts = manifest.get("counts")
@@ -897,7 +1101,7 @@ def validate_manifest_document(manifest: Any, *, require_rendered: bool) -> list
         errors.append("manuscript manifest section count is incorrect")
     if manifest.get("figures") != len(FIGURE_SPECS):
         errors.append("manuscript manifest figure count is incorrect")
-    expected_formats = ["pdf", "html", "docx", "epub"] if require_rendered else []
+    expected_formats = list(FORMATS) if require_rendered else [fmt for fmt in FORMATS if fmt in renders]
     if manifest.get("formats") != expected_formats:
         errors.append("manuscript manifest formats are incorrect")
     return errors
@@ -914,68 +1118,59 @@ def validate_manifest(*, require_rendered: bool) -> list[str]:
 
 
 def render_format(fmt: str) -> None:
-    pandoc = shutil.which("pandoc")
-    if not pandoc:
-        raise ManuscriptError("Pandoc is required for manuscript rendering")
-    crossref = shutil.which("pandoc-crossref")
-    if not crossref:
-        raise ManuscriptError("pandoc-crossref is required for manuscript rendering")
-    output_map = {
-        "pdf": OUTPUT / "pdf" / "active_inference_ontology.pdf",
-        "html": OUTPUT / "html" / "active_inference_ontology.html",
-        "docx": OUTPUT / "docx" / "active_inference_ontology.docx",
-        "epub": OUTPUT / "epub" / "active_inference_ontology.epub",
-    }
-    output_path = output_map[fmt]
+    errors = validate_images()
+    if errors:
+        raise ManuscriptError("render image validation failed:\n- " + "\n- ".join(errors))
+    tools, toolchain = render_toolchain(fmt)
+    context = render_context(fmt, toolchain)
+    output_path = publication_path(fmt)
+    if not output_path.resolve().is_relative_to(ROOT.resolve()):
+        raise ManuscriptError(f"{fmt} publication path escapes repository")
     output_path.parent.mkdir(parents=True, exist_ok=True)
-    command = [
-        pandoc,
-        str(RESOLVED / "combined.md"),
-        "--standalone",
-        "--metadata-file",
-        str(MANUSCRIPT / "config.yaml"),
-        "--bibliography",
-        str(MANUSCRIPT / "references.bib"),
-        "--citeproc",
-        "--filter",
-        crossref,
-        "--resource-path",
-        f"{MANUSCRIPT}:{FIGURES}",
-        "--output",
-        str(output_path),
-    ]
-    if fmt == "pdf":
-        command.extend(["--pdf-engine=xelatex", "--include-in-header", str(MANUSCRIPT / "preamble.tex")])
-    elif fmt == "html":
-        command.extend(["--to", "html5", "--embed-resources"])
-    elif fmt == "docx":
-        command.extend(["--to", "docx"])
-    else:
-        command.extend(["--to", "epub"])
-    source = json.loads((ROOT / "ontology.source.json").read_text(encoding="utf-8"))
-    epoch = int(datetime.fromisoformat(source["release"]["date"]).replace(tzinfo=UTC).timestamp())
     environment = os.environ.copy()
-    environment["SOURCE_DATE_EPOCH"] = str(epoch)
-    environment["TZ"] = "UTC"
-    result = subprocess.run(command, cwd=ROOT, env=environment, capture_output=True, text=True, check=False)
-    if result.returncode:
-        detail = (result.stderr or result.stdout).strip().splitlines()
-        raise ManuscriptError(f"{fmt} rendering failed: {detail[-1] if detail else 'unknown error'}")
-    if fmt == "pdf":
-        normalize_pdf(output_path)
-    elif fmt == "epub":
-        normalize_epub(output_path)
+    environment.update(context["environment"])
+    with tempfile.TemporaryDirectory(prefix=".render-", dir=output_path.parent) as directory:
+        staged = Path(directory) / output_path.name
+        result = subprocess.run(
+            render_command(fmt, staged, tools), cwd=ROOT, env=environment,
+            stdin=subprocess.DEVNULL, capture_output=True, text=True, check=False,
+        )
+        if result.returncode:
+            detail = (result.stderr or result.stdout).strip().splitlines()
+            raise ManuscriptError(f"{fmt} rendering failed: {detail[-1] if detail else 'unknown error'}")
+        if not staged.is_file() or staged.stat().st_size == 0:
+            raise ManuscriptError(f"{fmt} rendering produced no publication")
+        if fmt == "pdf":
+            normalize_pdf(staged, tools["qpdf"])
+        elif fmt == "epub":
+            normalize_epub(staged)
+        if staged.stat().st_size == 0:
+            raise ManuscriptError(f"{fmt} normalization produced no publication")
+        _, after_toolchain = render_toolchain(fmt)
+        if render_context(fmt, after_toolchain) != context:
+            raise ManuscriptError(f"{fmt} inputs or toolchain changed during rendering")
+        record = {
+            "schema": RENDER_SCHEMA,
+            "context": context,
+            "sha256": hashlib.sha256(canonical_json(context).encode("utf-8")).hexdigest(),
+            "output": {
+                "path": output_path.relative_to(ROOT).as_posix(),
+                "sha256": sha256(staged), "bytes": staged.stat().st_size,
+            },
+        }
+        receipt = Path(directory) / "render.json"
+        receipt.write_text(canonical_json(record), encoding="utf-8")
+        staged.replace(output_path)
+        receipt.replace(render_receipt_path(fmt))
 
 
-def normalize_pdf(path: Path) -> None:
-    qpdf = shutil.which("qpdf")
-    if not qpdf:
-        raise ManuscriptError("qpdf is required to normalize deterministic PDF identifiers")
+def normalize_pdf(path: Path, qpdf: str) -> None:
     qdf = path.with_suffix(".qdf.pdf")
     temporary = path.with_suffix(".deterministic.pdf")
     result = subprocess.run(
         [qpdf, "--qdf", "--object-streams=disable", "--stream-data=uncompress", str(path), str(qdf)],
         cwd=ROOT,
+        env={**os.environ, **render_environment()},
         capture_output=True,
         text=True,
         check=False,
@@ -998,6 +1193,7 @@ def normalize_pdf(path: Path) -> None:
     result = subprocess.run(
         [qpdf, "--static-id", "--stream-data=compress", str(fixed_qdf), str(temporary)],
         cwd=ROOT,
+        env={**os.environ, **render_environment()},
         capture_output=True,
         text=True,
         check=False,
@@ -1051,14 +1247,11 @@ def render(formats: str) -> None:
     errors = generate(check=False)
     if errors:
         raise ManuscriptError("generation failed:\n- " + "\n- ".join(errors))
-    selected = ["pdf", "html", "docx", "epub"] if formats == "all" else [formats]
+    selected = list(FORMATS) if formats == "all" else [formats]
     for fmt in selected:
         render_format(fmt)
-    rendered = all(
-        (OUTPUT / directory / f"active_inference_ontology.{extension}").is_file()
-        for directory, extension in (("pdf", "pdf"), ("html", "html"), ("docx", "docx"), ("epub", "epub"))
-    )
-    write_manifest(require_rendered=rendered)
+    # Preserve other formats' original receipts, including stale provenance.
+    write_manifest(require_rendered=formats == "all")
 
 
 def validate(*, strict: bool) -> int:
@@ -1115,7 +1308,7 @@ def main(argv: Iterable[str] | None = None) -> int:
             return 0
         if args.command in {"validate", "check"}:
             return validate(strict=args.command == "validate" and args.strict or args.command == "check")
-    except (ManuscriptError, OSError, ValueError) as exc:
+    except (ManuscriptError, OSError, ValueError, subprocess.TimeoutExpired) as exc:
         print(f"error: {exc}", file=sys.stderr)
         return 2
     return 2
