@@ -41,7 +41,7 @@ The source preserves historical sparsity rather than fabricating values. [@tbl:c
 | Field | Present | Missing | Coverage |
 |---|---:|---:|---:|
 | Tag | 74 | 355 | 17.2% |
-| Primary definition | 90 | 339 | 21.0% |
+| Primary definition | 104 | 325 | 24.2% |
 | Correct example | 70 | 359 | 16.3% |
 | Incorrect example | 70 | 359 | 16.3% |
 | Connection text | 40 | 389 | 9.3% |
@@ -68,10 +68,10 @@ The manifest records the release lineage in [@tbl:releases] and current artifact
 
 | Kind | Path | SHA-256 prefix |
 |---|---|---|
-| source | `ontology.source.json` | `82fc5b03b311…` |
-| spreadsheet-export | `Ontology_v5_May_25_2023.csv` | `f6d3648f7961…` |
-| export | `ontology.json` | `a2c8371264e9…` |
-| site | `site/index.html` | `0256e585a904…` |
+| source | `ontology.source.json` | `5ce48583956e…` |
+| spreadsheet-export | `Ontology_v5_May_25_2023.csv` | `6d8c24975463…` |
+| export | `ontology.json` | `7d1ef87d4f26…` |
+| site | `site/index.html` | `e1146170827d…` |
 | schema | `schemas/source-v2.json` | `6c6bf6235c49…` |
 | schema | `schemas/export-v2.json` | `f6591a1a5c9c…` |
 | schema | `schemas/manifest-v2.json` | `5797225849a5…` |
