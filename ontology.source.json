@@ -1128,7 +1128,9 @@
       "term": "Policy selection"
     },
     {
-      "aliases": [],
+      "aliases": [
+        "Preferences"
+      ],
       "connectionsText": "In the Discrete state space formulation of Active Inference, the Preferences or habits of an Agent can be encapsulated in a Prior Preference Distribution, a target distribution of States the agent wishes to end up due to its phenotype and other habits it has picked up throughout its existence.",
       "definitions": {
         "primary": "parameter in Bayesian Inference Markov Decision Process that ranks or scores the extent to how an Agent values Sensory input .",
@@ -3481,8 +3483,8 @@
       "aliases": [],
       "connectionsText": null,
       "definitions": {
-        "primary": null,
-        "secondary": null
+        "primary": "Replacing a fine-grained description of a system by a coarser one through a declared map from fine to coarse states, usually with a rule representing the unresolved fine states.",
+        "secondary": "The coarse-grained process is autonomous (closed) only under specific conditions, for example lumpability of a Markov process; otherwise memory or dependence on the unresolved initial state remains."
       },
       "examples": {
         "correct": null,
@@ -3657,7 +3659,7 @@
       "aliases": [],
       "connectionsText": null,
       "definitions": {
-        "primary": null,
+        "primary": "The probability of an event A given that an event B has occurred, P(A | B) = P(A, B) / P(B), defined when P(B) > 0.",
         "secondary": null
       },
       "examples": {
@@ -4471,8 +4473,8 @@
       "aliases": [],
       "connectionsText": null,
       "definitions": {
-        "primary": null,
-        "secondary": null
+        "primary": "The expected Surprisal of a Distribution; for a discrete law p, H[p] = -sum_x p(x) log p(x), a measure of Uncertainty (in nats with natural logarithms).",
+        "secondary": "Information-theoretic entropy is distinct from thermodynamic entropy unless an explicit physical correspondence is specified."
       },
       "examples": {
         "correct": null,
@@ -4581,7 +4583,7 @@
       "aliases": [],
       "connectionsText": null,
       "definitions": {
-        "primary": null,
+        "primary": "Change across generations in the heritable composition of a population (for example allele, genotype or type frequencies), produced by processes including selection, mutation, migration and random genetic drift.",
         "secondary": null
       },
       "examples": {
@@ -4845,8 +4847,8 @@
       "aliases": [],
       "connectionsText": null,
       "definitions": {
-        "primary": null,
-        "secondary": null
+        "primary": "A measure of the reproductive success of a type or individual, such as expected offspring number per generation (absolute fitness), fitness relative to the population mean, or long-run growth rate in a fluctuating environment.",
+        "secondary": "The definition in use must state the census, timescale and environment; arithmetic and geometric (long-run) fitness can rank types differently."
       },
       "examples": {
         "correct": null,
@@ -5973,11 +5975,13 @@
       "term": "Lens"
     },
     {
-      "aliases": [],
+      "aliases": [
+        "Likelihood Mapping"
+      ],
       "connectionsText": null,
       "definitions": {
-        "primary": null,
-        "secondary": null
+        "primary": "The conditional probability (or density) of an Observation given Hidden State and parameters, p(o | s), read as a function of the hidden state or parameters for fixed observed data.",
+        "secondary": "In discrete-state Active Inference the likelihood is parameterized by the A matrix, whose columns are conditional outcome distributions."
       },
       "examples": {
         "correct": null,
@@ -6570,7 +6574,7 @@
       "aliases": [],
       "connectionsText": null,
       "definitions": {
-        "primary": null,
+        "primary": "The process by which organisms modify their own or each other's environment, thereby altering the selection pressures acting on themselves and on later generations (ecological inheritance).",
         "secondary": null
       },
       "examples": {
@@ -6812,7 +6816,7 @@
       "aliases": [],
       "connectionsText": null,
       "definitions": {
-        "primary": null,
+        "primary": "The observable characteristics (traits) of an organism, arising from its genotype, environment and developmental history.",
         "secondary": null
       },
       "examples": {
@@ -6878,7 +6882,7 @@
       "aliases": [],
       "connectionsText": null,
       "definitions": {
-        "primary": null,
+        "primary": "A collection of individuals or replicating units of specified types considered together; in population models, a state given by the counts or frequencies of those types at a census.",
         "secondary": null
       },
       "examples": {
@@ -6922,8 +6926,8 @@
       "aliases": [],
       "connectionsText": null,
       "definitions": {
-        "primary": null,
-        "secondary": null
+        "primary": "Broad sense: the inverse of variance, or more generally the confidence or reliability assigned to a distribution or model component.",
+        "secondary": "Narrow sense: a specific parameter, such as sensory precision (inverse variance of observation noise) or policy precision (an inverse temperature scaling Expected Free Energy in Policy selection); these are distinct parameters with different units."
       },
       "examples": {
         "correct": null,
@@ -8396,8 +8400,8 @@
       "aliases": [],
       "connectionsText": null,
       "definitions": {
-        "primary": null,
-        "secondary": null
+        "primary": "The expected squared deviation of a random variable from its mean, Var[X] = E[(X - E[X])^2].",
+        "secondary": "For a Gaussian variable, Precision is the inverse of variance."
       },
       "examples": {
         "correct": null,
@@ -9362,7 +9366,7 @@
       "aliases": [],
       "connectionsText": null,
       "definitions": {
-        "primary": null,
+        "primary": "Pertaining to genes, heredity and the transmission of heritable variation between generations.",
         "secondary": null
       },
       "examples": {
@@ -10198,7 +10202,7 @@
       "aliases": [],
       "connectionsText": null,
       "definitions": {
-        "primary": null,
+        "primary": "Differential survival or reproduction associated with heritable type, which changes type frequencies by reweighting each type by its fitness relative to the population mean (x_i' = x_i w_i / mean w).",
         "secondary": null
       },
       "examples": {
@@ -10349,11 +10353,13 @@
       "term": "trajectory"
     },
     {
-      "aliases": [],
+      "aliases": [
+        "Transition Matrix"
+      ],
       "connectionsText": null,
       "definitions": {
-        "primary": null,
-        "secondary": null
+        "primary": "A change of state between successive times; in a discrete-state Generative Model, the conditional law of the next Hidden State given the current state and Action, p(s_t+1 | s_t, u_t).",
+        "secondary": "In discrete-state Active Inference transitions are parameterized by action-indexed B matrices."
       },
       "examples": {
         "correct": null,
