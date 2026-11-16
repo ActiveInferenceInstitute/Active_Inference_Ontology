@@ -7,8 +7,8 @@
 schema: aii-sidecar/v1
 
 meta:
-  sidecar_version: 1.2.3
-  updated: 2026-11-13
+  sidecar_version: 1.2.4
+  updated: 2026-11-16
 
 repo:
   name: Active_Inference_Ontology

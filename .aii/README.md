@@ -26,7 +26,7 @@ Institute repositories without touching this project's own content. The schema i
 | Maturity | `released` |
 | License | `CC-BY-4.0` |
 | Default branch | `main` |
-| Homepage | https://www.activeinference.org/home |
+| Homepage | <https://www.activeinference.org/home> |
 | Tags | `ontology`, `vocabulary`, `active-inference`, `free-energy-principle`, `controlled-vocabulary` |
 
 ## Capabilities
@@ -62,9 +62,9 @@ Institute repositories without touching this project's own content. The schema i
 
 ## Links
 
-- **coda:** https://coda.io/@active-inference-institute/active-inference-ontology-website
+- **coda:** <https://coda.io/@active-inference-institute/active-inference-ontology-website>
 - **docs:** docs/README.md
-- **website:** https://www.activeinference.org/home
+- **website:** <https://www.activeinference.org/home>
 
 ## Validate
 

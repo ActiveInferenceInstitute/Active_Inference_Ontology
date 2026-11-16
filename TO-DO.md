@@ -342,3 +342,13 @@ all four manuscript formats were rendered and validated in a separate content
 copy. Existing publication overlays and historical records were not replaced.
 These checks do not close curator decisions, reference-rasterizer selection,
 generated gate-report refresh, or hosted acceptance.
+
+## Canonical sidecar regeneration (2026-11-16)
+
+The canonical producer's `docs[]` path-base guidance is repaired. All five
+projections are regenerated from the modular metadata, including the four
+previously deferred documents, and applied without hand-styling. Canonical
+completeness validation passed; the sidecar revision is now `1.2.4`.
+The seven existing publication-overlay paths remain unchanged and unaccepted.
+This closes the projection-producer hold, not the stale measured gate inventory,
+manuscript provenance, reference-rasterizer, curator or hosted acceptance holds.
