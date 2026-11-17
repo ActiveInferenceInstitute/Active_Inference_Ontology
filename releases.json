@@ -144,22 +144,22 @@
         {
           "kind": "source",
           "path": "ontology.source.json",
-          "sha256": "82fc5b03b3110e9dd9f74049d7ea0e578e05541a3cdeb0c6c24eaa0f99a9be0f"
+          "sha256": "5ce48583956ebf20769464864332cf66519dc51303bbe973862577a3288a0f59"
         },
         {
           "kind": "spreadsheet-export",
           "path": "Ontology_v5_May_25_2023.csv",
-          "sha256": "f6d3648f796113059b9e81352d5005e45fd581162468300e86a0401fcb60b6b1"
+          "sha256": "6d8c24975463967304b8219274d031557d8e965c62d8873a16e613c4aacb0d89"
         },
         {
           "kind": "export",
           "path": "ontology.json",
-          "sha256": "a2c8371264e9e3d83319268e93b2a8047a8ba5576b1a22ea26716b87828cb706"
+          "sha256": "7d1ef87d4f26e06fc0ce9837ec212f6b09bcf3b9bcd7cbe261f929763533841f"
         },
         {
           "kind": "site",
           "path": "site/index.html",
-          "sha256": "0256e585a90402924ef7683b3dd29745f6058dcab93ec06cd8a8c66916a6844a"
+          "sha256": "e1146170827d45e3bd23b0e8b15b840a5a52500f3f79e524acc6502b3b251584"
         },
         {
           "kind": "schema",

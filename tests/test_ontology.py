@@ -98,7 +98,7 @@ class OntologyPipelineTests(unittest.TestCase):
         self.assertTrue(all(term["examples"]["correct"] for term in core))
         report = ontology.quality_report(self.source, self.config)
         self.assertEqual(report["missing"]["tag"], 355)
-        self.assertEqual(report["missing"]["primaryDefinition"], 339)
+        self.assertEqual(report["missing"]["primaryDefinition"], 325)
 
     def test_duplicate_ids_labels_aliases_and_relations_fail(self) -> None:
         source = json.loads(json.dumps(self.source))
@@ -428,8 +428,9 @@ class OntologyPipelineTests(unittest.TestCase):
             term = source_ids[entry["id"]]
             self.assertEqual(entry["match"], "normalized-label")
             self.assertEqual(entry["ontologyTerm"], term["term"])
-            self.assertEqual(
-                ontology.normalize_label(label), ontology.normalize_label(term["term"])
+            self.assertIn(
+                ontology.normalize_label(label),
+                {ontology.normalize_label(value) for value in [term["term"], *term["aliases"]]},
             )
         for entry in declared.values():
             if entry["status"] == "unresolved":

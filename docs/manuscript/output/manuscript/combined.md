@@ -1,6 +1,6 @@
 # Abstract {#sec:abstract}
 
-This article describes the publication-grade data and software pipeline for the Active Inference Ontology. The release contains 429 terms and 238 explicit typed relations across the Core, Entailed, and Supplement lists. The ontology preserves the source prose while making identity, aliases, status, metadata, relations, provenance, schemas, and generated exports explicit. A deterministic command-line pipeline validates the source, produces JSON and CSV artifacts, builds a dependency-free browser, and records release hashes. A template-compatible manuscript layer derives its tables, figures, metrics, and provenance from the same release boundary. This design separates semantic curation from mechanical transformation: existing free-text connections are represented as `mentions`, while stronger relation types remain available for future reviewed curation. The resulting artifact supports machine reuse, human inspection, reproducible regeneration, and explicit quality reporting. We present the source model, graph and integrity formalism, implementation, release results, limitations, and reproducibility procedure. The current release is v5 (May 25, 2023), with source SHA-256 `82fc5b03b3110e9dd9f74049d7ea0e578e05541a3cdeb0c6c24eaa0f99a9be0f`.
+This article describes the publication-grade data and software pipeline for the Active Inference Ontology. The release contains 429 terms and 238 explicit typed relations across the Core, Entailed, and Supplement lists. The ontology preserves the source prose while making identity, aliases, status, metadata, relations, provenance, schemas, and generated exports explicit. A deterministic command-line pipeline validates the source, produces JSON and CSV artifacts, builds a dependency-free browser, and records release hashes. A template-compatible manuscript layer derives its tables, figures, metrics, and provenance from the same release boundary. This design separates semantic curation from mechanical transformation: existing free-text connections are represented as `mentions`, while stronger relation types remain available for future reviewed curation. The resulting artifact supports machine reuse, human inspection, reproducible regeneration, and explicit quality reporting. We present the source model, graph and integrity formalism, implementation, release results, limitations, and reproducibility procedure. The current release is v5 (May 25, 2023), with source SHA-256 `5ce48583956ebf20769464864332cf66519dc51303bbe973862577a3288a0f59`.
 
 **Keywords:** active inference; ontology engineering; knowledge representation; reproducible data; provenance; JSON Schema; software publication
 
@@ -140,7 +140,7 @@ The source preserves historical sparsity rather than fabricating values. [@tbl:c
 | Field | Present | Missing | Coverage |
 |---|---:|---:|---:|
 | Tag | 74 | 355 | 17.2% |
-| Primary definition | 90 | 339 | 21.0% |
+| Primary definition | 104 | 325 | 24.2% |
 | Correct example | 70 | 359 | 16.3% |
 | Incorrect example | 70 | 359 | 16.3% |
 | Connection text | 40 | 389 | 9.3% |
@@ -167,10 +167,10 @@ The manifest records the release lineage in [@tbl:releases] and current artifact
 
 | Kind | Path | SHA-256 prefix |
 |---|---|---|
-| source | `ontology.source.json` | `82fc5b03b311…` |
-| spreadsheet-export | `Ontology_v5_May_25_2023.csv` | `f6d3648f7961…` |
-| export | `ontology.json` | `a2c8371264e9…` |
-| site | `site/index.html` | `0256e585a904…` |
+| source | `ontology.source.json` | `5ce48583956e…` |
+| spreadsheet-export | `Ontology_v5_May_25_2023.csv` | `6d8c24975463…` |
+| export | `ontology.json` | `7d1ef87d4f26…` |
+| site | `site/index.html` | `e1146170827d…` |
 | schema | `schemas/source-v2.json` | `6c6bf6235c49…` |
 | schema | `schemas/export-v2.json` | `f6591a1a5c9c…` |
 | schema | `schemas/manifest-v2.json` | `5797225849a5…` |
@@ -191,7 +191,7 @@ The strict pipeline also changes what “reproducible” means for a vocabulary.
 
 ## Limitations
 
-The primary limitation is temporal: the current content is a May 2023 snapshot. The repository records historical v1–v4 material but does not reinterpret those archives under the v2 source schema. The current release has 355 terms without tags, 339 without primary definitions, 359 without correct examples, 359 without incorrect examples, and 389 without connection text. These are measured source properties, not silently repaired values.
+The primary limitation is temporal: the current content is a May 2023 snapshot. The repository records historical v1–v4 material but does not reinterpret those archives under the v2 source schema. The current release has 355 terms without tags, 325 without primary definitions, 359 without correct examples, 359 without incorrect examples, and 389 without connection text. These are measured source properties, not silently repaired values.
 
 The second limitation is semantic. The migration creates only `mentions` relations from textual references. It does not infer `broader`, `narrower`, `causes`, `part_of`, `inverse`, `prerequisite`, `contrasts`, or `related` edges. Future curation can add those relations with explicit review, provenance, and regression tests.
 

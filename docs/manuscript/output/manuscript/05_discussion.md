@@ -6,7 +6,7 @@ The strict pipeline also changes what “reproducible” means for a vocabulary.
 
 ## Limitations
 
-The primary limitation is temporal: the current content is a May 2023 snapshot. The repository records historical v1–v4 material but does not reinterpret those archives under the v2 source schema. The current release has 355 terms without tags, 339 without primary definitions, 359 without correct examples, 359 without incorrect examples, and 389 without connection text. These are measured source properties, not silently repaired values.
+The primary limitation is temporal: the current content is a May 2023 snapshot. The repository records historical v1–v4 material but does not reinterpret those archives under the v2 source schema. The current release has 355 terms without tags, 325 without primary definitions, 359 without correct examples, 359 without incorrect examples, and 389 without connection text. These are measured source properties, not silently repaired values.
 
 The second limitation is semantic. The migration creates only `mentions` relations from textual references. It does not infer `broader`, `narrower`, `causes`, `part_of`, `inverse`, `prerequisite`, `contrasts`, or `related` edges. Future curation can add those relations with explicit review, provenance, and regression tests.
 
