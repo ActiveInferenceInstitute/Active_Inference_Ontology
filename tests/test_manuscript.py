@@ -151,6 +151,11 @@ class ManuscriptProvenanceTests(unittest.TestCase):
         assert spec and spec.loader
         self.pipeline = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(self.pipeline)
+        # Start from an unrendered copy: the committed render receipts belong to
+        # the real toolchain, and these tests publish their own with the fixture
+        # renderer below.
+        for fmt in self.pipeline.FORMATS:
+            self.pipeline.render_receipt_path(fmt).unlink(missing_ok=True)
         self.tools = self.directory / "tools"
         self.tools.mkdir()
         program = (

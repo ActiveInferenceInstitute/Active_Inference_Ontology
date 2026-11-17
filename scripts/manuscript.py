@@ -801,7 +801,9 @@ def render_toolchain(fmt: str) -> tuple[dict[str, str], dict[str, Any]]:
             [executable, "--version"], cwd=ROOT, stdin=subprocess.DEVNULL,
             capture_output=True, text=True, check=False, timeout=15,
         )
-        version = (result.stdout or result.stderr).strip()
+        # The first line names the tool and release; later lines can carry host
+        # paths (Pandoc's user data directory). The sha256 binds the exact binary.
+        version = next(iter((result.stdout or result.stderr).strip().splitlines()), "").strip()
         if result.returncode or not version:
             raise ManuscriptError(f"cannot identify rendering tool: {name}")
         executables[name] = executable
