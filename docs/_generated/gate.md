@@ -6,12 +6,12 @@
     {
       "arm": "deps",
       "status": "pass",
-      "wall_seconds": 0.29
+      "wall_seconds": 0.35
     },
     {
       "arm": "lint",
       "status": "pass",
-      "wall_seconds": 0.05
+      "wall_seconds": 0.1
     },
     {
       "arm": "ontology",
@@ -21,31 +21,31 @@
     {
       "arm": "manuscript",
       "status": "pass",
-      "wall_seconds": 2.47
+      "wall_seconds": 0.7
     },
     {
       "arm": "full",
       "status": "pass",
-      "wall_seconds": 3.77
+      "wall_seconds": 9.04
     },
     {
       "arm": "docs",
       "status": "pass",
-      "wall_seconds": 0.28
+      "wall_seconds": 0.18
     },
     {
       "arm": "fast",
       "status": "pass",
-      "wall_seconds": 1.56
+      "wall_seconds": 2.12
     },
     {
       "arm": "gnn",
       "status": "pass",
-      "wall_seconds": 1.78
+      "wall_seconds": 1.74
     }
   ],
   "counts": {
-    "regression_tests": 50,
+    "regression_tests": 68,
     "terms": 429
   },
   "excluded_arms": {
@@ -53,10 +53,10 @@
     "bench": "measures the other arms; measuring itself is meaningless",
     "render": "needs the Pandoc/XeLaTeX/qpdf toolchain and rewrites publication bytes"
   },
-  "generated": "2026-11-12T16:23:09+00:00",
+  "generated": "2026-11-17T17:12:55+00:00",
   "host": {
     "machine": "arm64",
-    "python": "3.12.16",
+    "python": "3.12.13",
     "system": "Darwin"
   },
   "measured_arms": [
@@ -78,21 +78,21 @@ metadata block above and the tables below are written by that script, and
 `./run.sh docs` fails when the recorded arm list or counts drift from the
 repository.
 
-- Measured: 2026-11-12T16:23:09+00:00
-- Host: Darwin arm64, Python 3.12.16
+- Measured: 2026-11-17T17:12:55+00:00
+- Host: Darwin arm64, Python 3.12.13
 
 ## Arms
 
 | Arm | Public job | Wall time (s) | Result | Runs |
 | --- | --- | ---: | --- | --- |
-| `deps` | local | 0.29 | pass | one locked install of `requirements-manuscript.txt` (warm re-run) |
-| `lint` | gate | 0.05 | pass | `ruff check`, policy in `ruff.toml` |
+| `deps` | local | 0.35 | pass | one locked install of `requirements-manuscript.txt` (warm re-run) |
+| `lint` | gate | 0.10 | pass | `ruff check`, policy in `ruff.toml` |
 | `ontology` | gate | 0.73 | pass | `validate --strict`, `schema-check`, `build`, `export-csv`, `site` checks, `report`, `diff` |
-| `manuscript` | gate | 2.47 | pass | `generate`, `manifest`, byte-identity diff, `validate --strict`, `check` |
-| `full` | gate | 3.77 | pass | `python -m unittest discover -s tests -v` |
-| `docs` | gate | 0.28 | pass | `scripts/check_docs.py`: relative links, anchors, index coverage |
-| `fast` | local | 1.56 | pass | regression subset without the publication layer (`test_ontology`, `test_sidecar`) |
-| `gnn` | gnn-conformance | 1.78 | pass | pinned GNN install, vocabulary verification, bootstrap consistency test, shared importer check, and `gnn-terms --check` |
+| `manuscript` | gate | 0.70 | pass | read-only generated freshness, render provenance, `validate --strict`, `check` |
+| `full` | gate | 9.04 | pass | `python -m unittest discover -s tests -v` |
+| `docs` | gate | 0.18 | pass | `scripts/check_docs.py`: relative links, anchors, index coverage |
+| `fast` | local | 2.12 | pass | regression subset without the publication layer (`test_ontology`, `test_sidecar`) |
+| `gnn` | gnn-conformance | 1.74 | pass | pinned GNN install, vocabulary verification, bootstrap consistency test, shared importer check, and `gnn-terms --check` |
 
 Wall time is one run per arm on the host above, including the interpreter
 startup of each command in the arm. It is a measurement, not a budget.
@@ -104,7 +104,7 @@ cache, so a first run on a new machine also pays the download.
 
 | Measurement | Value | Source |
 | --- | ---: | --- |
-| Regression tests | 50 | `unittest` discovery in a child interpreter |
+| Regression tests | 68 | `unittest` discovery in a child interpreter |
 | Source terms | 429 | `ontology.source.json` |
 
 ## Not measured here

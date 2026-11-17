@@ -1,28 +1,34 @@
 # Agent guide — .aii/
 
-InstituteOS sidecar for this repository (the reference exemplar). Read [`README.md`](README.md) first.
+Read [`README.md`](README.md) first. This folder is the committed InstituteOS sidecar
+for `ActiveInferenceInstitute/Active_Inference_Ontology`; `config.yaml` is its single source of truth.
 
-## For agents
-- `config.yaml` is the **single source of truth** for this repo's InstituteOS metadata;
-  keep it valid against `aii-sidecar/v1` (`aii_platform.aii_sidecar`).
-- Only curated fields belong here — never duplicate GitHub-API facts (stars, size, language).
-- `affiliation`: `institute` for Institute-owned work, `ecosystem` for external/affiliated.
-- Declare key products in `artifacts[]` (paths are validated to exist) and connections in
-  `ecosystem.relations[]` (targets must be `owner/repo`).
-- Bump `meta.sidecar_version` + `meta.updated` on any change.
-- The sidecar is **standalone** — it must validate and make sense without the parent monorepo.
+## Rules
 
-## Validate / score
+- Keep `schema: aii-sidecar/v1` and bump `meta.updated` whenever the sidecar changes.
+- Only curated metadata belongs here. Never duplicate GitHub-API facts (stars, size,
+  language) and never copy repository content into the sidecar.
+- `artifacts[].path` and `provenance.releases_manifest` are repository-relative.
+- `docs[]` paths are relative to `.aii/`, not the repository root.
+- Keep every declared path current; validation checks that it exists.
+- `ecosystem.relations[].repo` must be `owner/repo`; use the relation vocabulary in
+  the schema (`references`, `referenced-by`, `derived-from`, `feeds`, `documents`,
+  `mirrors`, `depends-on`).
+- Keep the sidecar standalone: it must validate and make sense without the parent
+  vault or monorepo.
+- Do not put credentials, private URLs, personal data, or unverified claims in the
+  sidecar. Private repositories must not copy sidecar content into a public repo.
+- Task commands execute repository-declared commands. Run them only for trusted
+  checkouts, and never add a task that mutates shared state.
 
-The authoritative validator lives in the InstituteOS platform kernel package
-(`aii_platform.aii_sidecar`). That environment is private, so the check is not part of the
-public GitHub workflow; see `docs/build-and-validation.md`.
+## Validate and regenerate
 
+```bash
+python -m aii_platform.aii_sidecar.validate <repo> --completeness
+python -m aii_platform.aii_sidecar docs <repo> --overwrite
+python -m aii_platform.aii_sidecar.run <repo> --list
 ```
-python -m aii_platform.aii_sidecar.validate <repo>                   # OK / problems
-python -m aii_platform.aii_sidecar.validate <repo> --completeness    # + score & gaps
-```
 
-The public regression suite keeps a structural check of this sidecar (schema marker,
-required sections, existing paths, relation targets). The repository's ontology content and
-generated artifacts are checked independently with `python3 scripts/ontology.py validate --strict`.
+Regenerating the sidecar docs is safe: it rewrites only `README.md`, `AGENTS.md`,
+`docs/README.md`, `docs/AGENTS.md`, and `docs/INTEGRATION.md` inside `.aii/`, never
+project source.

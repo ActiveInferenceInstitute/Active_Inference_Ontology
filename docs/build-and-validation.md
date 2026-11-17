@@ -10,6 +10,7 @@ python3 scripts/ontology.py build
 python3 scripts/ontology.py export-csv
 python3 scripts/ontology.py site
 python3 scripts/ontology.py gnn-terms
+python3 scripts/ontology.py sync-manifest
 python3 scripts/ontology.py validate --strict
 python3 scripts/ontology.py schema-check
 python3 scripts/ontology.py report
@@ -35,7 +36,7 @@ full gate.
 ./run.sh fast         # regression subset without the publication layer (inner loop)
 ./run.sh full         # python -m unittest discover -s tests -v
 ./run.sh docs         # scripts/check_docs.py: relative links, anchors, index coverage, gate report freshness
-./run.sh manuscript   # generate, manifest, byte-identity diff, validate --strict, check
+./run.sh manuscript   # read-only generated freshness, render provenance, validate --strict, check
 ./run.sh render       # render PDF/HTML/DOCX/EPUB (Pandoc, pandoc-crossref, XeLaTeX, qpdf)
 ./run.sh gnn          # pinned GNN parser conformance (installs the pin; needs network)
 ./run.sh bench        # measure every arm and regenerate docs/_generated/gate.md
@@ -96,9 +97,9 @@ and connection text. Those values are visible data quality facts, not validation
 
 ## Acceptance gates
 
-`./run.sh all` is the acceptance gate; the individual arms are listed above. It is the
-same set the public workflow runs, so a green local run and a green workflow run mean the
-same thing.
+`./run.sh all` is the local acceptance gate; the individual arms are listed
+above. The public workflow uses the same arms on the selected `ubuntu-24.04`
+runner. Local evidence does not establish hosted execution or acceptance.
 
 The separate `gnn conformance (pinned)` CI job runs `./run.sh gnn`. Its bootstrap
 read extracts only the raw repository and revision from
@@ -131,11 +132,20 @@ ordered sections, generated variables, labeled equations, a figure registry, a c
 ledger, and a validated bibliography. `scripts/manuscript.py` derives all reported
 metrics from the ontology release, renders four formats with Pandoc and
 `pandoc-crossref`, normalizes publication identifiers for reproducible bytes, and
-records output hashes in `docs/manuscript/artifact-manifest.json`. The manuscript
-manifest validates its complete input/output closure, paths, hashes, byte counts,
-derived counts, and figure-input digests. Install
-`requirements-manuscript.txt` plus Pandoc, `pandoc-crossref`, XeLaTeX, and qpdf for
-the complete local rendering gate (`./run.sh render`).
+records output hashes in `docs/manuscript/artifact-manifest.json`.
+The `active-inference-ontology/manuscript/v2` manifest validates its complete
+input/output closure, paths, hashes, byte counts, derived counts, and
+figure-input digests. Each successful format render records
+`output/<format>/active_inference_ontology.<format>.render.json` with input hashes,
+invocation/environment, toolchain identity, and output hash/size.
+
+Refreshing the manifest cannot create render provenance; absent or stale
+render records fail. A partial render updates only its own format, preserving
+other formats' original receipts, including stale records. Existing unbound
+publications require an admitted `render --format all` in a separate disposable
+copy. Never synthesize receipts from existing output hashes.
+The complete render requires `requirements-manuscript.txt`, Pandoc,
+`pandoc-crossref`, XeLaTeX, and qpdf.
 
 ### Figure byte checks and host portability
 
@@ -150,18 +160,15 @@ assets, and the byte comparison is scoped per host instead of being asserted glo
   skipped; the registry input digests, generated-variable freshness, and manifest
   hashes stay enforced. The committed figure assets keep a structural check in the
   regression suite (valid PNG, expected canvas size).
-- The `manuscript` arm regenerates the publication artifacts in the current toolchain
-  (`generate`, then `manifest`) and then requires byte-identity for every artifact the
-  generator owns that is not rasterized:
-  `git diff --exit-code -- docs/manuscript/data/manuscript_variables.json
-  docs/manuscript/output/manuscript docs/manuscript/output/figures/figure_registry.json`.
-  Figure PNGs are excluded because their bytes are host-dependent, and
-  `artifact-manifest.json` is excluded because it hashes those figures. Structure,
-  references, the claim ledger, and all hashes are then validated against the freshly
-  generated set. The arm writes figures in place, so `git diff
-  docs/manuscript/output/figures` after a local run shows rasterized differences, not a
-  failure; restore them with `git checkout -- docs/manuscript/output/figures` (and the
-  manifest) when they are not part of the change.
+- The `manuscript` arm is read-only: it checks generated freshness, existing
+  hashes, and per-format render provenance without regenerating figures or
+  refreshing the manifest first. `MANUSCRIPT_PORTABLE_CHECK=1` affects only
+  cross-host PNG-byte comparison; it does not bypass input fingerprints,
+  receipt/output binding, or other freshness checks. Use a separately admitted
+  disposable copy for generation or rendering. Preserve pre-existing artifact
+  edits and their custody; never use blanket checkout/reset/restore commands to
+  clean publication outputs. Only the integration owner may publish reviewed
+  generated changes.
 
 See [`docs/manuscript/README.md`](manuscript/README.md).
 
@@ -171,12 +178,17 @@ See [`docs/manuscript/README.md`](manuscript/README.md).
 repository's documentation check (there is no third-party documentation linter here). It
 verifies three things:
 
-- every relative link and image target in tracked Markdown resolves, with exact filename
-  case, so a tree that passes on a case-insensitive host still passes on Linux CI;
+- every relative link and image target in authored Markdown, including hidden
+  documentation, resolves with exact lexical filename case; dependency trees are
+  pruned rather than traversed;
 - every in-repository fragment (`path#anchor`) matches a heading slug or an explicit
   `{#id}`/`<a id=…>` anchor in the target;
 - [`documentation-index.md`](documentation-index.md) lists every long-lived document under
   `docs/` (the ordered manuscript section set is indexed by its own hub page).
+
+Inline code in a heading contributes its visible text to the heading slug.
+Literal `{#id}` and HTML anchor examples inside inline code do not declare
+fragment targets; fenced examples likewise remain outside the anchor inventory.
 
 `Archived versions/` is immutable historical evidence and is excluded: its links cannot be
 repaired without rewriting the archive. The same arm also runs

@@ -1,0 +1,244 @@
+{
+  "context": {
+    "command": [
+      "pandoc",
+      "docs/manuscript/output/manuscript/combined.md",
+      "--standalone",
+      "--metadata-file",
+      "docs/manuscript/config.yaml",
+      "--bibliography",
+      "docs/manuscript/references.bib",
+      "--citeproc",
+      "--filter",
+      "pandoc-crossref",
+      "--resource-path",
+      "docs/manuscript:docs/manuscript/output/figures",
+      "--output",
+      "docs/manuscript/output/pdf/active_inference_ontology.pdf",
+      "--pdf-engine=xelatex",
+      "--include-in-header",
+      "docs/manuscript/preamble.tex"
+    ],
+    "environment": {
+      "SOURCE_DATE_EPOCH": "1684972800",
+      "TZ": "UTC"
+    },
+    "format": "pdf",
+    "inputs": [
+      {
+        "path": ".github/gnn-pin.json",
+        "sha256": "73dd93fe4b70570c647b0e8e789e1c5a6d213b56bc3eecf2f949fba623acfa0c"
+      },
+      {
+        "path": "GNN/act_inf_ontology_terms.json",
+        "sha256": "a63f6ab25d8f3ba8fb7922913ad9a39e02949ba09329ff8113381bb35c57a2e0"
+      },
+      {
+        "path": "GNN/declared-labels.json",
+        "sha256": "8872b232f8a5cf4f5b962790bdc9ce2dcf173f902035cc4419b45b064b5a3998"
+      },
+      {
+        "path": "docs/manuscript/00_abstract.md",
+        "sha256": "5e1b3ae90c96fb755fcea993c9cac452ddeb48dc8b9aba24d21f016086319b5d"
+      },
+      {
+        "path": "docs/manuscript/01_introduction.md",
+        "sha256": "0c6419b1687ef75427d08df16e7f04b43ca60329683c85f18a29fa881d990445"
+      },
+      {
+        "path": "docs/manuscript/02_related_work.md",
+        "sha256": "822974f4e40da955444040a1d644d3129db8c18a1dbbc9c0c1da89e7e0dea501"
+      },
+      {
+        "path": "docs/manuscript/03_methods.md",
+        "sha256": "d37f41faacf9c14e3695c6f3b3029c0399bae48d23c714e99f08e12ba20b18d0"
+      },
+      {
+        "path": "docs/manuscript/04_results.md",
+        "sha256": "dca20e58c88cf6524a2b3e48258eb11fe6565ee8178182b0f7b04e2f7dd980d1"
+      },
+      {
+        "path": "docs/manuscript/05_discussion.md",
+        "sha256": "a531b42e797e941a68a371570a66c15e60e905a55da92f8a5344bdddd7c28177"
+      },
+      {
+        "path": "docs/manuscript/06_conclusion.md",
+        "sha256": "a17eb32e88a547522f55485249eac5d2433bcf99e7d222fe467bfd89313254cd"
+      },
+      {
+        "path": "docs/manuscript/07_reproducibility.md",
+        "sha256": "86d0f55d900cfb084065320b45dc39c5b97eedf0cb0b4bfb3e06ad578ff0ffc0"
+      },
+      {
+        "path": "docs/manuscript/99_references.md",
+        "sha256": "bf4b90a37ba5ada468ff9d52e08f3fe910baf23f71cc30c11eb984e0e981d507"
+      },
+      {
+        "path": "docs/manuscript/config.yaml",
+        "sha256": "a87b9c144b5d42eeba30fc767c87f288e43065f18212922398ff4807e8d58f67"
+      },
+      {
+        "path": "docs/manuscript/data/claim_ledger.yaml",
+        "sha256": "8f70db6dd52b94bfc58092cf7a81d189ae0c02ca1a4b2d010b6811f9b8332d10"
+      },
+      {
+        "path": "docs/manuscript/data/manuscript_variables.json",
+        "sha256": "99e4c853fb8b1fa315326d2de9cdea9a8595f3404c371f81d1ec15f8bec5f617"
+      },
+      {
+        "path": "docs/manuscript/output/figures/figure_registry.json",
+        "sha256": "23a0e36991d7fba6c28fff25b983763636331e65f46978c198db07540295028b"
+      },
+      {
+        "path": "docs/manuscript/output/figures/metadata_completeness.png",
+        "sha256": "006be4e23a51aca027ac13bd66c9bf5c38a69d4284ecb5d718a057d3cfd43b58"
+      },
+      {
+        "path": "docs/manuscript/output/figures/pipeline_provenance.png",
+        "sha256": "d54149a161e7a228e8012577db73fbd6b82857cca814e9cdbdc1359f62c6f5b1"
+      },
+      {
+        "path": "docs/manuscript/output/figures/relation_structure.png",
+        "sha256": "b004c7ed5c99450699915d5bc488ac93c17d75c56f5d4a6a2e1c1c1451b3005c"
+      },
+      {
+        "path": "docs/manuscript/output/figures/release_history.png",
+        "sha256": "0e320b28076bafde3df06ff76de1238e87408557fd5fef9395f7718117bebd8e"
+      },
+      {
+        "path": "docs/manuscript/output/figures/term_composition.png",
+        "sha256": "a92f9447b18f0f35c8a619c5725c794e6be47fd0ec7ab35b147c68c5385577b9"
+      },
+      {
+        "path": "docs/manuscript/output/figures/validation_integrity.png",
+        "sha256": "68cd2a221691d91974cf013453e79daf8a9b90a0a964c8ab746f7a83cc02d6db"
+      },
+      {
+        "path": "docs/manuscript/output/manuscript/00_abstract.md",
+        "sha256": "7985efa9129aabd6f3aaffa314e23434862cb5f9381c20813a1eb2d724315778"
+      },
+      {
+        "path": "docs/manuscript/output/manuscript/01_introduction.md",
+        "sha256": "44fc03050ff1699fc3ab3cb776c5f3ba9a403810ccde9eb1d1090eca15d85def"
+      },
+      {
+        "path": "docs/manuscript/output/manuscript/02_related_work.md",
+        "sha256": "822974f4e40da955444040a1d644d3129db8c18a1dbbc9c0c1da89e7e0dea501"
+      },
+      {
+        "path": "docs/manuscript/output/manuscript/03_methods.md",
+        "sha256": "803d40f77646a7fb5986611dac1ca1fda978cc5ceea7549e90600763c149fb20"
+      },
+      {
+        "path": "docs/manuscript/output/manuscript/04_results.md",
+        "sha256": "efb8e299866fcd63ef8f1e13d34858235edc37dc07b800262a4339029aedc145"
+      },
+      {
+        "path": "docs/manuscript/output/manuscript/05_discussion.md",
+        "sha256": "935d38bdbeb47c41894c931ffc067a735924833e70d83f03dbf71220b43c20d9"
+      },
+      {
+        "path": "docs/manuscript/output/manuscript/06_conclusion.md",
+        "sha256": "a17eb32e88a547522f55485249eac5d2433bcf99e7d222fe467bfd89313254cd"
+      },
+      {
+        "path": "docs/manuscript/output/manuscript/07_reproducibility.md",
+        "sha256": "86d0f55d900cfb084065320b45dc39c5b97eedf0cb0b4bfb3e06ad578ff0ffc0"
+      },
+      {
+        "path": "docs/manuscript/output/manuscript/99_references.md",
+        "sha256": "d92d04ad834eb328c89ff19c0fa3c4ad61f00e31c160a08b834e08f227916437"
+      },
+      {
+        "path": "docs/manuscript/output/manuscript/combined.md",
+        "sha256": "82e18546c1bf9a605f459424602013f4f153e757b608482768b6369fd5529888"
+      },
+      {
+        "path": "docs/manuscript/preamble.tex",
+        "sha256": "b07a2d1004906552a185aca49c71eea03aff722cf9d08e5e6387214e25415721"
+      },
+      {
+        "path": "docs/manuscript/references.bib",
+        "sha256": "77952862c68aaeb88486334fbe88fd54fc1bf63b1169abe927146c92c7b1f21a"
+      },
+      {
+        "path": "ontology.json",
+        "sha256": "7d1ef87d4f26e06fc0ce9837ec212f6b09bcf3b9bcd7cbe261f929763533841f"
+      },
+      {
+        "path": "ontology.source.json",
+        "sha256": "5ce48583956ebf20769464864332cf66519dc51303bbe973862577a3288a0f59"
+      },
+      {
+        "path": "ontology.toml",
+        "sha256": "5ee78bbab5835538aa66b7ce1fa3f04fd37f9e0c8965505694fe80ba8cd9b7a2"
+      },
+      {
+        "path": "releases.json",
+        "sha256": "5013713726d3bf38361eb6d8440c74d0d75d3fff6b16fdf933009411cf359a48"
+      },
+      {
+        "path": "requirements-ci.txt",
+        "sha256": "9efa751146646a89531bee89af09bbf354cc89b3ee3f4d00528e791099e63075"
+      },
+      {
+        "path": "requirements-manuscript.txt",
+        "sha256": "7699a4dd2d69422e5bac4d1da08addf37876667f0aeeff79029adbc30c90368b"
+      },
+      {
+        "path": "schemas/export-v2.json",
+        "sha256": "f6591a1a5c9c41181a5c6aa65cc50e15040cc79421d744d7516506afda5407ba"
+      },
+      {
+        "path": "schemas/manifest-v2.json",
+        "sha256": "5797225849a5defc8baa9274004789c204789b2690bb7f04e9a4dc930488762d"
+      },
+      {
+        "path": "schemas/source-v2.json",
+        "sha256": "6c6bf6235c491f9da4587056dd05540f04e2667142f8615c8131fa6f8ca3d0b1"
+      },
+      {
+        "path": "scripts/manuscript.py",
+        "sha256": "d46b100bd87cacd91ab82ccfcb01db2b7ce29f491119b6436a7334338086ec65"
+      },
+      {
+        "path": "scripts/ontology.py",
+        "sha256": "e9f42254d9455c9d44c4a49754b28df07fdc084991cf75ae5c03f474bf9436ed"
+      }
+    ],
+    "toolchain": {
+      "packages": {
+        "PyYAML": "6.0.3",
+        "jsonschema": "4.26.0",
+        "matplotlib": "3.11.2"
+      },
+      "platform": "Darwin/arm64",
+      "python": "3.12.13 (main, Jul 18 2026, 16:55:18) [Clang 22.1.3 ]",
+      "tools": {
+        "pandoc": {
+          "sha256": "7492d91bac0d1dd853483d4a85bd34b56929ff29cb63573ddb8c38cd9614f097",
+          "version": "pandoc 3.14"
+        },
+        "pandoc-crossref": {
+          "sha256": "1bb4efae053bab455a0c7aa7ac2dcd1c0e67524a921596b1c1b18695cbaed116",
+          "version": "pandoc-crossref v0.3.26 git commit UNKNOWN (UNKNOWN) built with Pandoc v3.14, pandoc-types v1.23.1.2 and GHC 9.14.1"
+        },
+        "qpdf": {
+          "sha256": "d780c4f63f9bda31437c1228909557e8e577b32a2e792bae38ce140757c8c140",
+          "version": "qpdf version 12.4.2"
+        },
+        "xelatex": {
+          "sha256": "593df4b2c196aa1cdeabcb6b4fafd20af3b182e05a3cee030418f14707597f0e",
+          "version": "XeTeX 3.141592653-2.6-0.999998 (TeX Live 2026)"
+        }
+      }
+    }
+  },
+  "output": {
+    "bytes": 295595,
+    "path": "docs/manuscript/output/pdf/active_inference_ontology.pdf",
+    "sha256": "a02efc61fee25e981559fc4a39613bdc31e1f059e93edc5e6c58cb4141f53f5c"
+  },
+  "schema": "active-inference-ontology/render/v1",
+  "sha256": "2979c12533f46e16e5fc32dc29f6b028db60ccc7c91aba323eeb921cb758723a"
+}

@@ -4,10 +4,10 @@ The Markdown sections in this directory are the editable manuscript source. Metr
 
 Use this order for a release:
 
-1. validate the ontology source and generated artifacts;
-2. run `python3 scripts/manuscript.py generate`;
-3. run strict manuscript validation;
-4. render all requested formats;
-5. run the final freshness and manifest checks.
+1. Validate the ontology source and its generated release closure.
+2. In an admitted disposable publication copy, generate resolved sources and figures.
+3. Render the requested formats; a qualified full publication requires `render --format all`.
+4. Run strict manuscript validation and final freshness/provenance checks.
+5. Publish only reviewed artifacts under integration custody; never backfill provenance for existing files.
 
 Do not edit files below `output/` by hand. The source model and its release manifest are the evidence boundary for the manuscript.

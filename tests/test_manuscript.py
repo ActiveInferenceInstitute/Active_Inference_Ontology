@@ -1,12 +1,16 @@
 from __future__ import annotations
 
+import contextlib
 import importlib.util
+import io
 import json
 import os
-import subprocess
 import sys
+import tempfile
 import unittest
 from pathlib import Path
+
+from tests.test_ontology import copy_repository
 
 ROOT = Path(__file__).resolve().parents[1]
 SPEC = importlib.util.spec_from_file_location("manuscript_cli", ROOT / "scripts" / "manuscript.py")
@@ -127,24 +131,203 @@ class ManuscriptPipelineTests(unittest.TestCase):
         self.assertIn("<\\/script>", site)
         self.assertIn("function esc", site)
 
-    def test_cli_check_path_is_executable(self) -> None:
-        env = os.environ.copy()
-        # Same documented portability contract: figure rasterized bytes differ off-CI,
-        # so the subprocess check honors the portable flag when the parent test did not
-        # already set it (strict manifest/hash/freshness checks remain enforced).
-        env.setdefault("MANUSCRIPT_PORTABLE_CHECK", "1")
-        result = subprocess.run(
-            [sys.executable, str(ROOT / "scripts" / "manuscript.py"), "check"],
-            cwd=ROOT,
-            env=env,
-            capture_output=True,
-            text=True,
-            check=False,
-        )
-        self.assertEqual(result.returncode, 0, result.stderr)
 
     def test_active_lexical_hygiene_is_clean(self) -> None:
         self.assertEqual(manuscript.lexical_hygiene(), [])
+
+
+class ManuscriptProvenanceTests(unittest.TestCase):
+    def setUp(self) -> None:
+        temporary = tempfile.TemporaryDirectory()
+        self.addCleanup(temporary.cleanup)
+        # Resolve the temporary root: macOS links /var to /private/var, and the
+        # isolated pipeline reports resolved paths.
+        self.directory = Path(temporary.name).resolve()
+        self.root = self.directory / "repo"
+        copy_repository(self.root)
+        spec = importlib.util.spec_from_file_location(
+            "isolated_manuscript", self.root / "scripts/manuscript.py"
+        )
+        assert spec and spec.loader
+        self.pipeline = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(self.pipeline)
+        # Start from an unrendered copy: the committed render receipts belong to
+        # the real toolchain, and these tests publish their own with the fixture
+        # renderer below.
+        for fmt in self.pipeline.FORMATS:
+            self.pipeline.render_receipt_path(fmt).unlink(missing_ok=True)
+        self.tools = self.directory / "tools"
+        self.tools.mkdir()
+        program = (
+            "#!" + sys.executable + "\n"
+            "import pathlib, sys\n"
+            "if '--version' in sys.argv:\n"
+            "    print('fixture renderer 1.0')\n"
+            "    raise SystemExit(0)\n"
+            "if pathlib.Path('render-failure').exists():\n"
+            "    raise SystemExit(17)\n"
+            "args = sys.argv[1:]\n"
+            "target = pathlib.Path(args[args.index('--output') + 1])\n"
+            "config = pathlib.Path(args[args.index('--metadata-file') + 1])\n"
+            "target.write_bytes(b'publication\\n' + pathlib.Path(args[0]).read_bytes() + config.read_bytes())\n"
+            "if pathlib.Path('change-render-input').exists():\n"
+            "    config.write_text(config.read_text() + '\\nkeywords: [changed]\\n')\n"
+        )
+        for name in ("pandoc", "pandoc-crossref"):
+            tool = self.tools / name
+            tool.write_text(program, encoding="utf-8")
+            tool.chmod(0o700)
+        previous_path = os.environ.get("PATH")
+        self.addCleanup(self.restore_path, previous_path)
+        os.environ["PATH"] = str(self.tools) + os.pathsep + (previous_path or "")
+
+    @staticmethod
+    def restore_path(value: str | None) -> None:
+        if value is None:
+            os.environ.pop("PATH", None)
+        else:
+            os.environ["PATH"] = value
+
+    def invoke(self, *arguments: str) -> tuple[int, str]:
+        output, errors = io.StringIO(), io.StringIO()
+        with contextlib.redirect_stdout(output), contextlib.redirect_stderr(errors):
+            result = self.pipeline.main(arguments)
+        return result, errors.getvalue()
+
+    def receipt(self, fmt: str) -> dict:
+        return json.loads(self.pipeline.render_receipt_path(fmt).read_text(encoding="utf-8"))
+
+    def test_render_cli_publishes_only_rendered_format_provenance(self) -> None:
+        original = self.pipeline.MANIFEST_PATH.read_bytes()
+        result, errors = self.invoke("manifest")
+        self.assertEqual(result, 2)
+        self.assertIn("render provenance", errors)
+        self.assertEqual(self.pipeline.MANIFEST_PATH.read_bytes(), original)
+        result, errors = self.invoke("render", "--format", "html")
+        self.assertEqual(result, 0, errors)
+        pipeline = self.pipeline
+        manifest = json.loads(pipeline.MANIFEST_PATH.read_text(encoding="utf-8"))
+        self.assertEqual(manifest["formats"], ["html"])
+        self.assertEqual(set(manifest["renders"]), {"html"})
+        self.assertEqual(
+            pipeline.validate_manifest_document(manifest, require_rendered=False), []
+        )
+        receipt = self.receipt("html")
+        self.assertEqual(receipt["output"]["sha256"], pipeline.sha256(pipeline.publication_path("html")))
+        self.assertEqual(
+            receipt["context"]["toolchain"]["tools"]["pandoc"]["sha256"],
+            pipeline.sha256(self.tools / "pandoc"),
+        )
+        required = {
+            "docs/manuscript/config.yaml", "docs/manuscript/preamble.tex",
+            "scripts/manuscript.py", "scripts/ontology.py", "requirements-manuscript.txt",
+        }
+        self.assertTrue(required.issubset({r["path"] for r in receipt["context"]["inputs"]}))
+        before = pipeline.MANIFEST_PATH.read_bytes()
+        result, errors = self.invoke("manifest")
+        self.assertEqual(result, 2)
+        self.assertIn("render provenance", errors)
+        self.assertEqual(pipeline.MANIFEST_PATH.read_bytes(), before)
+
+    def test_partial_render_preserves_other_formats_stale_receipts(self) -> None:
+        for fmt in ("html", "docx"):
+            result, errors = self.invoke("render", "--format", fmt)
+            self.assertEqual(result, 0, errors)
+        pipeline = self.pipeline
+        other_receipt = pipeline.render_receipt_path("docx").read_bytes()
+        other_output = pipeline.publication_path("docx").read_bytes()
+        config = pipeline.MANUSCRIPT / "config.yaml"
+        config.write_text(config.read_text(encoding="utf-8") + "\nkeywords: [changed]\n", encoding="utf-8")
+        before = pipeline.MANIFEST_PATH.read_bytes()
+        result, errors = self.invoke("manifest")
+        self.assertEqual(result, 2)
+        self.assertIn("stale", errors)
+        self.assertEqual(pipeline.MANIFEST_PATH.read_bytes(), before)
+        result, errors = self.invoke("render", "--format", "html")
+        self.assertEqual(result, 0, errors)
+        self.assertEqual(pipeline.render_receipt_path("docx").read_bytes(), other_receipt)
+        self.assertEqual(pipeline.publication_path("docx").read_bytes(), other_output)
+        manifest = json.loads(pipeline.MANIFEST_PATH.read_text(encoding="utf-8"))
+        errors = pipeline.validate_manifest_document(manifest, require_rendered=False)
+        self.assertTrue(any("docx render provenance is stale" in error for error in errors))
+        self.assertFalse(any("html render provenance is stale" in error for error in errors))
+
+    def test_input_closure_changes_cannot_be_certified_by_hash_refresh(self) -> None:
+        result, errors = self.invoke("render", "--format", "html")
+        self.assertEqual(result, 0, errors)
+        pipeline = self.pipeline
+        receipt = self.receipt("html")
+        paths = [
+            pipeline.MANUSCRIPT / "03_methods.md",
+            pipeline.MANUSCRIPT / "references.bib",
+            pipeline.MANUSCRIPT / "preamble.tex",
+            pipeline.MANUSCRIPT / "config.yaml",
+            pipeline.FIGURES / "term_composition.png",
+            self.root / "scripts/manuscript.py",
+            self.root / "requirements-manuscript.txt",
+        ]
+        for path in paths:
+            with self.subTest(path=path.relative_to(self.root)):
+                original = path.read_bytes()
+                try:
+                    path.write_bytes(original + b"\nchanged render input\n")
+                    errors = pipeline.render_record_errors(receipt, "html", pipeline.render_input_records())
+                    self.assertIn("html render provenance is stale: input closure differs", errors)
+                finally:
+                    path.write_bytes(original)
+
+    def test_failed_or_changed_input_render_preserves_previous_publication(self) -> None:
+        result, errors = self.invoke("render", "--format", "html")
+        self.assertEqual(result, 0, errors)
+        pipeline = self.pipeline
+        paths = [
+            pipeline.publication_path("html"), pipeline.render_receipt_path("html"),
+            pipeline.MANIFEST_PATH,
+        ]
+        before = {path: path.read_bytes() for path in paths}
+        for flag, message in (
+            ("render-failure", "rendering failed"),
+            ("change-render-input", "changed during rendering"),
+        ):
+            with self.subTest(flag=flag):
+                flag_path = self.root / flag
+                flag_path.touch()
+                try:
+                    result, errors = self.invoke("render", "--format", "html")
+                    self.assertEqual(result, 2)
+                    self.assertIn(message, errors)
+                    self.assertEqual({path: path.read_bytes() for path in paths}, before)
+                finally:
+                    flag_path.unlink()
+
+    def test_manifest_and_claim_paths_reject_external_or_malformed_evidence(self) -> None:
+        pipeline = self.pipeline
+        outside = self.directory / "outside.txt"
+        outside.write_text("evidence", encoding="utf-8")
+        (self.root / "outside-link").symlink_to(outside)
+        for value in (".", "./", "", [], None, "../outside.txt", str(outside), "outside-link", "\x00"):
+            with self.subTest(value=value):
+                path, error = pipeline._manifest_path(value, "evidence")
+                self.assertIsNone(path)
+                self.assertIsNotNone(error)
+        citation = next(iter(pipeline.parse_bib(pipeline.MANUSCRIPT / "references.bib")))
+        claim = {
+            "id": "claim-one", "claim": "Fixture claim",
+            "evidence": ["ontology.source.json"], "citations": [citation],
+        }
+        ledger = pipeline.DATA / "claim_ledger.yaml"
+        ledger.write_text(json.dumps({"claims": [claim]}), encoding="utf-8")
+        self.assertEqual(pipeline.validate_claim_ledger(), [])
+        for field, value in (
+            ("evidence", None), ("evidence", [3]), ("evidence", [str(outside)]),
+            ("citations", "not-an-array"), ("citations", [{}]),
+        ):
+            with self.subTest(field=field, value=value):
+                changed = {**claim, field: value}
+                ledger.write_text(json.dumps({"claims": [changed]}), encoding="utf-8")
+                self.assertTrue(pipeline.validate_claim_ledger())
+        ledger.write_text(json.dumps({"claims": [claim, claim]}), encoding="utf-8")
+        self.assertIn("duplicate claim id: claim-one", pipeline.validate_claim_ledger())
 
 
 if __name__ == "__main__":

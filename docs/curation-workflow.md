@@ -16,6 +16,8 @@ The structured source is the only editable ontology surface.
 python3 scripts/ontology.py build
 python3 scripts/ontology.py export-csv
 python3 scripts/ontology.py site
+python3 scripts/ontology.py gnn-terms
+python3 scripts/ontology.py sync-manifest
 python3 scripts/ontology.py validate --strict
 ```
 

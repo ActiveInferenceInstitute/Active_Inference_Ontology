@@ -312,13 +312,12 @@ manuscript gates pass on the canonical checks.
 
 ## Open / deferred
 
-- **No gate compares the committed figure PNGs with a regeneration in the pinned toolchain.**
-  `./run.sh manuscript` regenerates before validating, the suite forces
-  `MANUSCRIPT_PORTABLE_CHECK=1`, and the one invocation that can fail — a direct
-  `scripts/manuscript.py validate --strict` — reports all six figures stale on this host. Closing
-  it needs a gate step that validates the committed bytes *before* regenerating, on the runner
-  whose toolchain is the reference; that step cannot run today (next item). Owner: repository
-  maintainer, blocked by the billing lock.
+- **Reference-toolchain figure qualification remains open.** The manuscript arm
+  now checks existing artifacts read-only, before any regeneration. Portable
+  checking intentionally excludes raw PNG-byte equality, not render provenance
+  or other freshness. Closing cross-host figure reproducibility still requires
+  the maintainer to select the reference rasterizer and retain its actual
+  byte-comparison evidence; local regenerated PNGs must not replace the reference.
 - **Alias-aware mentions and native typed relations.** Nothing in the repository decides this:
   either option changes curated edge counts, and both are scoped with their controls in
   `docs/future-curation-relations.md`. Owner: domain curator (Daniel Ari Friedman); needs a
@@ -329,8 +328,27 @@ manuscript gates pass on the canonical checks.
   `gnn conformance (pinned)` and both CodeQL analyses never execute; PR #13 merged with that
   failing run. Blocker: an organization billing action outside this repository. Owner: Institute
   org owner (Daniel Ari Friedman). Everything claimed green in this file was executed locally.
-- **`runs-on: ubuntu-latest` floats in both jobs** of `.github/workflows/ontology.yml`. The same
-  runs carry GitHub's annotation that `ubuntu-latest` migrates to Ubuntu 26 from 2026-10-19
-  (`actions/runner-images#14748`), so the image under a job that asserts manuscript byte-identity
-  changes without a commit. Not blocked: pin the image (for example `ubuntu-24.04`) or record the
-  migration as accepted. Owner: repository maintainer.
+- **Runner selection is now explicit.** Both jobs select `ubuntu-24.04`.
+  This source correction removes the floating image selection; it does not
+  resolve organization billing or establish a successful hosted run.
+
+## Engineering qualification (2026-11-13)
+
+Conservative source repairs cover immutable archive admission, nested input
+validation, release identity agreement, read-only checks, manuscript render
+provenance, sidecar metadata authority, and hidden-document link/slug/case checks.
+Focused local regressions and the complete ontology lifecycle were exercised;
+all four manuscript formats were rendered and validated in a separate content
+copy. Existing publication overlays and historical records were not replaced.
+These checks do not close curator decisions, reference-rasterizer selection,
+generated gate-report refresh, or hosted acceptance.
+
+## Canonical sidecar regeneration (2026-11-16)
+
+The canonical producer's `docs[]` path-base guidance is repaired. All five
+projections are regenerated from the modular metadata, including the four
+previously deferred documents, and applied without hand-styling. Canonical
+completeness validation passed; the sidecar revision is now `1.2.4`.
+The seven existing publication-overlay paths remain unchanged and unaccepted.
+This closes the projection-producer hold, not the stale measured gate inventory,
+manuscript provenance, reference-rasterizer, curator or hosted acceptance holds.

@@ -16,4 +16,3 @@ python -m aii_platform.aii_sidecar.validate <repo> --completeness
 python -m aii_platform.aii_sidecar docs <repo> --overwrite
 python -m aii_platform.aii_sidecar.run <repo> --list
 ```
-

@@ -36,7 +36,7 @@ Arms (each runs the same command the public workflow runs):
   fast        regression subset without the publication layer (inner loop)
   full        complete regression suite
   docs        documentation links, anchors, and index coverage
-  manuscript  manuscript freshness: generate, byte-identity, validate, check
+  manuscript  read-only manuscript freshness and per-format render provenance
   render      render PDF/HTML/DOCX/EPUB (needs Pandoc, pandoc-crossref, XeLaTeX, qpdf)
   gnn         pinned GNN parser conformance (installs the pin; needs network)
   bench       measure every arm and regenerate docs/_generated/gate.md
@@ -81,17 +81,8 @@ arm_docs() {
 }
 
 arm_manuscript() {
-  "$PY" scripts/manuscript.py generate
-  "$PY" scripts/manuscript.py manifest
-  # Byte-identity for every non-rasterized artifact the generator owns; figure
-  # bytes are host-dependent and the manifest hashes those figures.
-  git diff --exit-code -- \
-    docs/manuscript/data/manuscript_variables.json \
-    docs/manuscript/output/manuscript \
-    docs/manuscript/output/figures/figure_registry.json
-  "$PY" scripts/manuscript.py validate --strict
+  # Never refresh hashes or regenerate inputs before checking published evidence.
   "$PY" scripts/manuscript.py check
-  git diff --check
 }
 
 arm_render() {
