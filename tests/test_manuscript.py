@@ -140,7 +140,9 @@ class ManuscriptProvenanceTests(unittest.TestCase):
     def setUp(self) -> None:
         temporary = tempfile.TemporaryDirectory()
         self.addCleanup(temporary.cleanup)
-        self.directory = Path(temporary.name)
+        # Resolve the temporary root: macOS links /var to /private/var, and the
+        # isolated pipeline reports resolved paths.
+        self.directory = Path(temporary.name).resolve()
         self.root = self.directory / "repo"
         copy_repository(self.root)
         spec = importlib.util.spec_from_file_location(
