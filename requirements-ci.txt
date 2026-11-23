@@ -3,4 +3,4 @@
 # (policy in `ruff.toml`). `requirements-manuscript.txt` includes this file, so a
 # publication checkout installs one consistent environment.
 jsonschema==4.26.0
-ruff==0.17.4
+ruff==0.17.5
