@@ -2,7 +2,7 @@
 
 The canonical source is `ontology.source.json`, schema
 `active-inference-ontology/source/v2`. Paths and policy are configured in
-[`../ontology.toml`](../ontology.toml).
+[`../ontology.toml`](../../ontology.toml).
 
 ## Release
 

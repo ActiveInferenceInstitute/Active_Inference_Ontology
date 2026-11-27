@@ -40,7 +40,7 @@ itself; no pre-existing major defect found).
 - Reviewed and found accurate (no change): all CLI commands in README/docs match
   the argparse parsers; counts (429 terms / 238 relations / 8 tags / Core 64 /
   Entailed 73 / Supplement 292) match the live report, variables, and manifest;
-  the SUMO mapping template header matches `docs/sumo-mapping-contract.md`;
+  the SUMO mapping template header matches `docs/integration/sumo-mapping-contract.md`;
   `config.yaml.example` is in sync with `config.yaml` (modulo the deliberate
   date placeholder); archived-version READMEs match their folders.
 - False positive (no action): an apparent duplicate `jsonschema==4.24.0` pin was

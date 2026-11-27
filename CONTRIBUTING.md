@@ -9,8 +9,8 @@ software artifact (see [`README.md`](README.md)).
 - Read [`README.md`](README.md) for the repository surfaces and the CLI.
 - Browse the [documentation index](docs/README.md); it maps every document to
   the question it answers.
-- For curation topics, read [`docs/curation-workflow.md`](docs/curation-workflow.md)
-  and [`docs/curation-governance.md`](docs/curation-governance.md) first.
+- For curation topics, read [`docs/curation/workflow.md`](docs/curation/workflow.md)
+  and [`docs/curation/governance.md`](docs/curation/governance.md) first.
 
 ## What is editable
 
@@ -28,7 +28,7 @@ them by hand; regenerate them with the commands below.
 ## Making a change
 
 1. Open an issue for semantic or curation changes so the review roles in
-   [`docs/curation-governance.md`](docs/curation-governance.md) can weigh in
+   [`docs/curation/governance.md`](docs/curation/governance.md) can weigh in
    before a proposal becomes a diff.
 2. Edit the source or docs directly for mechanical fixes (typos, broken
    links, stale prose, small refactors).
@@ -82,7 +82,7 @@ with the pinned dependencies installed (`./run.sh deps`):
 `MANUSCRIPT_PORTABLE_CHECK=1` skips only the raw figure-byte comparison on
 hosts whose matplotlib rasterization differs from the committed PNGs; all other
 integrity checks stay enforced (see
-[`docs/build-and-validation.md`](docs/build-and-validation.md)). The public workflow
+[`docs/development/build-and-validation.md`](docs/development/build-and-validation.md)). The public workflow
 calls the same arms; its `manuscript` arm regenerates the figures in the runner
 toolchain and then requires byte-identity for every artifact that is not rasterized.
 Measured arm wall time lives in [`docs/_generated/gate.md`](docs/_generated/gate.md)
@@ -91,7 +91,7 @@ Measured arm wall time lives in [`docs/_generated/gate.md`](docs/_generated/gate
 ## Release changes
 
 Content releases and release metadata require the full release process in
-[`docs/release-workflow.md`](docs/release-workflow.md): update
+[`docs/release/workflow.md`](docs/release/workflow.md): update
 `ontology.toml`, regenerate artifacts, run `sync-manifest`, review the report
 and diff, and confirm the archive and manifest state.
 

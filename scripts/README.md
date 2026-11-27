@@ -4,7 +4,7 @@ Two Python entry points, both requiring Python 3.11 or newer, plus the gate
 scripts. [`run.sh`](../run.sh) at the repository root is the single entry point;
 the public workflow
 [`.github/workflows/ontology.yml`](../.github/workflows/ontology.yml) calls its arms
-(see [`../docs/build-and-validation.md`](../docs/build-and-validation.md)).
+(see [`../docs/build-and-validation.md`](../docs/development/build-and-validation.md)).
 
 ## `ontology.py`
 
@@ -29,7 +29,7 @@ Configured by `ontology.toml` at the repository root. Subcommands:
 
 Writes are atomic (a temporary file followed by replacement); the `--check`
 forms are read-only. See
-[`../docs/build-and-validation.md`](../docs/build-and-validation.md) for the
+[`../docs/build-and-validation.md`](../docs/development/build-and-validation.md) for the
 full acceptance sequence.
 
 ## `manuscript.py`

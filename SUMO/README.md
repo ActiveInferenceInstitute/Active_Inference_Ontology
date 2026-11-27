@@ -19,6 +19,6 @@ the public CI gate does not execute it.
   `review_date`, `evidence`, and `notes`.
 
 The canonical ontology release is published from `ontology.source.json` and
-documented in [`../docs/source-data-contract.md`](../docs/source-data-contract.md).
+documented in [`../docs/source-data-contract.md`](../docs/reference/source-data-contract.md).
 Keep these files as historical evidence: do not treat the empty template as a
 current mapping and do not regenerate the VM history.

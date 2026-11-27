@@ -33,7 +33,7 @@ by a domain curator; both are restated with owner and blocker under Open / defer
      runs on any host, the committed assets keep a structural check (valid PNG, 1280x720 canvas),
      and the CI manuscript job regenerates the artifacts in its own toolchain and then requires
      byte-identity for every artifact that is not rasterized. Documented in
-     `docs/build-and-validation.md` and `docs/manuscript/README.md`.
+     `docs/development/build-and-validation.md` and `docs/manuscript/README.md`.
 
 2. **Mention-relation extraction is intentionally conservative (semantic ceiling).**
    - Affected: `scripts/ontology.py::mention_relations`, source `connectionsText`, `docs/manuscript/05_discussion.md`.
@@ -43,7 +43,7 @@ by a domain curator; both are restated with owner and blocker under Open / defer
    - Resolution (this pass): the conservative contract is now **pinned by a regression test**
      (`test_mention_relations_are_exact_word_boundary_and_conservative`), and a curator-ready design
      proposal for alias-aware mentions and native typed relations is recorded in
-     `docs/future-curation-relations.md`. Any expansion remains a domain-curator decision (Option A/B
+     `docs/curation/future-curation-relations.md`. Any expansion remains a domain-curator decision (Option A/B
      in that proposal); it is not auto-applied because it would change curated edge counts.
 
 ## Completed / Closed (2026-11-12 GNN–FEP reader adoption)
@@ -77,7 +77,7 @@ Merged to `main` as PR #11 (`11740f3`), with the no-argument fast-arm default in
 
 1. **One entry point.** `run.sh` defines `deps`, `lint`, `ontology`, `fast`, `full`, `docs`,
    `manuscript`, `render`, `gnn`, `bench`, and `all`. The workflow calls the arms, so no
-   command exists twice. `docs/build-and-validation.md` documents each arm, its job, and its
+   command exists twice. `docs/development/build-and-validation.md` documents each arm, its job, and its
    dependencies.
 2. **Lint and docs arms added.** `ruff.toml` pins correctness rules (`E`, `F`, `W`, `I`;
    line length deliberately unenforced) and `scripts/check_docs.py` checks relative links,
@@ -128,7 +128,7 @@ Merged to `main` as PR #11 (`11740f3`), with the no-argument fast-arm default in
 Scope: align this repository with the vocabulary the Generalized Notation Notation (GNN)
 pipeline annotates (`ActInfOntologyAnnotation`, Step 10). The bridge is generated, gated by
 `validate --strict` and `gnn-terms --check`, and documented in
-`docs/downstream-integration.md` and `GNN/README.md`.
+`docs/integration/downstream-integration.md` and `GNN/README.md`.
 
 ### Minor
 
@@ -137,7 +137,7 @@ pipeline annotates (`ActInfOntologyAnnotation`, Step 10). The bridge is generate
    capability list, the `.aii/README.md` task map, and `.aii/docs/INTEGRATION.md` follow; the
    sidecar version moves to 1.2.0. (✓ `cb1c836`)
 2. **Gate lists updated.** `gnn-terms --check` is part of the documented acceptance gate
-   (`CONTRIBUTING.md`, `docs/build-and-validation.md`), the root surfaces table and CLI list, the
+   (`CONTRIBUTING.md`, `docs/development/build-and-validation.md`), the root surfaces table and CLI list, the
    agent guide, and the CI `validate` job. (✓ `cb1c836`)
 3. **Provenance kept out of the identifier space.** GNN's declared `obo:ACTO_*` / `obo:TEMP_*`
    values resolve in no registry (OBO Foundry, Bioregistry, OLS), so
@@ -181,7 +181,7 @@ Follow-up to the alignment pass, scoped to the two CI failures it uncovered. Loc
    `.github/workflows/ontology.yml`; both jobs keep every public gate (`validate --strict`,
    `schema-check`, `build --check`, `export-csv --check`, `site --check`, `gnn-terms --check`,
    `report`, the regression suite, and `diff`). The workflow header states why the sidecar check is
-   separated, and `docs/build-and-validation.md` gained a "Private and manual checks" section with
+   separated, and `docs/development/build-and-validation.md` gained a "Private and manual checks" section with
    the authoritative command (`python -m aii_platform.aii_sidecar.validate <repo>`), the
    environment it needs, and the public structural fallback. No sidecar validation rule was
    removed. (✓ `daf84fe`)
@@ -206,7 +206,7 @@ Follow-up to the alignment pass, scoped to the two CI failures it uncovered. Loc
    `output/figures/**` and the manifest that hashes those figures); structure, references, the
    claim ledger, and all hashes stay strict. The committed figure assets gained a structural
    regression check (valid PNG, 1280x720 canvas), and the "byte-canonical to the CI toolchain"
-   claim is corrected in `docs/build-and-validation.md`, `docs/manuscript/README.md`,
+   claim is corrected in `docs/development/build-and-validation.md`, `docs/manuscript/README.md`,
    `CONTRIBUTING.md`, `AGENTS.md`, and Major #1 above. (✓ `daf84fe`)
 
 ## Completed / Closed (2026-08-02 docs-deep review pass)
@@ -273,7 +273,7 @@ manuscript gates pass on the canonical checks.
 3. **Doc drift — `docs/manuscript/config.yaml.example`** was missing `abstract` and `colorlinks`
    that the live `config.yaml` declares. Synced the example to the working config
    (keeping the `YYYY-MM-DD` placeholder).
-4. **Doc drift — `docs/build-and-validation.md`** did not explain the `MANUSCRIPT_PORTABLE_CHECK`
+4. **Doc drift — `docs/development/build-and-validation.md`** did not explain the `MANUSCRIPT_PORTABLE_CHECK`
    byte-check exception for off-CI hosts. Added a "Figure byte checks and CI portability" section
    documenting that committed figure PNGs are canonical to the CI toolchain and that off-CI hosts
    use `MANUSCRIPT_PORTABLE_CHECK=1` for the environmental byte comparison.
@@ -320,7 +320,7 @@ manuscript gates pass on the canonical checks.
   byte-comparison evidence; local regenerated PNGs must not replace the reference.
 - **Alias-aware mentions and native typed relations.** Nothing in the repository decides this:
   either option changes curated edge counts, and both are scoped with their controls in
-  `docs/future-curation-relations.md`. Owner: domain curator (Daniel Ari Friedman); needs a
+  `docs/curation/future-curation-relations.md`. Owner: domain curator (Daniel Ari Friedman); needs a
   curation decision, not code.
 - **Both hosted jobs, and CodeQL default setup, are blocked before any step runs.** Runs
   `43258257237` (push to `main`, 2026-11-12) and `43258258062` (CodeQL) both annotate "The job was

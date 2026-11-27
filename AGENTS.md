@@ -49,7 +49,7 @@ python3 -m unittest discover -s tests -v   # regression suite
 ```
 
 The full acceptance gate is documented in `CONTRIBUTING.md` and
-`docs/build-and-validation.md`; measured arm wall time is generated into
+`docs/development/build-and-validation.md`; measured arm wall time is generated into
 `docs/_generated/gate.md` by its owning producer. The `manuscript` arm is read-only:
 it checks existing generated freshness and per-format render provenance.
 On hosts whose rasterization differs, `MANUSCRIPT_PORTABLE_CHECK=1` affects only

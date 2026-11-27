@@ -19,7 +19,7 @@ auto-applied.
   owning term's `connectionsText`.
 - It infers **nothing else**: no plurals/derivatives, no aliases, no `broader` /
   `narrower` / `causes` / `related`, etc. This is the conservative migration contract
-  documented in `docs/manuscript/05_discussion.md` and `docs/source-data-contract.md`.
+  documented in `docs/manuscript/05_discussion.md` and `docs/reference/source-data-contract.md`.
 - Stronger relation types are already representable in the v2 schema
   (`relation_types` in `ontology.toml`) but are only added deliberately.
 
@@ -69,7 +69,7 @@ curator review. Before either lands:
 2. Implement `mention_relations` alias support with the regression tests above.
 3. `sync-manifest`; regenerate all artifacts; bump release notes; run the full gate
    (`ontology.py validate --strict`, full test suite, manuscript `validate --strict`).
-4. Record the count change in `docs/version-diff.md`.
+4. Record the count change in `docs/release/version-diff.md`.
 
 The repository's current release (v5; 429 terms, 238 `mentions` edges) remains the stable
 canonical boundary until a curator-approved release is produced.

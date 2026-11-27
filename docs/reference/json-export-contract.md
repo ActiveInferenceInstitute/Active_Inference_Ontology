@@ -28,5 +28,5 @@ a node. `mentions` describes an exact canonical-label mention in preserved sourc
 prose; it does not assert a domain-semantic relationship.
 
 Consumers should join on `id`, display `term`, and treat additional fields as part
-of the versioned v2 contract. See [`migration-v2.md`](migration-v2.md) for the
+of the versioned v2 contract. See [`migration-v2.md`](../release/migration-v2.md) for the
 changes from the previous export.
