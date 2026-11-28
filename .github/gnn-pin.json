@@ -1,7 +1,7 @@
 {
   "schema": "gnn-importer-pin/v1",
   "repository": "ActiveInferenceInstitute/Generalized_Notation_Notation",
-  "revision": "75c834bd8519dc7b5adc4d24f16bf393cfd1ecdf",
-  "tag": "v5.1.0",
-  "recorded": "2026-11-12"
+  "revision": "4a7cccce6d4d7cb483f00323ec5cdd79300f3464",
+  "tag": "v5.2.0",
+  "recorded": "2026-11-28"
 }

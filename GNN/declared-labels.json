@@ -3,11 +3,11 @@
   "description": "Reviewed input for `python3 scripts/ontology.py gnn-terms`: the vocabulary labels declared by the GNN pipeline's bundled ontology file, with the provenance of the audited revision. Update only to follow a new GNN revision.",
   "source": {
     "repository": "ActiveInferenceInstitute/Generalized_Notation_Notation",
-    "release": "v5.1.0",
-    "commit": "75c834bd8519dc7b5adc4d24f16bf393cfd1ecdf",
+    "release": "v5.2.0",
+    "commit": "4a7cccce6d4d7cb483f00323ec5cdd79300f3464",
     "path": "src/gnn/ontology/act_inf_ontology_terms.json",
     "sha256": "a9639fbabc2e227adcf00450aad23638ceaaa384caea29824ae2d063a4559d1c",
-    "auditedOn": "2026-11-12",
+    "auditedOn": "2026-11-28",
     "uriPolicy": "The audited file declares `obo:ACTO_*` and `obo:TEMP_*` uri values. Neither prefix resolves in the OBO Foundry registry, Bioregistry, or OLS, and no ACTO ontology exists; they are local placeholders, are recorded here as declaredUri for audit only, and are never used as mapping targets."
   },
   "labels": [

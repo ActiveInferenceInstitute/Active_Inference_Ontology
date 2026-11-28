@@ -115,9 +115,9 @@ python -m gnn.importers check --repo . --require-pointer \
 ```
 
 The shared reader owns pin normalization and pin/pointer/specification validation;
-the member retains its vocabulary checks and `gnn-terms --check`. The adopted
-release is `v5.1.0` at `75c834bd8519dc7b5adc4d24f16bf393cfd1ecdf`, replacing
-`v5.0.3` at `8f293d9ba810e6eda5c09842d9c7ed9ffa5f92c1`.
+the member retains its vocabulary checks and `gnn-terms --check`. The current
+pin selects `v5.2.0` at `4a7cccce6d4d7cb483f00323ec5cdd79300f3464`.
+The shared-reader cutover began with `v5.1.0`.
 The pin, job key, and tested bootstrap exception are recorded in
 [`.github/GNN.md`](../../.github/GNN.md).
 

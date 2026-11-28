@@ -13,9 +13,9 @@ The canonical pin is [`.github/gnn-pin.json`](gnn-pin.json) with schema
 | Field | Value |
 | --- | --- |
 | `repository` | `ActiveInferenceInstitute/Generalized_Notation_Notation` |
-| `revision` | `75c834bd8519dc7b5adc4d24f16bf393cfd1ecdf` |
-| `tag` | `v5.1.0` |
-| `recorded` | `2026-11-12` |
+| `revision` | `4a7cccce6d4d7cb483f00323ec5cdd79300f3464` |
+| `tag` | `v5.2.0` |
+| `recorded` | `2026-11-28` |
 
 The arm installs the parser-side dependency file (`requirements-gnn.txt`).
 Its bootstrap read extracts only the raw `repository` and `revision` from the
@@ -36,7 +36,7 @@ module, not a local copy. This follows the
 
 The pin advances from `v5.0.3` at
 `8f293d9ba810e6eda5c09842d9c7ed9ffa5f92c1` to the reader-bearing
-`v5.1.0` at `75c834bd8519dc7b5adc4d24f16bf393cfd1ecdf`.
+`v5.2.0` at `4a7cccce6d4d7cb483f00323ec5cdd79300f3464`.
 The local pin normalization and validation are removed. The minimal bootstrap
 read is deliberately retained because an empty environment has no reader yet;
 it performs no normalization or validation and carries no second revision.
