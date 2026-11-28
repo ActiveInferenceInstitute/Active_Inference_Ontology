@@ -16,8 +16,8 @@ enumerate the directory.
 
 The contract validator is pinned to `jsonschema==4.26.0` in
 [`../requirements-ci.txt`](../requirements-ci.txt). The data contracts are
-documented in [`../docs/source-data-contract.md`](../docs/source-data-contract.md)
-and [`../docs/json-export-contract.md`](../docs/json-export-contract.md).
+documented in [`../docs/source-data-contract.md`](../docs/reference/source-data-contract.md)
+and [`../docs/json-export-contract.md`](../docs/reference/json-export-contract.md).
 
 Changing a schema is a paired change: update the validator and test
 expectations in `scripts/ontology.py` and `tests/test_ontology.py`, regenerate

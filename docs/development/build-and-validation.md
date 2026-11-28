@@ -23,7 +23,7 @@ python3 scripts/manuscript.py check
 
 ## Gate entry point and arms
 
-[`../run.sh`](../run.sh) is the single gate entry point. Each arm runs the exact
+[`../run.sh`](../../run.sh) is the single gate entry point. Each arm runs the exact
 command the public workflow runs, so `.github/workflows/ontology.yml` calls arms
 instead of restating commands and there is no second copy to drift. With no arm
 (`./run.sh`), it runs `fast` — the default is the cheap inner-loop selection, not the
@@ -58,7 +58,7 @@ the only definition of. The arms are individually runnable and composable
 (`./run.sh lint docs`), so a focused change does not pay for unrelated arms.
 
 Wall time per arm on this host is recorded in the generated
-[`_generated/gate.md`](_generated/gate.md); regenerate it with `./run.sh bench` after
+[`_generated/gate.md`](../_generated/gate.md); regenerate it with `./run.sh bench` after
 changing an arm. Prose does not carry gate timings.
 
 Interpreter selection: `PYTHON=/path/to/python ./run.sh …` overrides; otherwise the
@@ -103,7 +103,7 @@ runner. Local evidence does not establish hosted execution or acceptance.
 
 The separate `gnn conformance (pinned)` CI job runs `./run.sh gnn`. Its bootstrap
 read extracts only the raw repository and revision from
-[`.github/gnn-pin.json`](../.github/gnn-pin.json) to install the exact commit.
+[`.github/gnn-pin.json`](../../.github/gnn-pin.json) to install the exact commit.
 The installed `gnn.importers.read_pin` then owns pin normalization in
 `scripts/validate_gnn_conformance.py`, which checks vocabulary bytes and labels
 against `GNN/declared-labels.json` and the generated bridge. The arm tests the
@@ -119,7 +119,7 @@ the member retains its vocabulary checks and `gnn-terms --check`. The adopted
 release is `v5.1.0` at `75c834bd8519dc7b5adc4d24f16bf393cfd1ecdf`, replacing
 `v5.0.3` at `8f293d9ba810e6eda5c09842d9c7ed9ffa5f92c1`.
 The pin, job key, and tested bootstrap exception are recorded in
-[`.github/GNN.md`](../.github/GNN.md).
+[`.github/GNN.md`](../../.github/GNN.md).
 
 `build`, `export-csv`, `site`, and `gnn-terms` write through temporary files
 followed by atomic replacement. The `--check` forms are read-only and fail when a
@@ -170,11 +170,11 @@ assets, and the byte comparison is scoped per host instead of being asserted glo
   clean publication outputs. Only the integration owner may publish reviewed
   generated changes.
 
-See [`docs/manuscript/README.md`](manuscript/README.md).
+See [`docs/manuscript/README.md`](../manuscript/README.md).
 
 ## Documentation gate
 
-`./run.sh docs` runs [`../scripts/check_docs.py`](../scripts/check_docs.py), which is the
+`./run.sh docs` runs [`../scripts/check_docs.py`](../../scripts/check_docs.py), which is the
 repository's documentation check (there is no third-party documentation linter here). It
 verifies three things:
 
@@ -183,7 +183,7 @@ verifies three things:
   pruned rather than traversed;
 - every in-repository fragment (`path#anchor`) matches a heading slug or an explicit
   `{#id}`/`<a id=…>` anchor in the target;
-- [`documentation-index.md`](documentation-index.md) lists every long-lived document under
+- [`documentation-index.md`](../documentation-index.md) lists every long-lived document under
   `docs/` (the ordered manuscript section set is indexed by its own hub page).
 
 Inline code in a heading contributes its visible text to the heading slug.
@@ -192,7 +192,7 @@ fragment targets; fenced examples likewise remain outside the anchor inventory.
 
 `Archived versions/` is immutable historical evidence and is excluded: its links cannot be
 repaired without rewriting the archive. The same arm also runs
-`scripts/report_gate.py --check`, which fails when [`_generated/gate.md`](_generated/gate.md)
+`scripts/report_gate.py --check`, which fails when [`_generated/gate.md`](../_generated/gate.md)
 no longer matches the arm list or the measured test/document counts.
 
 ## Private and manual checks

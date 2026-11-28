@@ -7,20 +7,20 @@ integrity checks, curation process, historical archives, and integration surface
 | --- | --- |
 | [Documentation Index](documentation-index.md) | Flat index of every long-lived document in the repository. |
 | [Agent Guide](AGENTS.md) | Agent reading order, concept graph, and conventions for this directory. |
-| [Source Data Contract](source-data-contract.md) | Structured source fields and validation policy. |
-| [JSON Export Contract](json-export-contract.md) | Version 2 export and graph shape. |
-| [Migration v2](migration-v2.md) | Breaking changes and consumer migration. |
-| [Build and Validation](build-and-validation.md) | CLI, gate arms (`./run.sh`), acceptance gates, and private checks. |
+| [Source Data Contract](reference/source-data-contract.md) | Structured source fields and validation policy. |
+| [JSON Export Contract](reference/json-export-contract.md) | Version 2 export and graph shape. |
+| [Migration v2](release/migration-v2.md) | Breaking changes and consumer migration. |
+| [Build and Validation](development/build-and-validation.md) | CLI, gate arms (`./run.sh`), acceptance gates, and private checks. |
 | [Measured Gate Numbers](_generated/gate.md) | Generated: arm wall time, regression-test and source-term counts. |
-| [Curation Workflow](curation-workflow.md) | Editing source terms and relations. |
-| [Curation Governance](curation-governance.md) | Review roles and release sign-off. |
-| [Future Curation](future-curation-relations.md) | Proposal for typed relations and alias-aware mention extraction (not implemented). |
-| [Archive and Provenance](archive-and-provenance.md) | Immutable historical material and hashes. |
-| [SUMO Integration](sumo-integration.md) | SUMO support scope. |
-| [SUMO Mapping Contract](sumo-mapping-contract.md) | Mapping fields and review states. |
-| [Downstream Integration](downstream-integration.md) | Importing JSON, CSV, and schemas, and the GNN vocabulary bridge contract. |
-| [Release Workflow](release-workflow.md) | Publishing a content release. |
-| [Version Diff](version-diff.md) | Comparing structured source releases by stable ID. |
+| [Curation Workflow](curation/workflow.md) | Editing source terms and relations. |
+| [Curation Governance](curation/governance.md) | Review roles and release sign-off. |
+| [Future Curation](curation/future-curation-relations.md) | Proposal for typed relations and alias-aware mention extraction (not implemented). |
+| [Archive and Provenance](release/archive-and-provenance.md) | Immutable historical material and hashes. |
+| [SUMO Integration](integration/sumo-integration.md) | SUMO support scope. |
+| [SUMO Mapping Contract](integration/sumo-mapping-contract.md) | Mapping fields and review states. |
+| [Downstream Integration](integration/downstream-integration.md) | Importing JSON, CSV, and schemas, and the GNN vocabulary bridge contract. |
+| [Release Workflow](release/workflow.md) | Publishing a content release. |
+| [Version Diff](release/version-diff.md) | Comparing structured source releases by stable ID. |
 | [Manuscript](manuscript/README.md) | Template-compatible manuscript source, generation, rendering, and integrity checks. |
 | [Manuscript: Abstract](manuscript/00_abstract.md) | Abstract section of the publication manuscript. |
 | [Manuscript: Introduction](manuscript/01_introduction.md) | Introduction section. |
@@ -44,3 +44,11 @@ The publication manuscript is generated from the same source and manifest. The
 checks them against the committed bytes; the `render` arm
 (`./run.sh render`) produces PDF, HTML, DOCX, and EPUB outputs and requires Pandoc,
 `pandoc-crossref`, XeLaTeX, and qpdf.
+
+## Topic indexes
+
+- [Curation](curation/README.md)
+- [Development](development/README.md)
+- [Release](release/README.md)
+- [Reference](reference/README.md)
+- [Integration](integration/README.md)

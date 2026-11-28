@@ -32,7 +32,7 @@ and Suggested Upper Merged Ontology concepts.
 
 ## Template
 
-Use [`../SUMO/mapping-template.csv`](../SUMO/mapping-template.csv) for new
+Use [`../SUMO/mapping-template.csv`](../../SUMO/mapping-template.csv) for new
 mapping work.
 
 ## Review Rules

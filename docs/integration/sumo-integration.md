@@ -24,7 +24,7 @@ Use the SUMO folder for:
   ontology concepts.
 
 Use [SUMO Mapping Contract](sumo-mapping-contract.md) and
-[`SUMO/mapping-template.csv`](../SUMO/mapping-template.csv) for durable
+[`SUMO/mapping-template.csv`](../../SUMO/mapping-template.csv) for durable
 mapping work.
 
 The SUMO folder is not a substitute source of truth for term definitions.

@@ -4,7 +4,7 @@ name: Ontology
 #
 # Every job installs one pinned environment and then calls a gate arm from
 # `run.sh`; the arms are the only definition of the commands (see
-# `docs/build-and-validation.md`), so a local `./run.sh all` runs exactly what
+# `docs/development/build-and-validation.md`), so a local `./run.sh all` runs exactly what
 # this workflow runs. Two jobs stay separate only where the environment differs:
 # `gnn-conformance` installs the pinned GNN parser and `gate` does not.
 #
@@ -12,7 +12,7 @@ name: Ontology
 # kernel package and therefore cannot be installed here without credentials. This workflow
 # runs only dependency-free gates; the regression suite carries a structural check of
 # `.aii/`, and the authoritative validator is a documented private step (see "Private and
-# manual checks" in docs/build-and-validation.md).
+# manual checks" in docs/development/build-and-validation.md).
 #
 # Figure PNG bytes are rasterized per host, so the committed figures are not reproducible
 # on the runner. The `manuscript` arm checks existing artifacts and per-format

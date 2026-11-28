@@ -90,27 +90,27 @@
       },
       {
         "path": "docs/manuscript/output/figures/metadata_completeness.png",
-        "sha256": "006be4e23a51aca027ac13bd66c9bf5c38a69d4284ecb5d718a057d3cfd43b58"
+        "sha256": "25c2ee42dd47aa63a117235a9e3709e8e8f61f0c1dc5a1a430e7101286c38b80"
       },
       {
         "path": "docs/manuscript/output/figures/pipeline_provenance.png",
-        "sha256": "d54149a161e7a228e8012577db73fbd6b82857cca814e9cdbdc1359f62c6f5b1"
+        "sha256": "5170d686934a1bc0b971dfea7932e1f568fd931df7cb94f12e0423661255641f"
       },
       {
         "path": "docs/manuscript/output/figures/relation_structure.png",
-        "sha256": "b004c7ed5c99450699915d5bc488ac93c17d75c56f5d4a6a2e1c1c1451b3005c"
+        "sha256": "776ab1c48c6d0ca51e2e271a791dd13bd13d966bc37c462be0d07f12e2b02c2f"
       },
       {
         "path": "docs/manuscript/output/figures/release_history.png",
-        "sha256": "0e320b28076bafde3df06ff76de1238e87408557fd5fef9395f7718117bebd8e"
+        "sha256": "f14bead5bf5380ba1c9eec7393112af34dd41ad6f4c341f7ee905763d1af6f91"
       },
       {
         "path": "docs/manuscript/output/figures/term_composition.png",
-        "sha256": "a92f9447b18f0f35c8a619c5725c794e6be47fd0ec7ab35b147c68c5385577b9"
+        "sha256": "28a5252775cc067d84d1b175771809663da0cb2e8c4b0dac420d0686c1413194"
       },
       {
         "path": "docs/manuscript/output/figures/validation_integrity.png",
-        "sha256": "68cd2a221691d91974cf013453e79daf8a9b90a0a964c8ab746f7a83cc02d6db"
+        "sha256": "4cfc2ec82370d7810b5631d9fc3acea7d740f5e142a8f83c764e85988fc3a672"
       },
       {
         "path": "docs/manuscript/output/manuscript/00_abstract.md",
@@ -178,7 +178,7 @@
       },
       {
         "path": "requirements-ci.txt",
-        "sha256": "9efa751146646a89531bee89af09bbf354cc89b3ee3f4d00528e791099e63075"
+        "sha256": "b6f55171e91510b511cc3a6b5a3abd4b018e1d8c8fe4ca8cc0616ae3faf336be"
       },
       {
         "path": "requirements-manuscript.txt",
@@ -211,25 +211,25 @@
         "jsonschema": "4.26.0",
         "matplotlib": "3.11.2"
       },
-      "platform": "Darwin/arm64",
-      "python": "3.12.13 (main, Jul 18 2026, 16:55:18) [Clang 22.1.3 ]",
+      "platform": "Linux/x86_64",
+      "python": "3.15.2 (main, Nov 11 2026, 00:19:20) [Clang 23.1.3 ]",
       "tools": {
         "pandoc": {
-          "sha256": "7492d91bac0d1dd853483d4a85bd34b56929ff29cb63573ddb8c38cd9614f097",
-          "version": "pandoc 3.14"
+          "sha256": "10a980df73e7fea52904375d4de731c4ed61fd1c45fa0900facd2a5972ff0ee1",
+          "version": "pandoc 3.12.1"
         },
         "pandoc-crossref": {
-          "sha256": "1bb4efae053bab455a0c7aa7ac2dcd1c0e67524a921596b1c1b18695cbaed116",
-          "version": "pandoc-crossref v0.3.26 git commit UNKNOWN (UNKNOWN) built with Pandoc v3.14, pandoc-types v1.23.1.2 and GHC 9.14.1"
+          "sha256": "5108084bd667a465e3ccff4e4e34ba29a4d974d216953ffc4a4c559515aa3809",
+          "version": "pandoc-crossref v0.3.26 git commit UNKNOWN (UNKNOWN) built with Pandoc v3.12.1, pandoc-types v1.23.1.2 and GHC 9.8.4"
         }
       }
     }
   },
   "output": {
-    "bytes": 174046,
+    "bytes": 186368,
     "path": "docs/manuscript/output/docx/active_inference_ontology.docx",
-    "sha256": "66b69a9e5108298629c98d54ba1a8daa00633f2357414069f9c41ea231db7a1b"
+    "sha256": "7d4b7873d8fb6dad2858f79664865bdbd75c79feb1242cbe11634071a865fcfd"
   },
   "schema": "active-inference-ontology/render/v1",
-  "sha256": "c30316414741e214e2117930a70fdef05542f53e47866626a92869f3f609c598"
+  "sha256": "d466c0a33e6b106358b072daaf89f1661f8d00b3c189ff2e8ae1572cd03ebbb0"
 }

@@ -17,33 +17,33 @@ and [`AGENTS.md`](../AGENTS.md).
 3. [`../ontology.source.json`](../ontology.source.json) is the only editable
    ontology surface. `ontology.json`, the CSV, `site/index.html`, and
    `releases.json` are generated — never edit them by hand.
-4. Task-specific: curation → [`curation-workflow.md`](curation-workflow.md) +
-   [`curation-governance.md`](curation-governance.md); releases →
-   [`release-workflow.md`](release-workflow.md); consumers →
-   [`downstream-integration.md`](downstream-integration.md); manuscript →
+4. Task-specific: curation → [`curation-workflow.md`](curation/workflow.md) +
+   [`curation-governance.md`](curation/governance.md); releases →
+   [`release-workflow.md`](release/workflow.md); consumers →
+   [`downstream-integration.md`](integration/downstream-integration.md); manuscript →
    [`manuscript/README.md`](manuscript/README.md).
 
 ## Concept graph (how the abstraction tower links)
 
-- **Source → exports:** [`source-data-contract.md`](source-data-contract.md)
-  defines the structured source fields; [`json-export-contract.md`](json-export-contract.md)
-  defines the export graph shape consumers see; [`migration-v2.md`](migration-v2.md)
+- **Source → exports:** [`source-data-contract.md`](reference/source-data-contract.md)
+  defines the structured source fields; [`json-export-contract.md`](reference/json-export-contract.md)
+  defines the export graph shape consumers see; [`migration-v2.md`](release/migration-v2.md)
   maps breaking changes for existing consumers.
-- **Editing → release:** [`curation-workflow.md`](curation-workflow.md) is the
-  per-term editing procedure; [`curation-governance.md`](curation-governance.md)
-  defines review roles and sign-off; [`release-workflow.md`](release-workflow.md)
-  publishes a content release; [`version-diff.md`](version-diff.md) compares
+- **Editing → release:** [`curation-workflow.md`](curation/workflow.md) is the
+  per-term editing procedure; [`curation-governance.md`](curation/governance.md)
+  defines review roles and sign-off; [`release-workflow.md`](release/workflow.md)
+  publishes a content release; [`version-diff.md`](release/version-diff.md) compares
   releases by stable ID.
-- **Integrity:** [`build-and-validation.md`](build-and-validation.md) lists every
-  CLI command and gate; [`archive-and-provenance.md`](archive-and-provenance.md)
+- **Integrity:** [`build-and-validation.md`](development/build-and-validation.md) lists every
+  CLI command and gate; [`archive-and-provenance.md`](release/archive-and-provenance.md)
   covers the immutable historical evidence and its hashes.
-- **Supporting mappings:** [`sumo-integration.md`](sumo-integration.md) and
-  [`sumo-mapping-contract.md`](sumo-mapping-contract.md) scope the SUMO support;
-  [`downstream-integration.md`](downstream-integration.md) shows how to import
+- **Supporting mappings:** [`sumo-integration.md`](integration/sumo-integration.md) and
+  [`sumo-mapping-contract.md`](integration/sumo-mapping-contract.md) scope the SUMO support;
+  [`downstream-integration.md`](integration/downstream-integration.md) shows how to import
   JSON, CSV, and schemas and defines the GNN vocabulary bridge contract; the
   generated bridge itself and its reviewed input live in
   [`../GNN/`](../GNN/README.md).
-- **Open frontier:** [`future-curation-relations.md`](future-curation-relations.md)
+- **Open frontier:** [`future-curation-relations.md`](curation/future-curation-relations.md)
   records the not-yet-implemented typed-relations proposal — treat it as design,
   not current behavior.
 

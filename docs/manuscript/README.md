@@ -1,11 +1,11 @@
 # Active Inference Ontology Manuscript
 
-This directory contains the template-compatible source and generated publication artifacts for the ontology data descriptor. It follows the template project conventions for ordered Markdown sections, labeled equations, cross-referenced figures and tables, `config.yaml`, `preamble`, a bibliography, a claim ledger, and generated manuscript variables. It is part of the [repository documentation index](../README.md); see [`docs/build-and-validation.md`](../build-and-validation.md) for the full validation gate.
+This directory contains the template-compatible source and generated publication artifacts for the ontology data descriptor. It follows the template project conventions for ordered Markdown sections, labeled equations, cross-referenced figures and tables, `config.yaml`, `preamble`, a bibliography, a claim ledger, and generated manuscript variables. It is part of the [repository documentation index](../README.md); see [`docs/development/build-and-validation.md`](../development/build-and-validation.md) for the full validation gate.
 
 ## Commands
 
 Run the `manuscript` gate arm, which is the same command set the public workflow runs
-(see [`../build-and-validation.md`](../build-and-validation.md)):
+(see [`../build-and-validation.md`](../development/build-and-validation.md)):
 
 ```text
 ./run.sh manuscript        # read-only freshness, render provenance, validate --strict, check

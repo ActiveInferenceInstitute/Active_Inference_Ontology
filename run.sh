@@ -2,7 +2,7 @@
 # Single gate entry point.
 #
 # Every arm below runs exactly the command the public workflow runs; the workflow
-# calls these arms instead of restating the commands. `docs/build-and-validation.md`
+# calls these arms instead of restating the commands. `docs/development/build-and-validation.md`
 # documents the arms and `docs/_generated/gate.md` records their measured wall time
 # (regenerate with `./run.sh bench`).
 #

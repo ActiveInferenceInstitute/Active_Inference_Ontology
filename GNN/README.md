@@ -22,7 +22,7 @@ equality only (casefold, drop characters outside `[a-z0-9]`); labels with no
 counterpart stay `unresolved` with a null target. No identifier is guessed, and
 GNN's non-resolving `obo:ACTO_*` / `obo:TEMP_*` placeholders are never adopted as
 identifiers. The consumer contract is in
-[`docs/downstream-integration.md`](../docs/downstream-integration.md).
+[`docs/integration/downstream-integration.md`](../docs/integration/downstream-integration.md).
 
 ## Pinned parser conformance
 

@@ -16,4 +16,4 @@ manifest records their hashes.
 Each archive folder carries its own `README.md` with a file table and provenance
 notes. To see how these versions relate to the current release, use
 `python3 scripts/ontology.py diff OLD.json NEW.json` and read
-[`../docs/archive-and-provenance.md`](../docs/archive-and-provenance.md).
+[`../docs/archive-and-provenance.md`](../docs/release/archive-and-provenance.md).

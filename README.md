@@ -58,7 +58,7 @@ Builds and ordinary structural checks use only Python 3.11+. The strict contract
 gate additionally uses the pinned dependency in `requirements-ci.txt`.
 
 [`run.sh`](run.sh) is the gate entry point; its arms are the exact commands the public
-workflow runs, and [`docs/build-and-validation.md`](docs/build-and-validation.md)
+workflow runs, and [`docs/development/build-and-validation.md`](docs/development/build-and-validation.md)
 documents them. From the repository root:
 
 ```bash
@@ -118,12 +118,12 @@ stronger semantic relation is inferred automatically.
 Initial migration IDs are derived from labels, but subsequent label changes retain
 the curated ID and are reported by `diff`. The CSV remains available for spreadsheet workflows, but it is generated from the
 structured source and must not be edited independently. See
-[`docs/migration-v2.md`](docs/migration-v2.md) before consuming the new export.
+[`docs/release/migration-v2.md`](docs/release/migration-v2.md) before consuming the new export.
 
 ## Curation and releases
 
-Follow [`docs/curation-workflow.md`](docs/curation-workflow.md) and the
-[release sequence](docs/release-workflow.md): align approved release metadata,
+Follow [`docs/curation/workflow.md`](docs/curation/workflow.md) and the
+[release sequence](docs/release/workflow.md): align approved release metadata,
 regenerate every projection, synchronize the current manifest, then validate.
 Historical files and their recorded hashes remain immutable.
 

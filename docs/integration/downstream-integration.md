@@ -46,7 +46,7 @@ should use the JSON export and the schemas under `../schemas/`.
 
 ## GNN vocabulary bridge
 
-[`GNN/act_inf_ontology_terms.json`](../GNN/act_inf_ontology_terms.json) is the generated
+[`GNN/act_inf_ontology_terms.json`](../../GNN/act_inf_ontology_terms.json) is the generated
 bridge to the GNN pipeline's `ActInfOntologyAnnotation` vocabulary (Step 10 ontology
 processing). It is derived from the canonical source and export and is checked for
 freshness by `validate`; it is an integration surface, not a release artifact, so it is
@@ -58,7 +58,7 @@ not listed in the release manifest.
 | `source`, `export` | The source and export paths plus the SHA-256 digests the document was generated from. |
 | `matchRule` | The deterministic rule used to resolve the declared GNN labels. |
 | `terms` | Every canonical ontology label mapped to `id`, `status`, `tag`, and primary `description`. Join on `id`. |
-| `declared` | The labels declared by GNN's bundled vocabulary (pinned in [`GNN/declared-labels.json`](../GNN/declared-labels.json)) with `status`, `match`, `id`, and `ontologyTerm`. |
+| `declared` | The labels declared by GNN's bundled vocabulary (pinned in [`GNN/declared-labels.json`](../../GNN/declared-labels.json)) with `status`, `match`, `id`, and `ontologyTerm`. |
 
 Declared-label resolution status:
 
@@ -84,9 +84,9 @@ companion-pin freshness pattern.
 This repository's conformance gate is the `gnn-conformance` job (display name
 `gnn conformance (pinned)`), which runs `./run.sh gnn`. It installs the GNN revision
 `75c834bd8519dc7b5adc4d24f16bf393cfd1ecdf` (`v5.1.0`) recorded in
-[`.github/gnn-pin.json`](../.github/gnn-pin.json) under schema `gnn-importer-pin/v1`,
+[`.github/gnn-pin.json`](../../.github/gnn-pin.json) under schema `gnn-importer-pin/v1`,
 then verifies the pinned parser's bundled vocabulary bytes and term set against
-`GNN/declared-labels.json` and the generated bridge; [`../.github/GNN.md`](../.github/GNN.md)
+`GNN/declared-labels.json` and the generated bridge; [`../.github/GNN.md`](../../.github/GNN.md)
 records exactly what the job parses.
 
 ### Declared `obo:` values are not identifiers
@@ -95,7 +95,7 @@ The audited GNN vocabulary declares OBO-style `uri` values such as `obo:ACTO_000
 and `obo:TEMP_000016`. No `ACTO` ontology exists in the OBO Foundry registry, the
 Bioregistry, or OLS, and `http://purl.obolibrary.org/obo/ACTO_000001` does not resolve.
 Those values are local placeholders recorded in
-[`GNN/declared-labels.json`](../GNN/declared-labels.json) for audit only. This bridge
+[`GNN/declared-labels.json`](../../GNN/declared-labels.json) for audit only. This bridge
 maps labels to stable `term-*` IDs and never adopts a declared placeholder as an
 identifier.
 
